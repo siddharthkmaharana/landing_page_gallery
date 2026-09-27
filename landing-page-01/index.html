@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Intelligence Designed To Evolve</title>
+    <link rel="icon" href="assets/favicon.webp" type="image/webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Sticky Header Wrapper -->
+    <div class="header-wrapper">
+      <header class="header">
+        <a class="logo" href="#home" aria-label="Zurvn home">
+          <img src="assets/logo.webp" alt="" width="52" height="52" />
+        </a>
+
+        <nav class="nav-pill" aria-label="Primary">
+          <a href="#home" class="active">Home</a>
+          <a href="#product">Product</a>
+          <a href="#case-studies">Case Studies</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <a class="sign-in" href="#sign-in">Sign in</a>
+
+        <button
+          class="burger"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </header>
+    </div>
+
+    <!-- Viewport 1: Hero Viewport with Full-bleed Video Background -->
+    <section class="hero-viewport" id="home">
+      <div class="bg">
+        <video class="bg-video" autoplay muted loop playsinline>
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
+
+      <div class="hero-center">
+        <div class="trust anim" style="--d: 0.05s">
+          <div class="trust-avatars" aria-hidden="true">
+            <span class="trust-avatar a1">
+              <span class="trust-inner">
+                <i class="fa-brands fa-microsoft"></i>
+              </span>
+            </span>
+            <span class="trust-avatar a2">
+              <span class="trust-inner">
+                <i class="fa-brands fa-amazon"></i>
+              </span>
+            </span>
+            <span class="trust-avatar a3">
+              <span class="trust-inner">
+                <i class="fa-brands fa-google"></i>
+              </span>
+            </span>
+          </div>
+          <div class="trust-pill">Trusted by 2000+ Enterprises</div>
+        </div>
+
+        <h1 class="headline anim">
+          <span class="line line-1">Intelligence</span>
+          <span class="line line-2">Designed To Evolve</span>
+        </h1>
+
+        <p class="subhead anim" style="--d: 0.28s">
+          Build applications that reason, adapt and collaborate using a modular
+          AI platform designed for production.
+        </p>
+
+        <a class="cta anim" href="#get-started" style="--d: 0.4s">Get Started</a>
+      </div>
+
+      <footer class="stats" aria-label="Platform metrics">
+        <div class="stat anim" style="--d: 0.5s">
+          <div class="stat-icon">&lt;</div>
+          <div class="stat-value">
+            <span data-count="120" data-decimals="0" data-i="0">0</span
+            ><span class="stat-suffix">ms</span>
+          </div>
+          <div class="stat-label">Inference Time</div>
+        </div>
+        <div class="stat anim" style="--d: 0.58s">
+          <div class="stat-icon">%</div>
+          <div class="stat-value">
+            <span data-count="99.99" data-decimals="2" data-i="1">0.00</span
+            ><span class="stat-suffix">%</span>
+          </div>
+          <div class="stat-label">Platform Uptime</div>
+        </div>
+        <div class="stat anim" style="--d: 0.66s">
+          <div class="stat-icon">*</div>
+          <div class="stat-value">
+            <span data-count="24" data-decimals="0" data-i="2">0</span
+            ><span class="stat-suffix">/7</span>
+          </div>
+          <div class="stat-label">Autonomous Runtime</div>
+        </div>
+        <div class="stat anim" style="--d: 0.74s">
+          <div class="stat-icon">#</div>
+          <div class="stat-value">
+            <span data-count="2.4" data-decimals="1" data-i="3">0.0</span
+            ><span class="stat-suffix">M</span>
+          </div>
+          <div class="stat-label">Context Windows</div>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Additional Content Sections Matching Design Screenshot -->
+    <main class="page-content">
+      <!-- Section 01: Core Intelligence -->
+      <section class="section container" id="core">
+        <div class="section-kicker">01 / CORE INTELLIGENCE</div>
+        <h2 class="display-title">
+          <span>Continuous</span>
+          <span>Adaptation</span>
+        </h2>
+        <p class="section-desc">
+          Intelligence that understands context, reasons through complexity, and
+          adapts to the way your organization works.
+        </p>
+
+        <div class="core-grid">
+          <div class="core-card">
+            <div class="core-card-header">
+              <span class="card-num">01</span>
+              <i class="fa-solid fa-arrow-up-right-from-square card-icon"></i>
+            </div>
+            <h3 class="core-card-title">Reason</h3>
+            <p class="core-card-text">
+              Understand complex inputs and transform them into actionable decisions.
+            </p>
+          </div>
+
+          <div class="core-card">
+            <div class="core-card-header">
+              <span class="card-num">02</span>
+              <i class="fa-solid fa-arrow-up-right-from-square card-icon"></i>
+            </div>
+            <h3 class="core-card-title">Adapt</h3>
+            <p class="core-card-text">
+              Respond dynamically to environments, requirements and data in motion.
+            </p>
+          </div>
+
+          <div class="core-card">
+            <div class="core-card-header">
+              <span class="card-num">03</span>
+              <i class="fa-solid fa-arrow-up-right-from-square card-icon"></i>
+            </div>
+            <h3 class="core-card-title">Collaborate</h3>
+            <p class="core-card-text">
+              Connect agents, people and systems around a shared context.
+            </p>
+          </div>
+
+          <div class="core-card">
+            <div class="core-card-header">
+              <span class="card-num">04</span>
+              <i class="fa-solid fa-arrow-up-right-from-square card-icon"></i>
+            </div>
+            <h3 class="core-card-title">Execute</h3>
+            <p class="core-card-text">
+              Turn decisions into actions across real production workflows.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 02: Architecture -->
+      <section class="section container" id="architecture">
+        <div class="section-split-header">
+          <div>
+            <div class="section-kicker">02 / ARCHITECTURE</div>
+            <h2 class="display-title">
+              <span>System</span>
+              <span>Architecture</span>
+            </h2>
+          </div>
+          <p class="section-desc-right">
+            From raw signals to autonomous action, every layer is designed to work
+            together as one adaptive system.
+          </p>
+        </div>
+
+        <div class="arch-grid">
+          <!-- Architecture Visual Card -->
+          <div class="arch-visual-card">
+            <div class="arch-ambient-glow"></div>
+            <!-- Orbit Canvas & Rings -->
+            <div class="arch-orbit-system">
+              <div class="orbit-ring ring-1"></div>
+              <div class="orbit-ring ring-2"></div>
+              <div class="glow-disk"></div>
+            </div>
+            <!-- Labels on left edge of the graphic -->
+            <div class="arch-labels">
+              <span>INPUT</span>
+              <span>CONTEXT</span>
+              <span>REASON</span>
+              <span>ACTION</span>
+            </div>
+          </div>
+
+          <!-- Architecture Layer Pill Rows -->
+          <div class="arch-steps">
+            <div class="arch-step-card active" data-layer="perception">
+              <span class="arch-step-num">01 — PERCEPTION</span>
+              <span class="arch-step-tag">Multimodal inputs</span>
+            </div>
+            <div class="arch-step-card" data-layer="context">
+              <span class="arch-step-num">02 — CONTEXT</span>
+              <span class="arch-step-tag">Shared memory</span>
+            </div>
+            <div class="arch-step-card" data-layer="reasoning">
+              <span class="arch-step-num">03 — REASONING</span>
+              <span class="arch-step-tag">Active decisioning</span>
+            </div>
+            <div class="arch-step-card" data-layer="execution">
+              <span class="arch-step-num">04 — EXECUTION</span>
+              <span class="arch-step-tag">Task action</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 03: The Product -->
+      <section class="section container" id="product">
+        <div class="section-kicker">03 / THE PRODUCT</div>
+        <h2 class="display-title">
+          <span>Multi-agent</span>
+          <span>Orchestration</span>
+        </h2>
+
+        <!-- Dashboard Preview Box -->
+        <div class="dashboard-box">
+          <div class="dash-topbar">
+            <span class="dash-title">INTEGRATED CONTROL CENTER</span>
+            <span class="dash-status">
+              <span class="status-pulse"></span>
+              ALL SYSTEMS OPERATIONAL
+            </span>
+          </div>
+
+          <div class="dash-body">
+            <!-- Sidebar Navigation -->
+            <nav class="dash-sidebar" aria-label="Dashboard views">
+              <button class="dash-tab active" data-tab="overview" type="button">
+                Overview
+              </button>
+              <button class="dash-tab" data-tab="agents" type="button">
+                Agents
+              </button>
+              <button class="dash-tab" data-tab="memory" type="button">
+                Memory
+              </button>
+              <button class="dash-tab" data-tab="workflows" type="button">
+                Workflows
+              </button>
+              <button class="dash-tab" data-tab="security" type="button">
+                Security
+              </button>
+            </nav>
+
+            <!-- Dashboard Main Pane -->
+            <div class="dash-content">
+              <div class="dash-terminal" id="dash-terminal-view">
+                <p class="term-lead">• Unified production runtime...</p>
+                <p class="term-dim">context window: 2.4M active tokens</p>
+                <p class="term-dim">reasoning engine: v4.2-active</p>
+                <p class="term-dim">agent coordination: live</p>
+                <p class="term-accent">• Status: optimal</p>
+              </div>
+
+              <!-- Animated Audio/Telemetry Wave Bars -->
+              <div class="dash-chart" aria-hidden="true">
+                <span class="bar" style="--h: 42%; --d: 0.1s"></span>
+                <span class="bar" style="--h: 58%; --d: 0.25s"></span>
+                <span class="bar" style="--h: 52%; --d: 0.4s"></span>
+                <span class="bar" style="--h: 76%; --d: 0.15s"></span>
+                <span class="bar" style="--h: 64%; --d: 0.3s"></span>
+                <span class="bar" style="--h: 92%; --d: 0.5s"></span>
+                <span class="bar" style="--h: 68%; --d: 0.2s"></span>
+                <span class="bar" style="--h: 48%; --d: 0.35s"></span>
+                <span class="bar" style="--h: 84%; --d: 0.1s"></span>
+                <span class="bar" style="--h: 60%; --d: 0.45s"></span>
+                <span class="bar" style="--h: 72%; --d: 0.2s"></span>
+                <span class="bar" style="--h: 50%; --d: 0.3s"></span>
+                <span class="bar" style="--h: 88%; --d: 0.4s"></span>
+                <span class="bar" style="--h: 66%; --d: 0.15s"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 04: Case Studies -->
+      <section class="section container" id="case-studies">
+        <div class="section-kicker">04 / CASE STUDIES</div>
+        <h2 class="display-title">
+          <span>Enterprise</span>
+          <span>Impact</span>
+        </h2>
+
+        <div class="cases-grid">
+          <!-- Card 1 (Glow orb) -->
+          <article class="case-card glow-card">
+            <div class="case-ambient"></div>
+            <div class="case-ring" aria-hidden="true"></div>
+            <div class="case-content">
+              <span class="case-kicker">FINTECH / 01</span>
+              <h3 class="case-title">
+                From complex workflows to autonomous operations.
+              </h3>
+              <a class="case-link" href="#case-studies">
+                Read case study <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="case-card">
+            <div class="case-ring" aria-hidden="true"></div>
+            <div class="case-content">
+              <span class="case-kicker">HEALTHCARE / 02</span>
+              <h3 class="case-title">
+                Turning information into decisions.
+              </h3>
+              <a class="case-link" href="#case-studies">
+                Read case study <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="case-card wide-card">
+            <div class="case-ring" aria-hidden="true"></div>
+            <div class="case-content">
+              <span class="case-kicker">LOGISTICS / 03</span>
+              <h3 class="case-title">
+                Understanding every interaction.
+              </h3>
+              <a class="case-link" href="#case-studies">
+                Read case study <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section 05: Live Intelligence Metrics -->
+      <section class="section container" id="telemetry">
+        <div class="section-kicker">05 / LIVE INTELLIGENCE</div>
+        <h2 class="display-title">
+          <span>Production</span>
+          <span>Telemetry</span>
+        </h2>
+
+        <div class="live-metrics-grid">
+          <div class="metric-col">
+            <span class="metric-label">ACTIVE AGENTS</span>
+            <div class="metric-num">
+              <span class="live-counter" data-target="18" data-decimals="0">18</span>
+            </div>
+          </div>
+          <div class="metric-col">
+            <span class="metric-label">CONTEXT WINDOWS</span>
+            <div class="metric-num">
+              <span class="live-counter" data-target="2.4" data-decimals="1">2.4</span><span class="metric-unit">M</span>
+            </div>
+          </div>
+          <div class="metric-col">
+            <span class="metric-label">AVG LATENCY</span>
+            <div class="metric-num">
+              <span class="live-counter" data-target="120" data-decimals="0">120</span><span class="metric-unit">ms</span>
+            </div>
+          </div>
+          <div class="metric-col">
+            <span class="metric-label">UPTIME</span>
+            <div class="metric-num">
+              <span class="live-counter" data-target="99.99" data-decimals="2">99.99</span><span class="metric-unit">%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 06: Signal to Action -->
+      <section class="section container" id="workflow">
+        <div class="section-kicker">06 / SIGNAL — ACTION</div>
+        <h2 class="display-title">
+          <span>The Execution</span>
+          <span>Loop</span>
+        </h2>
+
+        <div class="process-grid">
+          <div class="process-step">
+            <div class="step-head">
+              <span class="step-num">01</span>
+              <span class="step-arrow">→</span>
+            </div>
+            <h3 class="step-title">Signal</h3>
+            <p class="step-text">
+              Capture information from users, systems, and environments.
+            </p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-head">
+              <span class="step-num">02</span>
+              <span class="step-arrow">→</span>
+            </div>
+            <h3 class="step-title">Understand</h3>
+            <p class="step-text">
+              Build context and identify what matters in the moment.
+            </p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-head">
+              <span class="step-num">03</span>
+              <span class="step-arrow">→</span>
+            </div>
+            <h3 class="step-title">Reason</h3>
+            <p class="step-text">
+              Evaluate possibilities and determine the most optimal action.
+            </p>
+          </div>
+
+          <div class="process-step">
+            <div class="step-head">
+              <span class="step-num">04</span>
+            </div>
+            <h3 class="step-title">Act</h3>
+            <p class="step-text">
+              Execute through connected tools, agents and workflows.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 07: Ready to Evolve (CTA) -->
+      <section class="section cta-section" id="get-started">
+        <div class="cta-glow-orb" aria-hidden="true"></div>
+        <div class="container cta-container">
+          <div class="section-kicker">07 / START</div>
+          <h2 class="display-title cta-heading">
+            <span>Ready to evolve?</span>
+          </h2>
+          <p class="cta-desc">
+            Build systems that don't just process information — they understand it,
+            adapt to it, and act on it.
+          </p>
+          <a class="cta cta-large" href="#get-started">
+            Get Started <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer" id="contact">
+      <div class="container footer-container">
+        <div class="footer-brand">
+          <div class="footer-logo">INTELLIGENCE</div>
+          <p class="footer-tagline">
+            A modular intelligence platform designed for production.
+          </p>
+        </div>
+
+        <div class="footer-links-grid">
+          <div class="footer-col">
+            <h4 class="footer-heading">Product</h4>
+            <ul>
+              <li><a href="#product">Platform</a></li>
+              <li><a href="#product">Agents</a></li>
+              <li><a href="#product">Workflows</a></li>
+              <li><a href="#product">Security</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4 class="footer-heading">Company</h4>
+            <ul>
+              <li><a href="#core">About</a></li>
+              <li><a href="#case-studies">Case Studies</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="#contact">Careers</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4 class="footer-heading">Connect</h4>
+            <ul>
+              <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
+              <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a></li>
+              <li><a href="#documentation">Documentation</a></li>
+              <li><a href="#status">Status</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="container footer-bottom">
+        <span>© 2026 Zurvn Inc. All rights reserved.</span>
+        <div class="footer-legal">
+          <a href="#privacy">Privacy Policy</a>
+          <a href="#terms">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Slide-out Menu -->
+    <div class="overlay" hidden></div>
+    <nav class="mobile-menu" id="mobile-menu" hidden aria-label="Mobile">
+      <a href="#home" class="active">Home</a>
+      <a href="#product">Product</a>
+      <a href="#case-studies">Case Studies</a>
+      <a href="#contact">Contact</a>
+      <a class="mobile-signin" href="#sign-in">Sign in</a>
+    </nav>
+
+    <script src="main.js"></script>
+  </body>
+</html>
