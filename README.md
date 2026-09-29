@@ -26,7 +26,7 @@ landing-page-gallery/
 │   ├── fonts/
 │   └── assets/
 │
-├── landing-page-02/          # (Coming Soon)
+├── landing-page-02/          # KIMI - GRIDO1 Racing Systems / Kimi Antonelli
 ├── landing-page-03/          # (Coming Soon)
 └── landing-page-04/          # (Coming Soon)
 ```
