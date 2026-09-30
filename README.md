@@ -27,7 +27,7 @@ landing-page-gallery/
 │   └── assets/
 │
 ├── landing-page-02/          # KIMI - GRIDO1 Racing Systems / Kimi Antonelli
-├── landing-page-03/          # (Coming Soon)
+├── landing-page-03/          # Cast & Render — 3D Object Studio
 └── landing-page-04/          # (Coming Soon)
 ```
 
@@ -46,6 +46,18 @@ landing-page-gallery/
   - Responsive mobile navigation drawer with backdrop blur
   - Modular enterprise feature showcase cards
 - **Tech Stack**: HTML5, Vanilla CSS3, Vanilla ES6 JavaScript
+
+### 03 · Cast & Render — 3D Object Studio
+- **Folder**: [`landing-page-03/`](./landing-page-03/)
+- **Theme**: Minimal Editorial / 3D Studio / High-Key Warm Wash
+- **Typography**: Inter Tight (400, 500)
+- **Key Features**:
+  - Scroll-scrubbed all-intra video playback with frame-accurate scrubbing
+  - Eased currentTime interpolator for butter-smooth interactive scrubbing
+  - Fully buffered blob preloader with byte accumulator and network streaming fallback
+  - Typographic cross-fading drift panels with counter-scroll physics and deliberate dead zones
+  - Responsive layout with iOS play-unlock, safe-area support, and hairline scroll meter
+- **Tech Stack**: HTML5, Vanilla CSS3, Vanilla ES6 JavaScript (Zero dependencies, single file)
 
 ---
 
