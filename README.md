@@ -95,7 +95,7 @@ To host this gallery directly via GitHub Pages:
 
 ---
 
-## 📄 Lic
+## 📄 Licence
 
 This repository is licensed under the [MIT License](LICENSE).
 Feel free to use and adapt these designs for personal and commercial projects.
