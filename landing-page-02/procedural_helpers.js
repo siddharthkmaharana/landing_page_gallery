@@ -71,67 +71,100 @@ function createProceduralEnvTexture(renderer) {
   return envTex;
 }
 
-async function createProceduralHeadMaps(src) {
+async function createProceduralHeadMaps(faceSrc, helmetSrc) {
   return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
+    if (!helmetSrc) helmetSrc = faceSrc;
+
+    const loadImg = (s) => new Promise((res) => {
+      if (!s) return res(null);
+      const i = new Image();
+      i.crossOrigin = 'anonymous';
+      i.onload = () => res(i);
+      i.onerror = () => res(null);
+      i.src = s;
+    });
+
+    Promise.all([loadImg(faceSrc), loadImg(helmetSrc)]).then(([imgFace, imgHelmet]) => {
+      const activeFace = imgFace || imgHelmet;
+      const activeHelmet = imgHelmet || imgFace;
+
+      if (!activeFace && !activeHelmet) {
+        const c = document.createElement('canvas');
+        c.width = 64; c.height = 64;
+        const t = new CanvasTexture(c);
+        return resolve([t, t, t, t, t]);
+      }
+
       const w = 512;
       const h = 512;
-      
-      // Diffuse
-      const cDiff = document.createElement('canvas');
-      cDiff.width = w; cDiff.height = h;
-      const ctxDiff = cDiff.getContext('2d');
-      // Center crop portrait of driver
-      ctxDiff.drawImage(img, 150, 40, 720, 680, 0, 0, w, h);
 
-      // Clean background around head to eliminate any ghost text from crop
-      const diffData = ctxDiff.getImageData(0, 0, w, h);
+      // 1. Diffuse Face Map (Actual Face - Kimi Antonelli)
+      const cDiffFace = document.createElement('canvas');
+      cDiffFace.width = w; cDiffFace.height = h;
+      const ctxDiffFace = cDiffFace.getContext('2d');
+      ctxDiffFace.fillStyle = '#f7fafb';
+      ctxDiffFace.fillRect(0, 0, w, h);
+      if (activeFace) {
+        ctxDiffFace.drawImage(activeFace, 150, 40, 720, 680, 0, 0, w, h);
+      }
+      const tDiffFace = new CanvasTexture(cDiffFace);
+      tDiffFace.colorSpace = SRGBColorSpace;
+      tDiffFace.minFilter = LinearMipmapLinearFilter;
+      tDiffFace.generateMipmaps = true;
+
+      // 2. Diffuse Helmet Map (Initial Helmeted / Without Face photo)
+      const cDiffHelmet = document.createElement('canvas');
+      cDiffHelmet.width = w; cDiffHelmet.height = h;
+      const ctxDiffHelmet = cDiffHelmet.getContext('2d');
+      ctxDiffHelmet.fillStyle = '#f7fafb';
+      ctxDiffHelmet.fillRect(0, 0, w, h);
+      if (activeHelmet) {
+        ctxDiffHelmet.drawImage(activeHelmet, 150, 40, 720, 680, 0, 0, w, h);
+      }
+      const hData = ctxDiffHelmet.getImageData(0, 0, w, h);
       for (let y = 0; y < 310; y++) {
         for (let x = 0; x < w; x++) {
           if (x < 145 || x > 385) {
             const idx = (y * w + x) * 4;
-            diffData.data[idx] = 247;
-            diffData.data[idx + 1] = 250;
-            diffData.data[idx + 2] = 251;
-            diffData.data[idx + 3] = 255;
+            hData.data[idx] = 247;
+            hData.data[idx + 1] = 250;
+            hData.data[idx + 2] = 251;
+            hData.data[idx + 3] = 255;
           }
         }
       }
-      ctxDiff.putImageData(diffData, 0, 0);
+      ctxDiffHelmet.putImageData(hData, 0, 0);
+      const tDiffHelmet = new CanvasTexture(cDiffHelmet);
+      tDiffHelmet.colorSpace = SRGBColorSpace;
+      tDiffHelmet.minFilter = LinearMipmapLinearFilter;
+      tDiffHelmet.generateMipmaps = true;
 
-      const tDiff = new CanvasTexture(cDiff);
-      tDiff.colorSpace = SRGBColorSpace;
-      tDiff.minFilter = LinearMipmapLinearFilter;
-      tDiff.generateMipmaps = true;
-
-      // Depth Map (luminance + facial depth curve)
+      // 3. Depth Map (facial curvature + luminance from actual face)
       const cDepth = document.createElement('canvas');
       cDepth.width = w; cDepth.height = h;
       const ctxDepth = cDepth.getContext('2d');
-      const imgData = ctxDiff.getImageData(0, 0, w, h);
+      const faceImgData = ctxDiffFace.getImageData(0, 0, w, h);
       const dData = ctxDepth.createImageData(w, h);
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        const lum = (imgData.data[i] * 0.299 + imgData.data[i+1] * 0.587 + imgData.data[i+2] * 0.114) / 255;
+      for (let i = 0; i < faceImgData.data.length; i += 4) {
+        const lum = (faceImgData.data[i] * 0.299 + faceImgData.data[i + 1] * 0.587 + faceImgData.data[i + 2] * 0.114) / 255;
         const x = (i / 4) % w;
         const y = Math.floor((i / 4) / w);
-        const dist = 1 - Math.hypot(x - w/2, y - h/2.2) / (w * 0.6);
+        const dist = 1 - Math.hypot(x - w / 2, y - h / 2.2) / (w * 0.6);
         let depthVal = Math.min(255, Math.max(0, Math.floor((lum * 0.4 + Math.max(0, dist) * 0.6) * 255)));
         if ((x < 145 || x > 385) && y < 310) {
           depthVal = 0;
         }
         dData.data[i] = depthVal;
-        dData.data[i+1] = depthVal;
-        dData.data[i+2] = depthVal;
-        dData.data[i+3] = 255;
+        dData.data[i + 1] = depthVal;
+        dData.data[i + 2] = depthVal;
+        dData.data[i + 3] = 255;
       }
       ctxDepth.putImageData(dData, 0, 0);
       const tDepth = new CanvasTexture(cDepth);
       tDepth.minFilter = LinearMipmapLinearFilter;
       tDepth.generateMipmaps = true;
 
-      // Alpha Map (vignette cutout)
+      // 4. Alpha Map (vignette cutout + smooth bottom fade)
       const cAlpha = document.createElement('canvas');
       cAlpha.width = w; cAlpha.height = h;
       const ctxAlpha = cAlpha.getContext('2d');
@@ -139,22 +172,22 @@ async function createProceduralHeadMaps(src) {
       for (let i = 0; i < aData.data.length; i += 4) {
         const x = (i / 4) % w;
         const y = Math.floor((i / 4) / w);
-        const dist = Math.hypot((x - w/2) / (w*0.45), (y - h/1.8) / (h*0.5));
+        const dist = Math.hypot((x - w / 2) / (w * 0.45), (y - h / 1.8) / (h * 0.5));
         let alpha = Math.min(255, Math.max(0, Math.floor((1 - Math.pow(dist, 4)) * 255)));
         if ((x < 145 || x > 385) && y < 310) {
           alpha = 0;
         }
         aData.data[i] = alpha;
-        aData.data[i+1] = alpha;
-        aData.data[i+2] = alpha;
-        aData.data[i+3] = 255;
+        aData.data[i + 1] = alpha;
+        aData.data[i + 2] = alpha;
+        aData.data[i + 3] = 255;
       }
       ctxAlpha.putImageData(aData, 0, 0);
       const tAlpha = new CanvasTexture(cAlpha);
       tAlpha.minFilter = LinearMipmapLinearFilter;
       tAlpha.generateMipmaps = true;
 
-      // Normal Map (Sobel filter over depth)
+      // 5. Normal Map (Sobel filter over depth)
       const cNorm = document.createElement('canvas');
       cNorm.width = w; cNorm.height = h;
       const ctxNorm = cNorm.getContext('2d');
@@ -174,9 +207,9 @@ async function createProceduralHeadMaps(src) {
           dx /= len; dy /= len; dz /= len;
           
           nData.data[idx] = Math.floor((dx * 0.5 + 0.5) * 255);
-          nData.data[idx+1] = Math.floor((dy * 0.5 + 0.5) * 255);
-          nData.data[idx+2] = Math.floor((dz * 0.5 + 0.5) * 255);
-          nData.data[idx+3] = 255;
+          nData.data[idx + 1] = Math.floor((dy * 0.5 + 0.5) * 255);
+          nData.data[idx + 2] = Math.floor((dz * 0.5 + 0.5) * 255);
+          nData.data[idx + 3] = 255;
         }
       }
       ctxNorm.putImageData(nData, 0, 0);
@@ -184,16 +217,13 @@ async function createProceduralHeadMaps(src) {
       tNorm.minFilter = LinearMipmapLinearFilter;
       tNorm.generateMipmaps = true;
 
-      resolve([tDiff, tDepth, tAlpha, tNorm]);
-    };
-    img.onerror = () => {
-      // Emergency solid fallback
+      resolve([tDiffFace, tDepth, tAlpha, tNorm, tDiffHelmet]);
+    }).catch(() => {
       const c = document.createElement('canvas');
       c.width = 64; c.height = 64;
       const t = new CanvasTexture(c);
-      resolve([t, t, t, t]);
-    };
-    img.src = src;
+      resolve([t, t, t, t, t]);
+    });
   });
 }
 

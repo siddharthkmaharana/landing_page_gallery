@@ -22,6 +22,8 @@ lapLogicCode = lapLogicCode.replace(/^Verbatim:\s*/m, '');
 // Read base64 image
 const imgPath = path.resolve('hero-driver.png');
 const imgBase64 = fs.existsSync(imgPath) ? fs.readFileSync(imgPath).toString('base64') : '';
+const facePath = path.resolve('hero-driver-face.png');
+const faceBase64 = fs.existsSync(facePath) ? fs.readFileSync(facePath).toString('base64') : '';
 
 // Read template from generate.js
 let template = fs.readFileSync('generate.js', 'utf8');
@@ -67,6 +69,7 @@ const scriptBody = `
 
     // Driver image source
     const DRIVER_IMAGE_SRC = "${imgBase64 ? 'data:image/png;base64,' + imgBase64 : './hero-driver.png'}";
+    const DRIVER_FACE_SRC = "${faceBase64 ? 'data:image/png;base64,' + faceBase64 : './hero-driver-face.png'}";
 
     // HeroScene
     ${sceneCode}

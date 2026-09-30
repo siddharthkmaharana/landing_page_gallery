@@ -629,11 +629,18 @@ const headVertex = /* glsl */ `
  */
 const headFragment = /* glsl */ `
   uniform sampler2D uDiffuse;
+  uniform sampler2D uDiffuseHelmet;
   uniform sampler2D uDepth;
   uniform sampler2D uAlpha;
   uniform sampler2D uNormal;
+  uniform sampler2D uNoiseTex;
   uniform vec2 uParallax;
   uniform float uReveal;
+  uniform float uIntro;
+  uniform float uBurnStart;
+  uniform float uBurnSoft;
+  uniform float uBurnGlow;
+  uniform vec3 uBurnColor;
   uniform float uDepthScale;
   uniform float uRelight;
   varying vec2 vUv;
@@ -641,32 +648,34 @@ const headFragment = /* glsl */ `
     float depth = texture2D(uDepth, vUv).r;
     vec2 offset = uParallax * (depth - 0.5) * uDepthScale;
     vec2 uv = vUv + offset;
-    vec4 color = texture2D(uDiffuse, uv);
+
+    vec4 colorFace = texture2D(uDiffuse, uv);
+    vec4 colorHelmet = texture2D(uDiffuseHelmet, uv);
+
+    // Burn transition: Helmet burns away crown-to-chin to reveal Kimi Antonelli's actual face
+    float burnFront = smoothstep(uBurnStart, 1.0, uIntro);
+    float burnNoise = texture2D(uNoiseTex, uv * 2.5).r;
+    float burnHeight = 1.0 - uv.y;
+    float burnAt = mix(burnHeight, burnNoise, 0.35);
+    float intact = smoothstep(burnFront - uBurnSoft, burnFront + uBurnSoft, burnAt);
+
+    vec4 color = mix(colorFace, colorHelmet, intact);
+    float burnEdge = 4.0 * intact * (1.0 - intact);
+    vec3 burnGlow = uBurnColor * burnEdge * uBurnGlow;
+
     float alpha = texture2D(uAlpha, uv).r;
 
     vec3 normal = normalize(texture2D(uNormal, uv).rgb * 2.0 - 1.0);
     vec3 lightDir = normalize(vec3(uParallax * 1.6, 1.0));
-    // Signed around the flat-normal response so the relight brightens the
-    // slopes facing the cursor and shades the ones turning away, instead of
-    // washing the whole portrait lighter.
     float lambert = max(dot(normal, lightDir), 0.0) - 0.72;
-    vec3 lit = color.rgb * (1.0 + lambert * uRelight);
+    vec3 lit = color.rgb * (1.0 + lambert * uRelight) + burnGlow;
 
     gl_FragColor = vec4(clamp(lit, 0.0, 1.0), alpha * uReveal);
 
-    // uDiffuse is an sRGB texture, so the sampler hands back linear values.
-    // Without this encode the portrait is written to an sRGB framebuffer
-    // still linear and reads several stops too dark — three only injects the
-    // chunk automatically for its built-in materials, not a ShaderMaterial.
     #include <colorspace_fragment>
   }
 `;
-/**
- * The immersive hero scene — depth-parallax head, glass helmet shell, the
- * gold helmet revealed liquid-style around the cursor, and wireframe
- * circuit outlines. Plain three.js class; the React wrapper drives
- * update/resize/dispose through the project's shared ticker loop.
- */
+
 export class HeroScene {
     renderer;
     scene = new Scene();
@@ -1039,6 +1048,7 @@ export class HeroScene {
         if (this.headMaterial) {
             this.headMaterial.uniforms.uParallax.value.set(this.smoothed.x, -this.smoothed.y);
             this.headMaterial.uniforms.uReveal.value = this.reveal;
+            this.headMaterial.uniforms.uIntro.value = this.intro;
             this.headMaterial.uniforms.uDepthScale.value = p.headParallax;
             this.headMaterial.uniforms.uRelight.value = p.headRelight;
         }
@@ -1345,7 +1355,8 @@ export class HeroScene {
                 loadTexture("person-normal.webp"),
             ]);
         } catch (e) {
-            headMaps = await createProceduralHeadMaps(DRIVER_IMAGE_SRC);
+            const faceSrc = (typeof DRIVER_FACE_SRC !== 'undefined' && DRIVER_FACE_SRC) ? DRIVER_FACE_SRC : DRIVER_IMAGE_SRC;
+            headMaps = await createProceduralHeadMaps(faceSrc, DRIVER_IMAGE_SRC);
         }
 
         // 4. Helmet GLTF
@@ -1357,7 +1368,7 @@ export class HeroScene {
 
         if (this.disposed) return;
 
-        this.buildHead(headMaps[0], headMaps[1], headMaps[2], headMaps[3]);
+        this.buildHead(headMaps[0], headMaps[1], headMaps[2], headMaps[3], headMaps[4], noise);
         this.buildHelmet(helmetGltf.scene, noise);
         this.buildBackdrop(noise);
 
@@ -1377,17 +1388,24 @@ export class HeroScene {
         this.ready = true;
         this.onReady?.();
     }
-    buildHead(diffuse, depth, alpha, normal) {
+    buildHead(diffuse, depth, alpha, normal, diffuseHelmet, noise) {
         this.headMaterial = new ShaderMaterial({
             vertexShader: headVertex,
             fragmentShader: headFragment,
             uniforms: {
                 uDiffuse: { value: diffuse },
+                uDiffuseHelmet: { value: diffuseHelmet || diffuse },
                 uDepth: { value: depth },
                 uAlpha: { value: alpha },
                 uNormal: { value: normal },
+                uNoiseTex: { value: noise },
                 uParallax: { value: new Vector2() },
                 uReveal: { value: 0 },
+                uIntro: { value: 0 },
+                uBurnStart: { value: DEFAULT_PARAMS.burnStart },
+                uBurnSoft: { value: DEFAULT_PARAMS.burnSoftness },
+                uBurnGlow: { value: DEFAULT_PARAMS.burnGlow },
+                uBurnColor: { value: new Color(readToken("--accent")) },
                 uDepthScale: { value: DEFAULT_PARAMS.headParallax },
                 uRelight: { value: DEFAULT_PARAMS.headRelight },
                 uExtend: { value: HEAD_EXTEND },
