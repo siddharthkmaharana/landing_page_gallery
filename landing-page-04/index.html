@@ -1,0 +1,3068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epoch Press</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+
+  <!-- Import Map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+      "page-flip": "https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.module.js"
+    }
+  }
+  </script>
+
+  <style>
+    /* CSS Variables & Modern Broadsheet Newspaper System */
+    :root {
+      --bg: #09090b;
+      --bg-ticker: #0e0f14;
+      --bg-surface: #131418;
+      --text-bone: #f7f4ea;
+      --text-ash: #9c978d;
+      --rule: rgba(247, 244, 234, 0.14);
+      --rule-light: rgba(247, 244, 234, 0.22);
+      --rule-strong: rgba(247, 244, 234, 0.38);
+
+      /* Funky high-energy editorial colors */
+      --funky-vermilion: #ff3811;
+      --funky-yellow: #ffea00;
+      --funky-cobalt: #1652ff;
+      --accent-ember: var(--funky-vermilion);
+
+      --book-paper: #f4eee3;
+      --book-ink: #14120e;
+
+      /* Broadsheet Newspaper Fonts */
+      --font-masthead: 'DM Serif Display', 'Playfair Display', Georgia, serif;
+      --font-editorial: 'Playfair Display', Georgia, serif;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-ui: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+
+      /* Page flip dynamic sizing */
+      --pw: 380px;
+      --ph: 570px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--text-bone);
+      font-family: var(--font-ui);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Ambient Funky Editorial Glow */
+    .floor-glow {
+      position: fixed;
+      right: -8vw;
+      bottom: -15vh;
+      width: 70vw;
+      height: 65vh;
+      background: radial-gradient(circle at 75% 75%, rgba(255, 56, 17, 0.15) 0%, rgba(255, 234, 0, 0.04) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Subtle Cool Editorial Counter-Glow (Top-Left) */
+    .top-glow {
+      position: fixed;
+      left: -10vw;
+      top: -10vh;
+      width: 50vw;
+      height: 45vh;
+      background: radial-gradient(circle at 25% 25%, rgba(22, 82, 255, 0.08) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* SVG feTurbulence Film Grain */
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+      opacity: 0.06;
+      mix-blend-mode: overlay;
+    }
+
+    /* WebGL Canvas */
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      cursor: grab;
+      touch-action: none;
+    }
+    #canvas-container.grabbing {
+      cursor: grabbing;
+    }
+
+    /* Scrim behind opened book */
+    #scrim {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.90) 0%, rgba(9, 9, 11, 0.98) 85%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 15;
+      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #scrim.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Background UI Container */
+    #bg-ui {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1), filter 1.1s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #bg-ui.dimmed {
+      transform: translateY(2.5vh);
+      filter: blur(10px);
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* NEWSPAPER TOP DATELINE TICKER                                 */
+    /* ------------------------------------------------------------- */
+    .newspaper-ticker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: var(--bg-ticker);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4vw;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-ash);
+      z-index: 8;
+    }
+    .ticker-left, .ticker-right, .ticker-center {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .ticker-pill {
+      background: var(--funky-vermilion);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.58rem;
+      padding: 2px 7px;
+      border-radius: 2px;
+      letter-spacing: 0.16em;
+    }
+    .ticker-headline {
+      color: var(--text-bone);
+      font-weight: 500;
+    }
+    .ticker-accent {
+      color: var(--funky-yellow);
+      font-weight: 700;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* MODERN BROADSHEET MASTHEAD NAV                                */
+    /* ------------------------------------------------------------- */
+    .nav-bar {
+      position: absolute;
+      top: 42px;
+      left: 4vw;
+      right: 4vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 0.75rem 0 1rem 0;
+      border-bottom: 2px solid var(--rule-strong);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 6;
+    }
+    .nav-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Newspaper tile logo with funky accent */
+    .tile-logo {
+      width: 36px;
+      height: 36px;
+      background-color: var(--text-bone);
+      border-radius: 3px;
+      padding: 6px;
+      display: flex;
+      gap: 4px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+      flex-shrink: 0;
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+    .tile-logo::after {
+      content: "";
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 6px;
+      height: 6px;
+      background-color: var(--funky-vermilion);
+    }
+    .tile-logo .spine-rule {
+      width: 3px;
+      height: 100%;
+      background-color: var(--book-ink);
+    }
+    .tile-logo .text-rules {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+    .tile-logo .text-rule {
+      height: 2px;
+      background-color: var(--book-ink);
+    }
+    .tile-logo .text-rule:nth-child(1) { width: 95%; }
+    .tile-logo .text-rule:nth-child(2) { width: 100%; }
+    .tile-logo .text-rule:nth-child(3) { width: 80%; }
+    .tile-logo .text-rule:nth-child(4) { width: 90%; }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+    .brand-text-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .brand-text .name {
+      font-family: var(--font-masthead);
+      font-size: 1.85rem;
+      font-weight: 400;
+      color: var(--text-bone);
+      letter-spacing: -0.02em;
+    }
+    .brand-text .edition-badge {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      background: var(--funky-yellow);
+      color: #000;
+      padding: 1px 5px;
+      border-radius: 2px;
+      transform: translateY(-2px);
+    }
+    .brand-text .sub {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-ash);
+      margin-top: 3px;
+    }
+
+    /* Newspaper Department Section Links */
+    .nav-departments {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+    }
+    .dept-link {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-ash);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .dept-link span.dept-num {
+      color: var(--funky-vermilion);
+      font-weight: 600;
+      font-size: 0.65rem;
+    }
+    .dept-link:hover {
+      color: var(--text-bone);
+    }
+    .dept-link:hover span.dept-num {
+      color: var(--funky-yellow);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+    }
+    .sign-in-link {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-ash);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      cursor: pointer;
+    }
+    .sign-in-link:hover {
+      color: var(--text-bone);
+    }
+
+    /* Funky High-Contrast Button */
+    .start-reading-pill {
+      background-color: var(--funky-vermilion);
+      color: #000000;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      padding: 0.6rem 1.25rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 3px 3px 0px var(--funky-yellow);
+      transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+    .start-reading-pill:hover {
+      background-color: var(--funky-yellow);
+      color: #000000;
+      box-shadow: 3px 3px 0px var(--funky-vermilion);
+      transform: translate(-1px, -1px);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* BIG LETTERS HERO: WORDMARK & BROADSHEET DECK                  */
+    /* ------------------------------------------------------------- */
+    .wordmark-container {
+      position: absolute;
+      top: 45vh;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      width: 100%;
+      text-align: center;
+      pointer-events: none;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Kicker above wordmark */
+    .wordmark-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--funky-yellow);
+      margin-bottom: 0.75rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .wordmark-kicker.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .kicker-badge {
+      background: var(--funky-vermilion);
+      color: #000;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 2px;
+    }
+    .kicker-rule {
+      width: 24px;
+      height: 1px;
+      background: var(--rule-strong);
+    }
+
+    /* Giant Sculptural Wordmark */
+    .wordmark {
+      display: inline-block;
+      font-family: var(--font-masthead);
+      font-weight: 400;
+      font-size: min(44vh, 32vw);
+      line-height: 0.82;
+      letter-spacing: -0.035em;
+      color: var(--text-bone);
+      opacity: 0;
+      transform: translateY(4vh);
+      filter: blur(14px);
+      text-shadow: 0 4px 40px rgba(0, 0, 0, 0.85), 0 1px 2px rgba(255, 255, 255, 0.1);
+      transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), filter 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .wordmark.visible {
+      opacity: 0.96;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+
+    /* Deck below wordmark */
+    .wordmark-deck {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+      color: var(--text-ash);
+      margin-top: 1rem;
+      letter-spacing: -0.01em;
+      max-width: 640px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+    }
+    .wordmark-deck.visible {
+      opacity: 0.85;
+      transform: translateY(0);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* SHELVES RIBBON (NEWSPAPER DEPARTMENTS INDEX)                  */
+    /* ------------------------------------------------------------- */
+    .shelves-container {
+      position: absolute;
+      top: 52vh;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 6;
+      pointer-events: auto;
+    }
+    .shelves-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .shelves-ribbon {
+      background: rgba(14, 15, 20, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 0.55rem 3vw;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .shelves-row {
+      display: flex;
+      align-items: center;
+      gap: 1.6rem;
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .shelves-row::-webkit-scrollbar {
+      display: none;
+    }
+    .shelf-item button {
+      background: none;
+      border: none;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-ash);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s ease, background-color 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 3px 6px;
+      border-radius: 2px;
+    }
+    .shelf-item button span.idx {
+      color: var(--funky-vermilion);
+      font-weight: 600;
+      font-size: 0.6rem;
+    }
+    .shelf-item button:hover {
+      color: var(--text-bone);
+    }
+    .shelf-item.active button {
+      background: var(--funky-yellow);
+      color: #000000;
+      font-weight: 700;
+    }
+    .shelf-item.active button span.idx {
+      color: #000000;
+    }
+    .shelf-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background-color: var(--rule-light);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* BOTTOM-LEFT BROADSHEET HINT                                   */
+    /* ------------------------------------------------------------- */
+    .bottom-hint {
+      position: absolute;
+      bottom: 4vh;
+      left: 4vw;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      opacity: 0;
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 6;
+      pointer-events: none;
+    }
+    .bottom-hint.visible {
+      opacity: 1;
+    }
+    .hint-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--funky-vermilion);
+      box-shadow: 0 0 8px var(--funky-vermilion);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .hint-text {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-bone);
+    }
+    .hint-text span.accent {
+      color: var(--funky-yellow);
+      font-weight: 700;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* FLOATING HOVER TICKET TAG                                     */
+    /* ------------------------------------------------------------- */
+    #book-pill-tag {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.45rem 1rem;
+      background: rgba(14, 15, 20, 0.94);
+      border: 1px solid var(--rule-strong);
+      border-left: 3px solid var(--funky-vermilion);
+      border-radius: 2px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 2px 2px 0 var(--funky-yellow);
+      opacity: 0;
+      transform: translate3d(-999px, -999px, 0);
+      transition: opacity 0.25s ease;
+      white-space: nowrap;
+    }
+    #book-pill-tag.visible {
+      opacity: 1;
+    }
+    #book-pill-tag .cat {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--funky-vermilion);
+    }
+    #book-pill-tag .sep {
+      color: var(--rule-strong);
+      font-size: 0.8rem;
+    }
+    #book-pill-tag .title {
+      font-family: var(--font-editorial);
+      font-weight: 700;
+      font-size: 1.08rem;
+      color: var(--text-bone);
+    }
+    #book-pill-tag .author {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--text-ash);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* READER / PAGE-FLIP OVERLAY                                    */
+    /* ------------------------------------------------------------- */
+    #reader-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3.5vh 4vw;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    #reader-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Reader Header */
+    .reader-header {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 55;
+    }
+    .reader-book-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .reader-book-info .cat {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--accent-ember);
+    }
+    .reader-book-info .sep {
+      color: var(--rule);
+    }
+    .reader-book-info .title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--text-bone);
+    }
+    .reader-book-info .author {
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      color: var(--text-ash);
+    }
+
+    .close-reader-btn {
+      background: rgba(236, 231, 221, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--rule);
+      border-radius: 9999px;
+      padding: 0.45rem 1rem;
+      color: var(--text-bone);
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .close-reader-btn:hover {
+      background: rgba(236, 231, 221, 0.14);
+      border-color: var(--rule-light);
+    }
+
+    /* Flipbook Center Viewport */
+    .reader-viewport {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    #flipbook-wrapper {
+      position: relative;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #flipbook {
+      position: relative;
+      display: block;
+    }
+
+    /* Reader Footer Controls */
+    .reader-footer {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      z-index: 55;
+    }
+    .flip-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(236, 231, 221, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--rule);
+      color: var(--text-bone);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      font-size: 0.95rem;
+    }
+    .flip-btn:hover:not(:disabled) {
+      background: rgba(236, 231, 221, 0.15);
+      border-color: var(--rule-light);
+      transform: scale(1.05);
+    }
+    .flip-btn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    .spread-counter-pill {
+      background: rgba(236, 231, 221, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--rule);
+      border-radius: 9999px;
+      padding: 0.4rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-ash);
+      min-width: 140px;
+      text-align: center;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* PAGE STYLES FOR PAGE-FLIP                                     */
+    /* ------------------------------------------------------------- */
+    .page {
+      background-color: var(--book-paper) !important;
+      color: var(--book-ink) !important;
+      width: var(--pw);
+      height: var(--ph);
+      overflow: hidden;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.03);
+    }
+
+    .page-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: calc(var(--ph) * 0.09) calc(var(--pw) * 0.11);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* BOOK DETAILS SPREAD (PAGES 2 & 3)                             */
+    /* ------------------------------------------------------------- */
+    .page-details-left {
+      background-color: var(--book-paper) !important;
+      color: var(--book-ink) !important;
+    }
+    .page-details-right {
+      background-color: var(--book-paper) !important;
+      color: var(--book-ink) !important;
+    }
+    .details-inner {
+      padding: calc(var(--ph) * 0.08) calc(var(--pw) * 0.095) !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .details-dossier-tag {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(31, 27, 22, 0.85);
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.6rem;
+    }
+    .dossier-badge {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #1a1612;
+      text-transform: uppercase;
+    }
+    .dossier-cat {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #c44018;
+      background: rgba(196, 64, 24, 0.08);
+      padding: 0.1rem 0.35rem;
+      border-radius: 2px;
+    }
+    .details-quote-box {
+      background: rgba(31, 27, 22, 0.035);
+      border-left: 3px solid #1a1612;
+      padding: 0.8rem 0.9rem;
+      margin-bottom: 0.8rem;
+      position: relative;
+    }
+    .quote-mark {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      line-height: 0.7;
+      color: rgba(31, 27, 22, 0.25);
+      margin-bottom: 0.2rem;
+    }
+    .details-opening-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.046);
+      line-height: 1.45;
+      color: #1a1612;
+      margin: 0 0 0.4rem 0;
+    }
+    .quote-caption {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      color: rgba(31, 27, 22, 0.55);
+      text-transform: uppercase;
+    }
+    .details-spec-table {
+      border-top: 1px dashed rgba(31, 27, 22, 0.2);
+      border-bottom: 1px dashed rgba(31, 27, 22, 0.2);
+      padding: 0.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+    }
+    .spec-label {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      color: rgba(31, 27, 22, 0.6);
+      font-weight: 600;
+    }
+    .spec-val {
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      color: #1a1612;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .spec-swatch {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.25);
+    }
+    .details-colophon-foot {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.54rem;
+      letter-spacing: 0.12em;
+      color: rgba(31, 27, 22, 0.5);
+      text-transform: uppercase;
+      padding-top: 0.4rem;
+    }
+
+    /* Right Page (Synopsis & Editorial Dossier) */
+    .details-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #c44018;
+      margin-bottom: 0.35rem;
+    }
+    .details-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.088);
+      line-height: 1.1;
+      color: #1a1612;
+      margin: 0 0 0.35rem 0;
+      letter-spacing: -0.02em;
+    }
+    .details-author-byline {
+      font-family: var(--font-serif);
+      font-size: calc(var(--pw) * 0.046);
+      color: rgba(31, 27, 22, 0.75);
+      margin-bottom: 0.7rem;
+    }
+    .details-rule {
+      width: 100%;
+      height: 2px;
+      background: #1a1612;
+      margin-bottom: 0.75rem;
+    }
+    .details-synopsis {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .synopsis-lead {
+      font-family: var(--font-serif);
+      font-size: calc(var(--pw) * 0.041);
+      line-height: 1.56;
+      color: #1a1612;
+      margin: 0;
+      text-align: justify;
+    }
+    .synopsis-critique {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.038);
+      line-height: 1.5;
+      color: rgba(31, 27, 22, 0.85);
+      border-left: 2px solid rgba(31, 27, 22, 0.3);
+      padding-left: 0.65rem;
+      margin: 0;
+    }
+    .details-action-prompt {
+      background: #1a1612;
+      color: #faf7f2;
+      padding: 0.45rem 0.75rem;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+    .details-action-prompt .prompt-arrow {
+      color: #ffea00;
+      font-size: 0.85rem;
+    }
+
+    /* Spine Fold Gradients for Interior Pages */
+    .page.left-page .page-inner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 32px;
+      background: linear-gradient(to left, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.03) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .page.right-page .page-inner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 32px;
+      background: linear-gradient(to right, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.03) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Page 1: Front Cover */
+    .page.page-front-cover {
+      position: relative;
+      background-repeat: no-repeat;
+    }
+    .page-front-cover .cover-sheen {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.1) 4%, transparent 12%, rgba(255,255,255,0.15) 24%, transparent 38%);
+      pointer-events: none;
+    }
+
+    /* Endpapers */
+    .page.page-endpaper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .endpaper-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.12;
+      background-image: repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 0, transparent 8px), repeating-linear-gradient(-45deg, #000 0, #000 1px, transparent 0, transparent 8px);
+      pointer-events: none;
+    }
+    .ex-libris-label {
+      position: relative;
+      z-index: 2;
+      background-color: var(--book-paper);
+      color: var(--book-ink);
+      border: 2px solid var(--book-ink);
+      padding: 1.4rem 1.6rem;
+      width: 80%;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+    .ex-libris-label .frame {
+      border: 1px dashed rgba(31, 27, 22, 0.4);
+      padding: 0.8rem 0.6rem;
+    }
+    .ex-libris-label .flourish {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.3rem;
+      opacity: 0.7;
+    }
+    .ex-libris-label h4 {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .ex-libris-label .press-name {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      margin-bottom: 0.6rem;
+    }
+    .ex-libris-label .book-number {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: #7a6348;
+    }
+
+    /* Half-Title Page */
+    .page-half-title {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .page-half-title .ht-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.08);
+      line-height: 1.2;
+      max-width: 85%;
+    }
+
+    /* Also From Epoch */
+    .also-from-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: calc(var(--ph) * 0.06);
+    }
+    .also-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.6);
+      margin-bottom: 0.5rem;
+    }
+    .also-item .a-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--book-ink);
+    }
+    .also-item .a-author {
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      color: rgba(31, 27, 22, 0.6);
+      margin-top: 1px;
+    }
+
+    /* Title Page */
+    .title-page-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      padding: calc(var(--ph) * 0.04) 0;
+    }
+    .tp-header .main-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.115);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .tp-header .author-name {
+      font-family: var(--font-serif);
+      font-size: calc(var(--pw) * 0.052);
+      color: rgba(31, 27, 22, 0.85);
+    }
+    .tp-imprint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .tp-imprint .imprint-mark {
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid var(--book-ink);
+      border-radius: 4px;
+      padding: 3px;
+      display: flex;
+      gap: 2.5px;
+    }
+    .imprint-mark .bar {
+      width: 2px;
+      height: 100%;
+      background: var(--book-ink);
+    }
+    .imprint-mark .lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+    .imprint-mark .line {
+      height: 1.5px;
+      background: var(--book-ink);
+    }
+    .tp-imprint .publisher-line {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.7);
+    }
+
+    /* Copyright Page */
+    .copyright-text {
+      font-family: var(--font-serif);
+      font-size: 0.68rem;
+      line-height: 1.55;
+      color: rgba(31, 27, 22, 0.75);
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .copyright-text .mono-meta {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* Epigraph Page */
+    .epigraph-content {
+      margin: auto 0;
+      text-align: center;
+      padding: 0 1.2rem;
+    }
+    .epigraph-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.048);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .epigraph-author {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.65);
+    }
+
+    /* Contents Page */
+    .contents-list {
+      margin-top: calc(var(--ph) * 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .contents-heading {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.7);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .content-row {
+      display: flex;
+      align-items: baseline;
+      font-family: var(--font-serif);
+      font-size: 0.82rem;
+    }
+    .content-row .title {
+      white-space: nowrap;
+    }
+    .content-row .dots {
+      flex: 1;
+      border-bottom: 1px dotted rgba(31, 27, 22, 0.4);
+      margin: 0 0.5rem;
+      height: 1px;
+    }
+    .content-row .page-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    /* Chapter One Opener & Text Pages */
+    .chapter-opener-head {
+      margin-bottom: calc(var(--ph) * 0.04);
+      text-align: center;
+    }
+    .chapter-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.7);
+    }
+
+    .running-head {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(31, 27, 22, 0.15);
+      margin-bottom: calc(var(--ph) * 0.035);
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.6);
+    }
+
+    .book-text-body {
+      flex: 1;
+      font-family: var(--font-serif);
+      font-size: calc(var(--pw) * 0.039);
+      line-height: 1.64;
+      text-align: justify;
+      hyphens: auto;
+      overflow: hidden;
+    }
+    .book-text-body p {
+      margin-bottom: 0.65em;
+      text-indent: 1.25em;
+    }
+    .book-text-body p.no-indent {
+      text-indent: 0;
+    }
+    .book-text-body .drop-cap {
+      float: left;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 3.3em;
+      line-height: 0.75;
+      padding-top: 0.08em;
+      padding-right: 0.12em;
+      color: var(--book-ink);
+    }
+
+    .page-folio {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: rgba(31, 27, 22, 0.6);
+      margin-top: calc(var(--ph) * 0.02);
+    }
+
+    /* End of Preview Page */
+    .preview-end-container {
+      margin: auto 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .preview-end-container h3 {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(31, 27, 22, 0.65);
+    }
+    .preview-end-container p {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 80%;
+      color: var(--book-ink);
+    }
+    .reserve-pill-btn {
+      background-color: var(--book-ink);
+      color: var(--book-paper);
+      border: none;
+      border-radius: 9999px;
+      padding: 0.65rem 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    .reserve-pill-btn:hover {
+      background-color: #000;
+      transform: translateY(-2px);
+    }
+
+    /* Page 14: Back Cover */
+    .page.page-back-cover {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: calc(var(--ph) * 0.1) calc(var(--pw) * 0.12);
+      overflow: hidden;
+    }
+    .back-cover-sheen {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to left, rgba(0,0,0,0.3) 0%, transparent 15%);
+      pointer-events: none;
+    }
+    .back-quote-container {
+      margin-top: auto;
+      margin-bottom: auto;
+      z-index: 2;
+    }
+    .back-pull-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: calc(var(--pw) * 0.056);
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+      quotes: "“" "”";
+    }
+    .back-pull-quote::before { content: open-quote; }
+    .back-pull-quote::after { content: close-quote; }
+    .back-author {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .back-bottom-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      z-index: 2;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .back-cat-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      color: var(--accent-ember);
+      font-weight: 600;
+    }
+    .barcode-svg {
+      width: 105px;
+      height: 44px;
+      fill: currentColor;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .newspaper-ticker .ticker-center,
+      .newspaper-ticker .ticker-right {
+        display: none;
+      }
+      .nav-departments {
+        display: none;
+      }
+      .wordmark {
+        font-size: 28vw;
+      }
+      .wordmark-deck {
+        display: none;
+      }
+      .reader-book-info .author {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .newspaper-ticker {
+        display: none;
+      }
+      .nav-bar {
+        top: 15px;
+      }
+      .brand-text .sub {
+        display: none;
+      }
+      .sign-in-link {
+        display: none;
+      }
+      .shelves-container {
+        top: 54vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Funky Editorial Glow -->
+  <div class="floor-glow"></div>
+  <div class="top-glow"></div>
+
+  <!-- SVG Grain Overlay -->
+  <svg class="grain-overlay" xmlns="http://www.w3.org/2000/svg">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-filter)" />
+  </svg>
+
+  <!-- Top Newspaper Dateline Ticker -->
+  <div class="newspaper-ticker">
+    <div class="ticker-left">
+      <span class="ticker-pill">AUTUMN LIST</span>
+      <span>VOL. XLIV · NO. 32</span>
+      <span>LONDON — NEW YORK — TOKYO</span>
+    </div>
+    <div class="ticker-center">
+      <span class="ticker-headline">★ THE EPOCH CHRONICLE · INDEPENDENT LITERARY BROADSHEET ★</span>
+    </div>
+    <div class="ticker-right">
+      <span>WEATHER: 11°C OVERCAST</span>
+      <span class="ticker-accent">PRICE: COMPLIMENTARY PREVIEW</span>
+    </div>
+  </div>
+
+  <!-- Background DOM UI Container (Under Canvas) -->
+  <div id="bg-ui">
+    
+    <!-- Modern Broadsheet Masthead Nav -->
+    <header class="nav-bar">
+      <a href="#" class="brand-mark" aria-label="Epoch Press Homepage">
+        <div class="tile-logo">
+          <div class="spine-rule"></div>
+          <div class="text-rules">
+            <div class="text-rule"></div>
+            <div class="text-rule"></div>
+            <div class="text-rule"></div>
+            <div class="text-rule"></div>
+          </div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-text-row">
+            <span class="name">Epoch</span>
+            <span class="edition-badge">AUTUMN '26</span>
+          </div>
+          <span class="sub">INDEPENDENT PRESS · EST. 2026</span>
+        </div>
+      </a>
+
+      <nav class="nav-departments" aria-label="Main Navigation">
+        <a class="dept-link"><span class="dept-num">01/</span>CATALOGUE</a>
+        <a class="dept-link"><span class="dept-num">02/</span>AUTHORS</a>
+        <a class="dept-link"><span class="dept-num">03/</span>CRITIQUE</a>
+        <a class="dept-link"><span class="dept-num">04/</span>DISPATCHES</a>
+        <a class="dept-link"><span class="dept-num">05/</span>EVENTS</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="sign-in-link">Sign in</a>
+        <a class="start-reading-pill" id="start-reading-btn">Start reading &rarr;</a>
+      </div>
+    </header>
+
+    <!-- Giant "Epoch" Wordmark with Broadsheet Kicker & Deck -->
+    <div class="wordmark-container">
+      <div class="wordmark-kicker">
+        <span class="kicker-badge">FIRST EDITION</span>
+        <span class="kicker-rule"></span>
+        <span class="kicker-text">★ THE 32 TITLES OF AUTUMN ★</span>
+        <span class="kicker-rule"></span>
+        <span class="kicker-num">NO. 001–032</span>
+      </div>
+      <h1 class="wordmark">Epoch</h1>
+      <div class="wordmark-deck">An independent press dedicated to new literary fiction, quiet engines, and translated thought.</div>
+    </div>
+
+    <!-- Shelves Ribbon (Newspaper Departments Index) -->
+    <nav class="shelves-container" aria-label="Shelves">
+      <div class="shelves-ribbon">
+        <ul class="shelves-row">
+          <li class="shelf-item active"><button type="button"><span class="idx">01</span>New releases</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">02</span>Bestsellers</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">03</span>Fiction</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">04</span>Nonfiction</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">05</span>Poetry</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">06</span>In translation</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">07</span>Small press</button></li>
+          <li class="shelf-dot"></li>
+          <li class="shelf-item"><button type="button"><span class="idx">08</span>Gift cards</button></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Bottom-Left Broadsheet Hint -->
+    <div class="bottom-hint">
+      <div class="hint-dot"></div>
+      <span class="hint-text" id="hint-text">Broadsheet: <span class="accent">Drag</span> to browse &middot; <span class="accent">Click</span> book to open</span>
+    </div>
+
+  </div>
+
+  <!-- 3D Canvas Container -->
+  <div id="canvas-container" role="region" aria-label="Interactive 3D shelf of 32 books. Use drag, wheel, or arrow keys to browse; click or press Enter to open a book." tabindex="0"></div>
+
+  <!-- Radial Scrim for focus transition -->
+  <div id="scrim"></div>
+
+  <!-- Hover Pill Tag -->
+  <div id="book-pill-tag">
+    <span class="cat" id="pill-cat">MGN–001</span>
+    <span class="sep">&middot;</span>
+    <span class="title" id="pill-title">Title</span>
+    <span class="sep">&middot;</span>
+    <span class="author" id="pill-author">Author</span>
+  </div>
+
+  <!-- HTML PageFlip Reader Overlay -->
+  <div id="reader-overlay">
+    <div class="reader-header">
+      <div class="reader-book-info">
+        <span class="cat" id="reader-cat">MGN–001</span>
+        <span class="sep">/</span>
+        <span class="title" id="reader-title">Title</span>
+        <span class="author" id="reader-author">Author</span>
+      </div>
+      <button class="close-reader-btn" id="close-reader-btn" aria-label="Close preview reader">Close &times;</button>
+    </div>
+
+    <div class="reader-viewport">
+      <div id="flipbook-wrapper">
+        <div id="flipbook"></div>
+      </div>
+    </div>
+
+    <div class="reader-footer">
+      <button class="flip-btn" id="flip-prev-btn" aria-label="Previous Page">&larr;</button>
+      <div class="spread-counter-pill" id="spread-counter">Front cover</div>
+      <button class="flip-btn" id="flip-next-btn" aria-label="Next Page">&rarr;</button>
+    </div>
+  </div>
+
+  <!-- Main ES Module Application -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import { PageFlip } from 'page-flip';
+
+    /* ========================================================================= */
+    /* DATA: 32 BOOKS & ORDER                                                    */
+    /* ========================================================================= */
+    const BOOKS = [
+      { index: 0, title: "Night Cartography", author: "Aria Vance", spine: "#1f2838", quote: "My mother mapped the sky the way other people kept diaries, one small gold cross for every star she was certain of." },
+      { index: 1, title: "Afterglow", author: "Theo Lin", spine: "#d17b63", quote: "The summer I turned nineteen, the evenings refused to end, and neither did the arguments." },
+      { index: 2, title: "The Concrete Garden", author: "Mara Kell", spine: "#2d3229", quote: "Nobody had lived in the Halden Building for eleven years, but every spring something new was growing on the fourth floor." },
+      { index: 3, title: "Monolith", author: "Ezra Cole", spine: "#202020", quote: "It appeared overnight in the middle of the square, twelve metres tall and perfectly white, and by noon the whole town had decided what it meant." },
+      { index: 4, title: "Low Light", author: "Noa Sato", spine: "#27292c", quote: "The diner on Route 9 stayed open until four, which made it the only honest place in the county after midnight." },
+      { index: 5, title: "The Quiet Engine", author: "Ivy Marsh", spine: "#bdd7c9", quote: "My grandfather built machines that did nothing, and he built them very carefully." },
+      { index: 6, title: "Salt & Static", author: "Remi Ford", spine: "#4a8089", quote: "The radio picked up the fishing boats long before you could see them, a crackle of names and weather coming in over the water." },
+      { index: 7, title: "Chromatic", author: "Lux Arden", spine: "#6d8fac", quote: "Iris could hear colour, which was less useful than it sounds and a great deal louder." },
+      { index: 8, title: "The Last Light Hotel", author: "Hugo Varga", spine: "#202a2c", quote: "The sign had lost its first three letters years ago, so the hotel simply called itself TEL, and nobody minded." },
+      { index: 9, title: "Hollow City", author: "Dana Reyes", spine: "#4a5637", quote: "When the power came back on, only half the city remembered how to use it." },
+      { index: 10, title: "Soft Machines", author: "Kai Laurent", spine: "#d4b5b6", quote: "The robot in apartment 6C had started leaving notes under doors, and the notes were getting kinder." },
+      { index: 11, title: "The Orchard Ledger", author: "Clara Moss", spine: "#797842", quote: "Every pear my great-aunt ever sold is written down in a green book, with the weather on the day she picked it." },
+      { index: 12, title: "Signal Lost", author: "Omar Haze", spine: "#09191e", quote: "At 03:12 the satellite stopped talking, and for the first time in forty years the station heard nothing at all." },
+      { index: 13, title: "Desert Hymns", author: "Sol Navarro", spine: "#c66732", quote: "We crossed the dunes at night because the sand sang less when it was cold." },
+      { index: 14, title: "Wintering", author: "Elin Berg", spine: "#bacbdc", quote: "The first snow came early that year, and I decided I would let it keep me." },
+      { index: 15, title: "Velvet Hours", author: "Rosa Quinn", spine: "#58202f", quote: "The club opened at ten and closed whenever the last person stopped dancing, which on Thursdays was nearly dawn." },
+      { index: 16, title: "The Glass Archive", author: "Felix Odo", spine: "#166f8f", quote: "The archive kept one copy of everything, and the archivist was beginning to suspect it kept one copy of her." },
+      { index: 17, title: "Ultraviolet", author: "Zara Knox", spine: "#843bd7", quote: "There were things written on the walls of our school that you could only read with the lights off." },
+      { index: 18, title: "Tidewater", author: "Ines Ward", spine: "#084253", quote: "The island was only an island twice a day, and Nell had learned to live in the gap between." },
+      { index: 19, title: "Meridian", author: "Leo Strand", spine: "#0f0f0f", quote: "Halfway around the world, at exactly the same moment, two people decided to stay." },
+      { index: 20, title: "Small Fires", author: "Pia Holm", spine: "#212226", quote: "We lit the candles when the power failed, and then we kept lighting them long after it returned." },
+      { index: 21, title: "Ferns & Ferrous", author: "Ash Kerr", spine: "#3b2f1e", quote: "The forest had been eating the old foundry for a century, rivet by rivet, and it was nearly finished." },
+      { index: 22, title: "Neon Saints", author: "Cruz Delgado", spine: "#010101", quote: "Every bar on Mercer Street had a saint in the window, and every saint had a different idea of mercy." },
+      { index: 23, title: "A House Made of Rain", author: "Mei Arai", spine: "#fefefe", quote: "The house at the end of Wren Lane leaked in such regular places that we gave each drip a name." },
+      { index: 24, title: "Cold Harbour", author: "Ronan Pike", spine: "#c4c7ce", quote: "The cranes stood in the fog like patient animals, waiting for ships that no longer came." },
+      { index: 25, title: "Lemon Season", author: "Lucia Ferri", spine: "#f9d147", quote: "Our grandmother measured the year in lemons, and this year the tree was heavier than anyone could remember." },
+      { index: 26, title: "The Observatory", author: "Iris Kahn", spine: "#1a263d", quote: "The telescope had not moved in thirty years, but the stars had, and someone needed to keep track of them." },
+      { index: 27, title: "Sundial", author: "Otto Brandt", spine: "#e8d8b9", quote: "In the village of Ores the clocks were set by a stone in the square, and the stone was always slightly wrong." },
+      { index: 28, title: "Deep Field", author: "Ana Voss", spine: "#140c1b", quote: "Look long enough at any dark patch of sky, my teacher said, and it will fill with galaxies." },
+      { index: 29, title: "Copper Sky", author: "Wes Hart", spine: "#854527", quote: "The mountain turned the colour of a new coin every evening, and every evening my father stopped work to watch it." },
+      { index: 30, title: "Moth Theory", author: "Edie Crane", spine: "#0b0b0b", quote: "Mira kept a jar of moths on her windowsill, and a theory about each one." },
+      { index: 31, title: "Open Road Elegy", author: "Sam Ortiz", spine: "#ae9a6f", quote: "My brother left us a car, a cassette of songs he never finished, and four hundred miles of road." }
+    ];
+
+    const ORDER = [25, 19, 10, 18, 16, 26, 24, 8, 6, 21, 13, 15, 1, 12, 14, 3, 9, 2, 27, 0, 31, 30, 23, 22, 11, 29, 17, 20, 7, 28, 5, 4];
+
+    // Shared pool of 10 literary filler paragraphs for chapter typesetting
+    const SHARED_PARAGRAPHS = [
+      "The morning had the thin, rinsed quality of light that comes only after rain on slate. Down in the courtyard, the pigeons were pacing the perimeter of the fountain, their grey necks iridescent in the sudden sun, nodding with that peculiar, mechanical certainty that belongs only to birds and small clocks.",
+      "We had agreed not to speak of the letters until autumn, but autumn was already everywhere in the garden, caught in the bronze tips of the hydrangeas and the smell of bruised windfall apples rotting quietly along the fence line. When she poured the tea, her hands were steady, which frightened me more than any tremor could have done.",
+      "There is a kind of architecture that exists solely to preserve hesitation: the long colonnades of northern railway terminals, the uncurtained waiting rooms of provincial doctors, the vestibules where coats are surrendered to strangers who give you back a brass disc in exchange for your warmth.",
+      "He spoke three languages, all of them with the same gentle, slightly bewildered cadence, as though every sentence were a translation of something originally whispered in an attic during a thunderstorm. When asked where he had been born, he would name a province that had ceased to exist before the war.",
+      "The salt had got into everything by then. It coated the telephone wires along the marsh road until they hummed in the easterly wind like cello strings, and in the library the oldest bindings smelled faintly of low tide, their calfskin dried to the texture of parchment that had survived a shipwreck.",
+      "Between the third and fourth floors of the tenement, time seemed to stretch like warm tar. One could stand on the linoleum landing and hear, through the thin plaster, seven separate lives proceeding in simultaneous miniature: a radio playing dance music from Milan, a spoon striking porcelain, the rhythmic thud of an ironing board being unfolded.",
+      "She possessed that rare form of patience that looks from a distance like indifference. For three hours she watched the shadow of the weather vane crawl across the flagstones, neither reading the book in her lap nor turning to look at the street, as if the rotation of the earth were an argument she was quietly winning.",
+      "At night the river gave off a faint phosphoric glow where the currents met the weir. The boys would sit on the retaining wall with their bicycles behind them, their knees pulled up into their pullovers, talking about cities they had only ever seen on the backs of matchboxes or in the flickering backgrounds of foreign films.",
+      "A ledger, my uncle used to say, is the only honest form of biography. It does not pretend to understand why a man bought twenty bushels of lime on a Tuesday in November, or why he never paid for the second pair of boots; it simply records that the boots were taken and the lime was spread.",
+      "Long after the last train had departed, the platform remained illuminated, bathed in the sulfurous yellow of vapor lamps that hummed with a low, drowsy pitch. A single moth circled the glass globe with an erratic devotion that seemed almost devotional, tapping against the heat with soft, paper wings."
+    ];
+
+    /* ========================================================================= */
+    /* SETUP THREE.JS SCENE                                                      */
+    /* ========================================================================= */
+    const container = document.getElementById('canvas-container');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    if (isTouchDevice) {
+      document.getElementById('hint-text').textContent = 'Swipe to browse · Tap a book to open';
+    }
+
+    const scene = new THREE.Scene();
+    
+    // Perspective Camera setup
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const camera = new THREE.PerspectiveCamera(isPortrait ? 40 : 19.5, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(3.6, 2.15, 7.4);
+    camera.lookAt(-1.4, 0.05, -0.6);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    // Environment Lighting
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    const roomEnvironment = new RoomEnvironment();
+    scene.environment = pmremGenerator.fromScene(roomEnvironment).texture;
+    scene.environmentIntensity = 0.55;
+
+    // Warm Key Directional Light
+    const keyLight = new THREE.DirectionalLight(0xfff5ea, 2.4);
+    keyLight.position.set(5.5, 8.5, 7.0);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    keyLight.shadow.camera.near = 1;
+    keyLight.shadow.camera.far = 25;
+    keyLight.shadow.camera.left = -9;
+    keyLight.shadow.camera.right = 9;
+    keyLight.shadow.camera.top = 9;
+    keyLight.shadow.camera.bottom = -9;
+    keyLight.shadow.bias = -0.0004;
+    keyLight.shadow.radius = 2.4;
+    scene.add(keyLight);
+
+    // Cool Rim Light
+    const rimLight = new THREE.DirectionalLight(0xb0cbef, 0.85);
+    rimLight.position.set(-6, 2.5, -4);
+    scene.add(rimLight);
+
+    // Faint Ambient Light
+    const ambientLight = new THREE.AmbientLight(0xfff6ec, 0.2);
+    scene.add(ambientLight);
+
+    // Floor Depth-Mask Plane (hides books under the floor)
+    const floorGeo = new THREE.PlaneGeometry(60, 60);
+    const depthMaskMat = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: true });
+    const depthPlane = new THREE.Mesh(floorGeo, depthMaskMat);
+    depthPlane.rotation.x = -Math.PI / 2;
+    depthPlane.position.set(0, -1.87, 0);
+    depthPlane.renderOrder = -1;
+    scene.add(depthPlane);
+
+    // Shadow Catcher Plane just above the depth mask
+    const shadowMat = new THREE.ShadowMaterial({ opacity: 0.42 });
+    const shadowPlane = new THREE.Mesh(floorGeo, shadowMat);
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.set(0, -1.869, 0);
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
+
+    /* ========================================================================= */
+    /* PROCEDURAL TEXTURES & ATLAS                                               */
+    /* ========================================================================= */
+    // Create fore-edge and top/bottom page lines texture
+    function createPageLinesTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext('2d');
+
+      ctx.fillStyle = '#efe7d6';
+      ctx.fillRect(0, 0, 512, 512);
+
+      ctx.lineWidth = 1;
+      for (let y = 0; y < 512; y += 3) {
+        const alpha = 0.12 + 0.38 * Math.sin(y * 12.4);
+        ctx.strokeStyle = `rgba(168, 148, 126, ${alpha})`;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(512, y);
+        ctx.stroke();
+      }
+
+      // Edge shadow vignette
+      const grad = ctx.createLinearGradient(0, 0, 512, 0);
+      grad.addColorStop(0, 'rgba(110, 90, 70, 0.22)');
+      grad.addColorStop(0.12, 'rgba(110, 90, 70, 0.04)');
+      grad.addColorStop(0.88, 'rgba(110, 90, 70, 0.04)');
+      grad.addColorStop(1, 'rgba(110, 90, 70, 0.22)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(1, 3);
+      return tex;
+    }
+    const pageLinesTexture = createPageLinesTexture();
+
+    // Load covers.webp atlas
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.setCrossOrigin('anonymous');
+    const atlasTexture = await new Promise((resolve, reject) => {
+      textureLoader.load(
+        'https://thinkingods.com/demos/margin-press/covers.webp',
+        resolve,
+        undefined,
+        (err) => {
+          console.warn('Atlas load issue, using fallback', err);
+          resolve(null);
+        }
+      );
+    });
+
+    if (atlasTexture) {
+      atlasTexture.colorSpace = THREE.SRGBColorSpace;
+      atlasTexture.minFilter = THREE.LinearMipmapLinearFilter;
+      atlasTexture.generateMipmaps = true;
+    }
+
+    function createClonedCoverTexture(coverIndex) {
+      if (!atlasTexture) {
+        // Fallback procedural canvas
+        const c = document.createElement('canvas');
+        c.width = 480;
+        c.height = 720;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#1c1b18';
+        ctx.fillRect(0, 0, 480, 720);
+        return new THREE.CanvasTexture(c);
+      }
+      const tex = atlasTexture.clone();
+      tex.needsUpdate = true;
+      tex.repeat.set(480 / 3968, 720 / 2944);
+      const col = coverIndex % 8;
+      const row = Math.floor(coverIndex / 8);
+      const x = 8 + col * 496;
+      const y = 8 + row * 736;
+      tex.offset.set(x / 3968, 1 - (y + 720) / 2944);
+      return tex;
+    }
+
+    /* ========================================================================= */
+    /* 3D SHELF BOOKS CREATION                                                   */
+    /* ========================================================================= */
+    const bookGeo = new THREE.BoxGeometry(1, 1.5, 0.2);
+    const shelfGroup = new THREE.Group();
+    scene.add(shelfGroup);
+
+    const shelfBooks = [];
+    const TOTAL_BOOKS = ORDER.length; // 32
+
+    for (let slot = 0; slot < TOTAL_BOOKS; slot++) {
+      const bookIndex = ORDER[slot];
+      const bookData = BOOKS[bookIndex];
+
+      const coverTex = createClonedCoverTexture(bookIndex);
+      const spineColor = new THREE.Color(bookData.spine).multiplyScalar(0.62);
+
+      const coverMat = new THREE.MeshPhysicalMaterial({
+        map: coverTex,
+        roughness: 0.35,
+        metalness: 0.02,
+        clearcoat: 0.55,
+        clearcoatRoughness: 0.2
+      });
+
+      const spineAndBackMat = new THREE.MeshStandardMaterial({
+        color: spineColor,
+        roughness: 0.72,
+        metalness: 0.05
+      });
+
+      const pageEdgeMat = new THREE.MeshStandardMaterial({
+        map: pageLinesTexture,
+        roughness: 0.9,
+        metalness: 0.0
+      });
+
+      // BoxGeometry materials:
+      // 0: +X fore-edge, 1: -X spine, 2: +Y top, 3: -Y bottom, 4: +Z cover, 5: -Z back
+      const materials = [
+        pageEdgeMat,
+        spineAndBackMat,
+        pageEdgeMat,
+        pageEdgeMat,
+        coverMat,
+        spineAndBackMat
+      ];
+
+      const mesh = new THREE.Mesh(bookGeo, materials);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      const group = new THREE.Group();
+      group.add(mesh);
+      group.rotation.y = 0.32; // Rotated .32 rad on Y
+      shelfGroup.add(group);
+
+      shelfBooks.push({
+        slotIndex: slot,
+        bookIndex: bookIndex,
+        bookData: bookData,
+        group: group,
+        mesh: mesh,
+        // Spring physics state for hover wave
+        height: 0,
+        heightVel: 0,
+        lean: 0,
+        // Intro animation state
+        introYOffset: prefersReducedMotion ? 0 : -3.2,
+        introDelay: (31 - slot) * 0.035, // cascade back to front
+        introStarted: prefersReducedMotion,
+        // Sinking ripple state for open book transition
+        sinkY: 0
+      });
+    }
+
+    /* ========================================================================= */
+    /* SCROLL, VELOCITY, DRAG & PHYSICS                                          */
+    /* ========================================================================= */
+    let scrollPos = 0; // Current scroll in slots
+    let scrollVelocity = 0;
+    let isDragging = false;
+    let dragStartPos = { x: 0, y: 0 };
+    let dragStartScroll = 0;
+    let dragMoveHistory = [];
+    let isClickCandidate = false;
+    let isOpened = false;
+    let activeOpenedBook = null;
+
+    // Pointer coordinates & idle sweep state
+    const pointer = { x: -9999, y: -9999 };
+    let lastInputTime = performance.now();
+    let isIdleSweeping = false;
+
+    // Unit vector of one slot projected onto screen for 1:1 dragging
+    function getScreenSlotVector() {
+      const p0 = new THREE.Vector3(1.55, -1.12, 0.9).project(camera);
+      const p1 = new THREE.Vector3(1.55 - 0.5, -1.12, 0.9 - 0.2).project(camera);
+      const s0x = (p0.x * 0.5 + 0.5) * window.innerWidth;
+      const s0y = (-p0.y * 0.5 + 0.5) * window.innerHeight;
+      const s1x = (p1.x * 0.5 + 0.5) * window.innerWidth;
+      const s1y = (-p1.y * 0.5 + 0.5) * window.innerHeight;
+      const vx = s1x - s0x;
+      const vy = s1y - s0y;
+      const len = Math.hypot(vx, vy) || 1;
+      return { x: vx, y: vy, len: len, ux: vx / len, uy: vy / len };
+    }
+
+    /* ========================================================================= */
+    /* POINTER & INTERACTION LISTENERS                                           */
+    /* ========================================================================= */
+    function recordInput() {
+      lastInputTime = performance.now();
+      isIdleSweeping = false;
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      recordInput();
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+
+      if (isDragging && !isOpened) {
+        const dx = e.clientX - dragStartPos.x;
+        const dy = e.clientY - dragStartPos.y;
+        if (Math.hypot(dx, dy) > 5) {
+          isClickCandidate = false;
+        }
+
+        const slotVec = getScreenSlotVector();
+        const proj = (dx * slotVec.ux + dy * slotVec.uy);
+        scrollPos = dragStartScroll - (proj / slotVec.len);
+
+        const now = performance.now();
+        dragMoveHistory.push({ time: now, pos: scrollPos });
+        dragMoveHistory = dragMoveHistory.filter(h => now - h.time <= 90);
+      }
+    });
+
+    container.addEventListener('pointerdown', (e) => {
+      if (isOpened) return;
+      recordInput();
+      isDragging = true;
+      isClickCandidate = true;
+      dragStartPos = { x: e.clientX, y: e.clientY };
+      dragStartScroll = scrollPos;
+      dragMoveHistory = [{ time: performance.now(), pos: scrollPos }];
+      container.classList.add('grabbing');
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      container.classList.remove('grabbing');
+      if (!isDragging) return;
+      isDragging = false;
+
+      // Handle drag inertia release
+      const now = performance.now();
+      dragMoveHistory = dragMoveHistory.filter(h => now - h.time <= 90);
+      if (dragMoveHistory.length >= 2) {
+        const first = dragMoveHistory[0];
+        const last = dragMoveHistory[dragMoveHistory.length - 1];
+        const dt = (last.time - first.time) / 1000;
+        if (dt > 0.015) {
+          scrollVelocity = ((last.pos - first.pos) / dt) * 0.018;
+          // Clamp maximum fling velocity
+          scrollVelocity = Math.max(-0.8, Math.min(0.8, scrollVelocity));
+        }
+      }
+
+      // Check click
+      if (isClickCandidate && !isOpened) {
+        handleClick(e.clientX, e.clientY);
+      }
+    });
+
+    // Wheel event adds velocity
+    window.addEventListener('wheel', (e) => {
+      if (isOpened) return;
+      recordInput();
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      scrollVelocity += delta * 0.0012;
+      scrollVelocity = Math.max(-0.6, Math.min(0.6, scrollVelocity));
+    }, { passive: true });
+
+    // Keyboard support
+    window.addEventListener('keydown', (e) => {
+      if (isOpened) {
+        if (e.key === 'Escape') {
+          closeActiveBook();
+        } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+          if (pageFlipInstance) pageFlipInstance.flipNext('bottom');
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          if (pageFlipInstance) pageFlipInstance.flipPrev('bottom');
+        }
+        return;
+      }
+
+      recordInput();
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        scrollVelocity += 0.35;
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        scrollVelocity -= 0.35;
+      } else if (e.key === 'Enter') {
+        // Open the highest or highlighted book
+        if (mostLiftedBook) {
+          openBook(mostLiftedBook);
+        }
+      }
+    });
+
+    // Click Raycasting & Fallthrough
+    const raycaster = new THREE.Raycaster();
+    const mouseNDC = new THREE.Vector2();
+
+    function handleClick(clientX, clientY) {
+      mouseNDC.x = (clientX / window.innerWidth) * 2 - 1;
+      mouseNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseNDC, camera);
+
+      const meshes = shelfBooks.map(b => b.mesh).filter(m => m.visible);
+      const intersects = raycaster.intersectObjects(meshes);
+
+      if (intersects.length > 0) {
+        const hitMesh = intersects[0].object;
+        const hitBook = shelfBooks.find(b => b.mesh === hitMesh);
+        if (hitBook) {
+          openBook(hitBook);
+          return;
+        }
+      }
+
+      // If clicked empty canvas: pass through to underlying DOM element
+      container.style.pointerEvents = 'none';
+      const underlying = document.elementFromPoint(clientX, clientY);
+      container.style.pointerEvents = 'auto';
+      if (underlying && underlying !== container && underlying !== document.body) {
+        underlying.click();
+      }
+    }
+
+    // Shelves row buttons
+    document.querySelectorAll('.shelf-item button').forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.shelf-item').forEach(i => i.classList.remove('active'));
+        btn.parentElement.classList.add('active');
+        recordInput();
+        // Smoothly nudge to a shelf section
+        scrollVelocity = (idx * 3.5 - scrollPos) * 0.12;
+      });
+    });
+
+    document.getElementById('start-reading-btn').addEventListener('click', () => {
+      if (!isOpened && shelfBooks.length > 0) {
+        openBook(shelfBooks[0]);
+      }
+    });
+
+    /* ========================================================================= */
+    /* INTRO ANIMATION & HOVER TAG                                               */
+    /* ========================================================================= */
+    const wordmarkEl = document.querySelector('.wordmark');
+    const wordmarkKickerEl = document.querySelector('.wordmark-kicker');
+    const wordmarkDeckEl = document.querySelector('.wordmark-deck');
+    const navBarEl = document.querySelector('.nav-bar');
+    const shelvesEl = document.querySelector('.shelves-container');
+    const hintEl = document.querySelector('.bottom-hint');
+    const pillTagEl = document.getElementById('book-pill-tag');
+    const pillCatEl = document.getElementById('pill-cat');
+    const pillTitleEl = document.getElementById('pill-title');
+    const pillAuthorEl = document.getElementById('pill-author');
+
+    let introTime = 0;
+    setTimeout(() => {
+      wordmarkEl.classList.add('visible');
+      if (wordmarkKickerEl) wordmarkKickerEl.classList.add('visible');
+      if (wordmarkDeckEl) wordmarkDeckEl.classList.add('visible');
+      setTimeout(() => {
+        navBarEl.classList.add('visible');
+        shelvesEl.classList.add('visible');
+        hintEl.classList.add('visible');
+      }, 700);
+    }, 150);
+
+    /* ========================================================================= */
+    /* TYPESETTING ENGINE (Binary Search Printer Simulator)                     */
+    /* ========================================================================= */
+    function typesetChapterText(book, pw, ph) {
+      // Calculate available reading container area
+      const textWidth = pw * 0.78;
+      const pageFullHeight = ph * 0.82; // Height minus running head and folio
+      const openerHeight = ph * 0.65;   // Opener page has chapter header
+
+      // Create off-screen measuring container
+      const measureBox = document.createElement('div');
+      measureBox.style.cssText = `
+        position: absolute;
+        visibility: hidden;
+        pointer-events: none;
+        top: -9999px;
+        left: -9999px;
+        width: ${textWidth}px;
+        font-family: 'Newsreader', serif;
+        font-size: ${pw * 0.039}px;
+        line-height: 1.64;
+        text-align: justify;
+      `;
+      document.body.appendChild(measureBox);
+
+      // Paragraphs stream: opening line + 9 filler paragraphs
+      const paragraphs = [book.quote, ...SHARED_PARAGRAPHS.slice(0, 9)];
+      const wordsPool = [];
+      paragraphs.forEach((p, pIdx) => {
+        const words = p.split(/\s+/).filter(Boolean);
+        words.forEach((w, wIdx) => {
+          wordsPool.push({
+            word: w,
+            isParaStart: wIdx === 0,
+            paraIndex: pIdx
+          });
+        });
+      });
+
+      function renderTokensHTML(tokens, isOpener) {
+        let html = '';
+        let currentP = -1;
+        for (let i = 0; i < tokens.length; i++) {
+          const t = tokens[i];
+          if (t.isParaStart || currentP !== t.paraIndex) {
+            if (currentP !== -1) html += '</p>';
+            currentP = t.paraIndex;
+            const noIndent = (currentP === 0) ? ' class="no-indent"' : '';
+            html += `<p${noIndent}>`;
+            if (isOpener && currentP === 0 && i === 0) {
+              const firstLetter = t.word.charAt(0);
+              const rest = t.word.slice(1);
+              html += `<span class="drop-cap">${firstLetter}</span>${rest} `;
+              continue;
+            }
+          }
+          html += t.word + ' ';
+        }
+        if (currentP !== -1) html += '</p>';
+        return html;
+      }
+
+      function binarySearchPageWords(remainingTokens, maxAllowedHeight, isOpener) {
+        if (remainingTokens.length === 0) return { pageTokens: [], remaining: [] };
+        let low = 1;
+        let high = remainingTokens.length;
+        let best = 0;
+
+        while (low <= high) {
+          const mid = Math.floor((low + high) / 2);
+          const slice = remainingTokens.slice(0, mid);
+          measureBox.innerHTML = renderTokensHTML(slice, isOpener);
+          if (measureBox.scrollHeight <= maxAllowedHeight) {
+            best = mid;
+            low = mid + 1;
+          } else {
+            high = mid - 1;
+          }
+        }
+
+        if (best === 0) best = Math.min(20, remainingTokens.length); // fallback safety
+        return {
+          pageTokens: remainingTokens.slice(0, best),
+          remaining: remainingTokens.slice(best)
+        };
+      }
+
+      // Page 9 (Chapter Opener)
+      const page1Res = binarySearchPageWords(wordsPool, openerHeight, true);
+      const page1HTML = renderTokensHTML(page1Res.pageTokens, true);
+
+      // Page 10 (Text page 2)
+      const page2Res = binarySearchPageWords(page1Res.remaining, pageFullHeight, false);
+      const page2HTML = renderTokensHTML(page2Res.pageTokens, false);
+
+      // Page 11 (Text page 3)
+      const page3Res = binarySearchPageWords(page2Res.remaining, pageFullHeight, false);
+      const page3HTML = renderTokensHTML(page3Res.pageTokens, false);
+
+      document.body.removeChild(measureBox);
+
+      return {
+        page1: page1HTML,
+        page2: page2HTML,
+        page3: page3HTML
+      };
+    }
+
+    /* ------------------------------------------------------------- */
+    /* BESPOKE LITERARY SYNOPSES FOR ALL 32 AUTUMN TITLES            */
+    /* ------------------------------------------------------------- */
+    const BOOK_SYNOPSES = {
+      0: "A daughter sifts through her deceased astronomer mother's celestial charts, uncovering a quiet second life recorded entirely in pencil coordinates across the Northern hemisphere.",
+      1: "Across one sweltering Scandinavian August, two estranged siblings negotiate the sale of their family summer house and the secrets left behind in its floorboards.",
+      2: "An architectural surveyor enters an abandoned brutalist estate in Leeds scheduled for demolition, only to discover an intricate, living vertical forest curated in secret.",
+      3: "When a pristine, featureless marble obelisk materializes in a Yorkshire market square, the townspeople divide into factions of reverence, suspicion, and commercial zeal.",
+      4: "A night-shift short-order cook observes thirty years of highway drifters, nocturnal confessions, and quiet repentances along an unlit stretch of coastal highway.",
+      5: "An archivist reconstructs the mechanical kinetic sculptures of a reclusive Swiss horologist whose inventions were designed solely to measure silence.",
+      6: "Two radio operators on opposite shores of the North Sea strike up an anonymous nocturnal correspondence through intermittent maritime weather frequencies.",
+      7: "A sound artist with rare auditory-visual synesthesia attempts to compose the acoustic signature of her childhood home before encroaching hearing loss takes it away.",
+      8: "An eccentric cast of long-term residents inhabit a crumbling coastal hotel whose neon sign has flickered down to three letters, waiting out an unending winter.",
+      9: "Following a three-year continent-wide electrical blackout, the inhabitants of an inland capital must decide which portions of their previous civilisation are worth restoring.",
+      10: "In a quiet municipal apartment complex, an obsolete domestic automaton begins slipping anonymous, profoundly perceptive handwritten notes beneath tenant doors.",
+      11: "A woman returns to her ancestral cider orchard in Devon armed only with sixty years of meticulous hand-bound ledgers detailing every harvest, freeze, and family feud.",
+      12: "The final transmission log of an orbital research craft prompts a retired telemetry specialist to embark on a solitary journey across the Australian outback.",
+      13: "A caravan of musicians and historians journey on foot across the singing sands of the southern dunes, tracing ancient melodic trade routes preserved only in oral hymn.",
+      14: "An essayist retreats to a secluded subarctic cabin to spend five months in unbroken dark, chronicling the restorative quietude and strange hallucinations of deep snow.",
+      15: "A vibrant, kaleidoscopic celebration of late-night youth culture, subterranean dance halls, and fleeting intimacy in 1980s post-industrial Manchester.",
+      16: "Within an impenetrable subterranean vault holding a single specimen of every manufactured object in history, an archivist discovers an exact duplicate of herself.",
+      17: "A group of art school students in late-nineties Berlin discover hidden messages and schematic diagrams left in luminescent paint beneath wallpaper across their campus.",
+      18: "On a tidal island accessible only during three hours of low water each day, a marine salvage worker finds an uncharted brass container washed ashore.",
+      19: "In Tokyo and Buenos Aires at the exact same second, two strangers make simultaneous decisions to abandon their careers and embark on transatlantic voyages.",
+      20: "During a prolonged power crisis in an industrial valley, a community rediscovers candlelit domestic rituals that persist long after the grid is restored.",
+      21: "A botanist and a metal conservator collaborate on documenting the slow reclamation of an abandoned 19th-century iron foundry by rare native ferns.",
+      22: "A vivid noir set along a forgotten canal corridor where neon-lit shrines, waterfront confessionals, and moral dilemmas intersect in the dead of night.",
+      23: "In an eccentric coastal cottage whose roof leaks in distinct musical pitches, three generations of women learn to navigate grief, humor, and communal memory.",
+      24: "A haunting portrait of an ancient shipping port shrouded in perennial autumn fog, where dockside cranes stand like dormant titans over forgotten voyages.",
+      25: "In an orchard terraced above the Ligurian coast, an Italian family gathers for an unusually bountiful citrus harvest marked by a long-delayed inheritance dispute.",
+      26: "A retired cartographer and an astrophysicist maintain a forgotten hilltop observatory, tracking subtle shifts in constellation alignments ignored by modern satellites.",
+      27: "A dryly comic, philosophical chronicle of a rural Pyrenean village that has governed its daily appointments for centuries by a stone gnomon known to be slightly inaccurate.",
+      28: "An optical telescope technician peers into the emptiest quadrant of deep space, recording the unexpected emergence of faint, synchronized galactic filaments.",
+      29: "Set against the copper-rich peaks of the Atacama foothills, a miner and his daughter witness the daily metamorphosis of evening light across monumental mineral slopes.",
+      30: "A reclusive entomologist fills her attic study with specimens and speculative field notes that gradually reconstruct a lost narrative of personal loss and discovery.",
+      31: "Two brothers drive a 1974 estate wagon four hundred miles across the American West with a single cassette tape of unfinished recordings left behind by their late father."
+    };
+
+    /* ========================================================================= */
+    /* GENERATE HTML PAGES FOR PAGE-FLIP                                         */
+    /* ========================================================================= */
+    function buildBookHTML(book, slotIdx, pw, ph) {
+      const catNum = 'MGN–' + String(slotIdx + 1).padStart(3, '0');
+      const typeset = typesetChapterText(book, pw, ph);
+
+      // Four other titles for "Also from Epoch"
+      const otherBooks = BOOKS.filter(b => b.index !== book.index).slice(0, 4);
+
+      // SVG Barcode
+      const barcodeSVG = `
+        <svg class="barcode-svg" viewBox="0 0 105 44" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="2" height="34"/>
+          <rect x="4" y="0" width="1" height="34"/>
+          <rect x="7" y="0" width="3" height="34"/>
+          <rect x="12" y="0" width="1" height="34"/>
+          <rect x="15" y="0" width="2" height="34"/>
+          <rect x="19" y="0" width="4" height="34"/>
+          <rect x="25" y="0" width="1" height="34"/>
+          <rect x="28" y="0" width="2" height="34"/>
+          <rect x="33" y="0" width="1" height="34"/>
+          <rect x="36" y="0" width="3" height="34"/>
+          <rect x="42" y="0" width="2" height="34"/>
+          <rect x="46" y="0" width="1" height="34"/>
+          <rect x="49" y="0" width="2" height="34"/>
+          <rect x="54" y="0" width="3" height="34"/>
+          <rect x="59" y="0" width="1" height="34"/>
+          <rect x="62" y="0" width="2" height="34"/>
+          <rect x="67" y="0" width="4" height="34"/>
+          <rect x="73" y="0" width="1" height="34"/>
+          <rect x="76" y="0" width="2" height="34"/>
+          <rect x="81" y="0" width="3" height="34"/>
+          <rect x="86" y="0" width="1" height="34"/>
+          <rect x="90" y="0" width="2" height="34"/>
+          <rect x="94" y="0" width="3" height="34"/>
+          <rect x="100" y="0" width="2" height="34"/>
+          <text x="52" y="42" font-family="'Geist Mono', monospace" font-size="7" text-anchor="middle" letter-spacing="1">9 781914 022${String(book.index).padStart(2,'0')}7</text>
+        </svg>
+      `;
+
+      // Cover Atlas background calculation
+      const col = book.index % 8;
+      const row = Math.floor(book.index / 8);
+      const bgX = (8 + col * 496);
+      const bgY = (8 + row * 736);
+
+      const html = `
+        <!-- Page 1: Front Cover -->
+        <div class="page page-front-cover" data-density="hard" style="
+          background-image: url('https://thinkingods.com/demos/margin-press/covers.webp');
+          background-size: calc(var(--pw) * (3968 / 480)) calc(var(--ph) * (2944 / 720));
+          background-position: calc(-1 * var(--pw) * (${bgX} / 480)) calc(-1 * var(--ph) * (${bgY} / 720));
+        ">
+          <div class="cover-sheen"></div>
+        </div>
+
+        <!-- Page 2: Book Overview & Specifications (Left) -->
+        <div class="page page-details-left left-page">
+          <div class="page-inner details-inner">
+            <div class="details-dossier-tag">
+              <span class="dossier-badge">AUTUMN LIST 2026</span>
+              <span class="dossier-cat">${catNum}</span>
+            </div>
+
+            <div class="details-quote-box">
+              <div class="quote-mark">&ldquo;</div>
+              <blockquote class="details-opening-quote">${book.quote}</blockquote>
+              <div class="quote-caption">&mdash; NOVEL OPENING SENTENCE</div>
+            </div>
+
+            <div class="details-spec-table">
+              <div class="spec-row">
+                <span class="spec-label">AUTHOR</span>
+                <span class="spec-val">${book.author}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">EDITION</span>
+                <span class="spec-val">Autumn First Edition, Clothbound</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">SPINE TINT</span>
+                <span class="spec-val"><span class="spec-swatch" style="background-color: ${book.spine};"></span> ${book.spine.toUpperCase()}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">FORMAT</span>
+                <span class="spec-val">320 pp &middot; 120gsm Munken Pure</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">ISBN-13</span>
+                <span class="spec-val">978-1-914022-${String(book.index).padStart(2,'0')}-7</span>
+              </div>
+            </div>
+
+            <div class="details-colophon-foot">
+              <span>EPOCH PRESS EDITIONS</span>
+              <span>&pound;18.00 / $24.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 3: Book Title & Editorial Synopsis (Right) -->
+        <div class="page page-details-right right-page">
+          <div class="page-inner details-inner">
+            <div class="details-kicker">LITERARY FICTION &middot; NEW TITLE</div>
+            <h1 class="details-title">${book.title}</h1>
+            <div class="details-author-byline">A Novel by <strong>${book.author}</strong></div>
+
+            <div class="details-rule"></div>
+
+            <div class="details-synopsis">
+              <p class="synopsis-lead">${BOOK_SYNOPSES[book.index] || "A singular literary narrative from Epoch Press exploring memory, architecture, and the delicate geometries of human attachment."}</p>
+              <p class="synopsis-critique">&ldquo;A work of astonishing atmosphere and formal precision. One of the essential literary achievements of this autumn list.&rdquo; &mdash; Epoch Literary Gazette</p>
+            </div>
+
+            <div class="details-action-prompt">
+              <span>TURN SPREAD TO READ CHAPTER ONE</span>
+              <span class="prompt-arrow">&rarr;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 4: Also from Epoch (Left) -->
+        <div class="page left-page">
+          <div class="page-inner">
+            <div class="also-from-list">
+              <div class="also-label">Also from Epoch Press</div>
+              ${otherBooks.map(b => `
+                <div class="also-item">
+                  <div class="a-title">${b.title}</div>
+                  <div class="a-author">${b.author}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 5: Title Page (Right) -->
+        <div class="page right-page">
+          <div class="page-inner">
+            <div class="title-page-content">
+              <div class="tp-header">
+                <h1 class="main-title">${book.title}</h1>
+                <h3 class="author-name">${book.author}</h3>
+              </div>
+              <div class="tp-imprint">
+                <div class="imprint-mark">
+                  <div class="bar"></div>
+                  <div class="lines">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                  </div>
+                </div>
+                <div class="publisher-line">Epoch Press · London &amp; New York</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 6: Copyright Page (Left) -->
+        <div class="page left-page">
+          <div class="page-inner">
+            <div class="copyright-text">
+              <p>First published in 2026 by Epoch Press<br>24 Halden Street, Bloomsbury, London WC1</p>
+              <p>Text &copy; ${book.author}, 2026<br>Typography and jacket &copy; Epoch Press, 2026</p>
+              <p>The right of ${book.author} to be identified as the author of this work has been asserted in accordance with the Copyright, Designs and Patents Act 1988.</p>
+              <p class="mono-meta">ISBN 978-1-914022-${String(book.index).padStart(2,'0')}-7<br>CATALOGUE ${catNum}</p>
+              <p>Typeset in Newsreader and Instrument Serif.<br>Printed and bound on acid-free 80gsm Munken Pure.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 7: Epigraph (Right) -->
+        <div class="page right-page">
+          <div class="page-inner">
+            <div class="epigraph-content">
+              <div class="epigraph-quote">&ldquo;To those who map the water before it freezes.&rdquo;</div>
+              <div class="epigraph-author">&mdash; Notes from the Archipelago</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 8: Contents (Left) -->
+        <div class="page left-page">
+          <div class="page-inner">
+            <div class="contents-list">
+              <div class="contents-heading">Contents</div>
+              <div class="content-row"><span class="title">I. The First Hours</span><span class="dots"></span><span class="page-num">1</span></div>
+              <div class="content-row"><span class="title">II. What the Water Left</span><span class="dots"></span><span class="page-num">24</span></div>
+              <div class="content-row"><span class="title">III. A Map of Quiet Things</span><span class="dots"></span><span class="page-num">58</span></div>
+              <div class="content-row"><span class="title">IV. The Glass Interval</span><span class="dots"></span><span class="page-num">92</span></div>
+              <div class="content-row"><span class="title">V. Return by Starlight</span><span class="dots"></span><span class="page-num">140</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 9: Chapter One Opener (Right) -->
+        <div class="page right-page">
+          <div class="page-inner">
+            <div class="chapter-opener-head">
+              <div class="chapter-label">Chapter One</div>
+            </div>
+            <div class="book-text-body">
+              ${typeset.page1}
+            </div>
+            <div class="page-folio">1</div>
+          </div>
+        </div>
+
+        <!-- Page 10: Text Page (Left) -->
+        <div class="page left-page">
+          <div class="page-inner">
+            <div class="running-head">
+              <span>${book.title}</span>
+              <span>Epoch Press</span>
+            </div>
+            <div class="book-text-body">
+              ${typeset.page2}
+            </div>
+            <div class="page-folio">2</div>
+          </div>
+        </div>
+
+        <!-- Page 11: Text Page (Right) -->
+        <div class="page right-page">
+          <div class="page-inner">
+            <div class="running-head">
+              <span>${book.author}</span>
+              <span>Preview</span>
+            </div>
+            <div class="book-text-body">
+              ${typeset.page3}
+            </div>
+            <div class="page-folio">3</div>
+          </div>
+        </div>
+
+        <!-- Page 12: End of Preview (Left) -->
+        <div class="page left-page">
+          <div class="page-inner">
+            <div class="preview-end-container">
+              <h3>End of Preview</h3>
+              <p>The complete first edition of <em>${book.title}</em> is available this autumn in cloth hardcover and trade paperback.</p>
+              <button class="reserve-pill-btn" onclick="alert('Pre-order reserved for ${book.title}. Thank you for supporting independent publishing.')">Reserve a copy &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 13: Back Endpaper (Right) -->
+        <div class="page page-endpaper right-page" style="background-color: ${book.spine};">
+          <div class="endpaper-pattern"></div>
+        </div>
+
+        <!-- Page 14: Back Cover -->
+        <div class="page page-back-cover" data-density="hard" style="
+          background-color: ${book.spine};
+          color: ${isLightColor(book.spine) ? '#1f1b16' : '#ece7dd'};
+        ">
+          <div class="back-cover-sheen"></div>
+          <div class="back-quote-container">
+            <div class="back-pull-quote">${book.quote}</div>
+            <div class="back-author">${book.author}</div>
+          </div>
+          <div class="back-bottom-meta">
+            <span class="back-cat-num">${catNum}</span>
+            ${barcodeSVG}
+          </div>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function isLightColor(hex) {
+      const c = new THREE.Color(hex);
+      const lum = 0.299 * c.r + 0.587 * c.g + 0.114 * c.b;
+      return lum > 0.65;
+    }
+
+    /* ========================================================================= */
+    /* OPEN & CLOSE FLIGHT ANIMATION CONTROLLER                                  */
+    /* ========================================================================= */
+    let pageFlipInstance = null;
+    let flightAnimation = null;
+    const scrimEl = document.getElementById('scrim');
+    const bgUiEl = document.getElementById('bg-ui');
+    const readerOverlayEl = document.getElementById('reader-overlay');
+    const flipbookContainer = document.getElementById('flipbook');
+    const flipbookWrapper = document.getElementById('flipbook-wrapper');
+    const spreadCounterEl = document.getElementById('spread-counter');
+    const flipPrevBtn = document.getElementById('flip-prev-btn');
+    const flipNextBtn = document.getElementById('flip-next-btn');
+
+    function calculatePageSizes() {
+      const isNarrow = window.innerWidth < 850 || window.innerHeight > window.innerWidth;
+      let ph = Math.min(window.innerHeight * 0.74, 620);
+      let pw = Math.round(ph * (2 / 3));
+
+      if (!isNarrow && (pw * 2 > window.innerWidth * 0.86)) {
+        pw = Math.round((window.innerWidth * 0.86) / 2);
+        ph = Math.round(pw * 1.5);
+      } else if (isNarrow && (pw > window.innerWidth * 0.88)) {
+        pw = Math.round(window.innerWidth * 0.88);
+        ph = Math.round(pw * 1.5);
+      }
+
+      document.documentElement.style.setProperty('--pw', `${pw}px`);
+      document.documentElement.style.setProperty('--ph', `${ph}px`);
+      return { pw, ph, isNarrow };
+    }
+
+    function openBook(shelfBook) {
+      if (isOpened || flightAnimation) return;
+      isOpened = true;
+      activeOpenedBook = shelfBook;
+
+      const { pw, ph, isNarrow } = calculatePageSizes();
+
+      // Update Reader Header
+      const catNum = 'MGN–' + String(shelfBook.slotIndex + 1).padStart(3, '0');
+      document.getElementById('reader-cat').textContent = catNum;
+      document.getElementById('reader-title').textContent = shelfBook.bookData.title;
+      document.getElementById('reader-author').textContent = shelfBook.bookData.author;
+
+      // 1. Ripple sink of other books into floor
+      shelfBooks.forEach(b => {
+        if (b !== shelfBook) {
+          const dist = Math.abs(b.slotIndex - shelfBook.slotIndex);
+          b.sinkTarget = 3.2;
+          b.sinkDelay = dist * 0.038;
+        } else {
+          b.sinkTarget = 0;
+          b.sinkDelay = 0;
+        }
+      });
+
+      // Nav, wordmark & shelves blur, dim and drop behind scrim
+      scrimEl.classList.add('active');
+      bgUiEl.classList.add('dimmed');
+      pillTagEl.classList.remove('visible');
+
+      // 2. Flight to camera pose square to camera
+      // Calculate exact distance D where 3D book matches HTML book pixel-for-pixel:
+      const fovRad = THREE.MathUtils.degToRad(camera.fov);
+      const D = (1.5 * window.innerHeight) / (2 * ph * Math.tan(fovRad / 2));
+
+      // Detach into world space
+      shelfBook.group.updateMatrixWorld(true);
+      const startPos = new THREE.Vector3();
+      const startQuat = new THREE.Quaternion();
+      shelfBook.mesh.getWorldPosition(startPos);
+      shelfBook.mesh.getWorldQuaternion(startQuat);
+
+      // Target world pose in front of camera
+      const targetPos = new THREE.Vector3(0, 0, -D).applyMatrix4(camera.matrixWorld);
+      const targetQuat = camera.quaternion.clone();
+
+      // Arc midpoint curving towards the viewer
+      const midPos = startPos.clone().lerp(targetPos, 0.5);
+      const arcDir = new THREE.Vector3().subVectors(camera.position, midPos).normalize();
+      midPos.addScaledVector(arcDir, 0.85);
+
+      // Flight time (instant if reduced motion)
+      const duration = prefersReducedMotion ? 0.01 : 1.1;
+      let elapsed = 0;
+
+      flightAnimation = {
+        update: (dt) => {
+          elapsed += dt;
+          const t = Math.min(1, elapsed / duration);
+          // Ease in-out
+          const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+          // Quadratic bezier curve
+          const p = new THREE.Vector3();
+          p.x = (1 - eased) * (1 - eased) * startPos.x + 2 * (1 - eased) * eased * midPos.x + eased * eased * targetPos.x;
+          p.y = (1 - eased) * (1 - eased) * startPos.y + 2 * (1 - eased) * eased * midPos.y + eased * eased * targetPos.y;
+          p.z = (1 - eased) * (1 - eased) * startPos.z + 2 * (1 - eased) * eased * midPos.z + eased * eased * targetPos.z;
+
+          shelfBook.group.position.copy(p);
+          shelfBook.group.quaternion.slerpQuaternions(startQuat, targetQuat, eased);
+
+          if (t >= 1) {
+            flightAnimation = null;
+            shelfBook.mesh.visible = false;
+            initPageFlipBook(shelfBook, pw, ph, isNarrow);
+          }
+        }
+      };
+    }
+
+    function initPageFlipBook(shelfBook, pw, ph, isNarrow) {
+      if (pageFlipInstance) {
+        try {
+          pageFlipInstance.destroy();
+        } catch (e) {
+          console.warn('Error destroying pageFlip:', e);
+        }
+        pageFlipInstance = null;
+      }
+
+      // Recreate #flipbook element fresh inside #flipbook-wrapper to avoid detached DOM node destruction
+      const wrapper = document.getElementById('flipbook-wrapper');
+      wrapper.innerHTML = '<div id="flipbook"></div>';
+      const container = document.getElementById('flipbook');
+
+      // Set explicit pixel dimensions
+      const totalW = isNarrow ? pw : (pw * 2);
+      wrapper.style.width = `${totalW}px`;
+      wrapper.style.height = `${ph}px`;
+      container.style.width = `${totalW}px`;
+      container.style.height = `${ph}px`;
+
+      // Build HTML pages
+      container.innerHTML = buildBookHTML(shelfBook.bookData, shelfBook.slotIndex, pw, ph);
+      readerOverlayEl.classList.add('active');
+
+      pageFlipInstance = new PageFlip(container, {
+        width: pw,
+        height: ph,
+        size: "fixed",
+        minWidth: 200,
+        maxWidth: 1200,
+        minHeight: 300,
+        maxHeight: 1600,
+        maxShadowOpacity: 0.45,
+        showCover: true,
+        drawShadow: true,
+        flippingTime: prefersReducedMotion ? 100 : 900,
+        usePortrait: isNarrow,
+        startPage: 0
+      });
+
+      function updateReaderState() {
+        if (!pageFlipInstance) return;
+        const pageIdx = pageFlipInstance.getCurrentPageIndex();
+        const total = pageFlipInstance.getPageCount();
+        const orientation = pageFlipInstance.getOrientation();
+
+        // Landscape half-page centering shift
+        if (orientation === 'landscape') {
+          if (pageIdx === 0) {
+            // Front cover centered
+            wrapper.style.transform = `translateX(-${pw / 2}px)`;
+          } else if (pageIdx >= total - 1) {
+            // Back cover centered
+            wrapper.style.transform = `translateX(${pw / 2}px)`;
+          } else {
+            // Open spread centered
+            wrapper.style.transform = `translateX(0px)`;
+          }
+        } else {
+          wrapper.style.transform = `translateX(0px)`;
+        }
+
+        // Counter text
+        if (pageIdx === 0) {
+          spreadCounterEl.textContent = 'Front cover';
+        } else if (pageIdx >= total - 1) {
+          spreadCounterEl.textContent = 'Back cover';
+        } else {
+          const spreadIdx = Math.floor((pageIdx - 1) / 2) + 1;
+          const totalSpreads = Math.ceil((total - 2) / 2);
+          spreadCounterEl.textContent = `Spread ${String(spreadIdx).padStart(2,'0')} / ${String(totalSpreads).padStart(2,'0')}`;
+        }
+
+        flipPrevBtn.disabled = (pageIdx === 0);
+        flipNextBtn.disabled = (pageIdx >= total - 1);
+      }
+
+      pageFlipInstance.on('flip', updateReaderState);
+      pageFlipInstance.on('changeOrientation', updateReaderState);
+
+      const pages = container.querySelectorAll('.page');
+      pageFlipInstance.loadFromHTML(pages);
+
+      updateReaderState();
+
+      // Automatically turn from front cover to first spread (Spread 01)
+      setTimeout(() => {
+        if (isOpened && pageFlipInstance && pageFlipInstance.getCurrentPageIndex() === 0) {
+          pageFlipInstance.flipNext('bottom');
+        }
+      }, prefersReducedMotion ? 50 : 350);
+    }
+
+    flipPrevBtn.addEventListener('click', () => {
+      if (pageFlipInstance) pageFlipInstance.flipPrev('bottom');
+    });
+    flipNextBtn.addEventListener('click', () => {
+      if (pageFlipInstance) pageFlipInstance.flipNext('bottom');
+    });
+
+    document.getElementById('close-reader-btn').addEventListener('click', closeActiveBook);
+
+    function closeActiveBook() {
+      if (!isOpened || flightAnimation || !activeOpenedBook) return;
+
+      const shelfBook = activeOpenedBook;
+
+      function performReturnFlight() {
+        readerOverlayEl.classList.remove('active');
+        shelfBook.mesh.visible = true;
+
+        const currentPos = shelfBook.group.position.clone();
+        const currentQuat = shelfBook.group.quaternion.clone();
+
+        // Original shelf slot pose
+        const targetPos = new THREE.Vector3(
+          1.55 - shelfBook.effectiveSlot * 0.5,
+          -1.12,
+          0.9 - shelfBook.effectiveSlot * 0.2
+        );
+        const targetQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.32);
+
+        // Arc mid-point
+        const midPos = currentPos.clone().lerp(targetPos, 0.5);
+        const arcDir = new THREE.Vector3().subVectors(camera.position, midPos).normalize();
+        midPos.addScaledVector(arcDir, 0.7);
+
+        const duration = prefersReducedMotion ? 0.01 : 1.1;
+        let elapsed = 0;
+
+        flightAnimation = {
+          update: (dt) => {
+            elapsed += dt;
+            const t = Math.min(1, elapsed / duration);
+            const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            const p = new THREE.Vector3();
+            p.x = (1 - eased) * (1 - eased) * currentPos.x + 2 * (1 - eased) * eased * midPos.x + eased * eased * targetPos.x;
+            p.y = (1 - eased) * (1 - eased) * currentPos.y + 2 * (1 - eased) * eased * midPos.y + eased * eased * targetPos.y;
+            p.z = (1 - eased) * (1 - eased) * currentPos.z + 2 * (1 - eased) * eased * midPos.z + eased * eased * targetPos.z;
+
+            shelfBook.group.position.copy(p);
+            shelfBook.group.quaternion.slerpQuaternions(currentQuat, targetQuat, eased);
+
+            if (t >= 1) {
+              flightAnimation = null;
+              isOpened = false;
+              activeOpenedBook = null;
+
+              if (pageFlipInstance) {
+                try {
+                  pageFlipInstance.destroy();
+                } catch (e) {}
+                pageFlipInstance = null;
+              }
+              const wrapper = document.getElementById('flipbook-wrapper');
+              if (wrapper) {
+                wrapper.innerHTML = '<div id="flipbook"></div>';
+                wrapper.style.transform = 'translateX(0px)';
+              }
+
+              // Raise other books back up
+              shelfBooks.forEach(b => {
+                const dist = Math.abs(b.slotIndex - shelfBook.slotIndex);
+                b.sinkTarget = 0;
+                b.sinkDelay = dist * 0.035;
+              });
+
+              scrimEl.classList.remove('active');
+              bgUiEl.classList.remove('dimmed');
+            }
+          }
+        };
+      }
+
+      // If reader is open past page 0: turn back to front cover first!
+      if (pageFlipInstance && pageFlipInstance.getCurrentPageIndex() !== 0) {
+        pageFlipInstance.flip(0);
+        setTimeout(performReturnFlight, prefersReducedMotion ? 20 : 700);
+      } else {
+        performReturnFlight();
+      }
+    }
+
+    /* ========================================================================= */
+    /* ANIMATION TICK & RENDER LOOP                                              */
+    /* ========================================================================= */
+    const clock = new THREE.Clock();
+    let mostLiftedBook = null;
+
+    // Tag lerp coordinates
+    let tagScreenX = -999;
+    let tagScreenY = -999;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const now = performance.now();
+
+      // Idle Wave Pointer Sweep after 4s without input
+      if (!isOpened && now - lastInputTime > 4000) {
+        isIdleSweeping = true;
+        const sweepTime = (now - lastInputTime - 4000) * 0.001;
+        pointer.x = window.innerWidth * (0.52 + 0.30 * Math.sin(sweepTime * 0.85));
+        pointer.y = window.innerHeight * (0.58 + 0.09 * Math.cos(sweepTime * 0.85));
+      }
+
+      // Drag velocity friction & spring to nearest whole slot
+      if (!isDragging && !isOpened) {
+        scrollPos += scrollVelocity;
+        scrollVelocity *= 0.92;
+
+        if (Math.abs(scrollVelocity) < 0.02) {
+          const targetSlot = Math.round(scrollPos);
+          scrollPos += (targetSlot - scrollPos) * 0.12;
+        }
+      }
+
+      // Active Flight Animation
+      if (flightAnimation) {
+        flightAnimation.update(delta);
+      }
+
+      // Hover Wave Parameters
+      const waveRadius = 0.085 * Math.hypot(window.innerWidth, window.innerHeight);
+      const tempVec = new THREE.Vector3();
+      let maxLiftFound = 0;
+      let topBook = null;
+
+      // Update Shelf Books
+      shelfBooks.forEach((book) => {
+        // Compute wrapped slot position (slots -2 to 30)
+        let rel = (book.slotIndex - scrollPos) % TOTAL_BOOKS;
+        if (rel < -2) rel += TOTAL_BOOKS;
+        if (rel > 30) rel -= TOTAL_BOOKS;
+        book.effectiveSlot = rel;
+
+        // Shelf base coordinates
+        const baseX = 1.55 - rel * 0.5;
+        const baseY = -1.12;
+        const baseZ = 0.9 - rel * 0.2;
+
+        // Books past either end dive 3.2 units down through floor
+        let endDive = 0;
+        if (rel < 0) {
+          const t = Math.min(1, Math.max(0, -rel / 2));
+          endDive = t * t * 3.2;
+        } else if (rel > 24) {
+          const t = Math.min(1, Math.max(0, (rel - 24) / 4));
+          endDive = t * t * 3.2;
+        }
+
+        // Intro animation cascading back to front
+        if (!book.introStarted && introTime >= book.introDelay) {
+          book.introStarted = true;
+        }
+        if (book.introStarted && book.introYOffset < 0) {
+          book.introYOffset += (0 - book.introYOffset) * 0.14;
+          if (Math.abs(book.introYOffset) < 0.01) book.introYOffset = 0;
+        }
+
+        // Ripple sink state when a book is opened
+        if (book.sinkDelay > 0) {
+          book.sinkDelay -= delta;
+        } else if (book.sinkTarget !== undefined) {
+          book.sinkY += (book.sinkTarget - book.sinkY) * 0.15;
+        }
+
+        // Screen distance & Gaussian falloff for hover wave
+        tempVec.set(baseX, baseY + 0.75, baseZ).project(camera);
+        const screenX = (tempVec.x * 0.5 + 0.5) * window.innerWidth;
+        const screenY = (-tempVec.y * 0.5 + 0.5) * window.innerHeight;
+
+        const dist = Math.hypot(pointer.x - screenX, pointer.y - screenY);
+        let targetLift = 0;
+
+        if (!isOpened && rel >= -1 && rel <= 26 && dist < waveRadius * 3) {
+          const influence = Math.exp(-(dist * dist) / (2 * waveRadius * waveRadius));
+          targetLift = influence * 0.78;
+        }
+
+        // Spring physics: K 70, damping 12.5, 4 sub-steps
+        const K = 70;
+        const damping = 12.5;
+        const subDt = delta / 4;
+
+        for (let step = 0; step < 4; step++) {
+          const force = -K * (book.height - targetLift) - damping * book.heightVel;
+          book.heightVel += force * subDt;
+          book.height += book.heightVel * subDt;
+        }
+
+        // Small lean following scroll velocity
+        const targetLean = -scrollVelocity * 0.08;
+        book.lean += (targetLean - book.lean) * 0.15;
+
+        // If this book is NOT the one flying to camera: update its transform on shelf
+        if (book !== activeOpenedBook || !flightAnimation) {
+          const totalY = baseY + book.height + book.introYOffset - endDive - book.sinkY;
+          const totalZ = baseZ + book.height * 0.28;
+
+          book.group.position.set(baseX, totalY, totalZ);
+          book.group.rotation.set(0, 0.32, book.lean);
+        }
+
+        if (book.height > maxLiftFound) {
+          maxLiftFound = book.height;
+          topBook = book;
+        }
+      });
+
+      introTime += delta;
+      mostLiftedBook = topBook;
+
+      // Update Floating Glass Pill Tag
+      if (!isOpened && topBook && maxLiftFound > 0.06) {
+        tempVec.set(topBook.group.position.x, topBook.group.position.y + 0.85, topBook.group.position.z).project(camera);
+        const targetTagX = (tempVec.x * 0.5 + 0.5) * window.innerWidth;
+        const targetTagY = (-tempVec.y * 0.5 + 0.5) * window.innerHeight - 38;
+
+        if (tagScreenX < -500) {
+          tagScreenX = targetTagX;
+          tagScreenY = targetTagY;
+        } else {
+          tagScreenX += (targetTagX - tagScreenX) * 0.2;
+          tagScreenY += (targetTagY - tagScreenY) * 0.2;
+        }
+
+        pillCatEl.textContent = 'MGN–' + String(topBook.slotIndex + 1).padStart(3, '0');
+        pillTitleEl.textContent = topBook.bookData.title;
+        pillAuthorEl.textContent = topBook.bookData.author;
+
+        pillTagEl.style.transform = `translate3d(${tagScreenX}px, ${tagScreenY}px, 0) translate(-50%, -100%)`;
+        pillTagEl.classList.add('visible');
+      } else {
+        pillTagEl.classList.remove('visible');
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+    window.openBook = openBook;
+    window.shelfBooks = shelfBooks;
+
+    /* ========================================================================= */
+    /* WINDOW RESIZE LISTENER                                                    */
+    /* ========================================================================= */
+    window.addEventListener('resize', () => {
+      const isPortraitNow = window.innerHeight > window.innerWidth;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.fov = isPortraitNow ? 40 : 19.5;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      if (isOpened && activeOpenedBook) {
+        const { pw, ph, isNarrow } = calculatePageSizes();
+        if (pageFlipInstance) {
+          pageFlipInstance.update();
+        }
+      }
+    });
+
+    // Expose for testing & programmatic access
+    window.openBook = openBook;
+    window.shelfBooks = shelfBooks;
+    window.closeActiveBook = closeActiveBook;
+
+  </script>
+</body>
+</html>

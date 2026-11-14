@@ -1,5 +1,23 @@
 [
   {
+    "id": "04",
+    "tag": "PRESS / 04",
+    "title": "Epoch Press — Independent Press Autumn List",
+    "description": "One-screen literary landing hero featuring an interactive 3D WebGL bookshelf of 32 autumn titles, spring wave physics, and a realistic dual-page reader.",
+    "image": "https://raw.githubusercontent.com/siddharthkmaharana/landing_page_gallery/main/landing-page-04/preview.png",
+    "fallbackImage": "/images/designs/epoch-press-preview.png",
+    "liveUrl": "https://siddharthkmaharana.github.io/landing_page_gallery/landing-page-04/",
+    "githubUrl": "https://github.com/siddharthkmaharana/landing_page_gallery/tree/main/landing-page-04",
+    "tags": [
+      "Three.js",
+      "WebGL",
+      "PageFlip",
+      "Spring Physics",
+      "Interactive 3D",
+      "Editorial Design"
+    ]
+  },
+  {
     "id": "01",
     "tag": "AI / 01",
     "title": "Zurvn — Modular AI Platform",
@@ -13,23 +31,6 @@
       "CSS3",
       "JavaScript",
       "Glassmorphism"
-    ]
-  },
-  {
-    "id": "02",
-    "tag": "F1 / 02",
-    "title": "KIMI — GRIDO1 Racing Systems / Kimi Antonelli",
-    "description": "Official rookie F1 driver showcase featuring interactive 3D WebGL depth-parallax, live telemetry circuit tracing, and reactive motion physics.",
-    "image": "https://raw.githubusercontent.com/siddharthkmaharana/landing_page_gallery/main/landing-page-02/preview.png",
-    "fallbackImage": "/images/designs/kimi-preview.png",
-    "liveUrl": "https://siddharthkmaharana.github.io/landing_page_gallery/landing-page-02/",
-    "githubUrl": "https://github.com/siddharthkmaharana/landing_page_gallery/tree/main/landing-page-02",
-    "tags": [
-      "Three.js",
-      "WebGL",
-      "Lenis",
-      "Canvas 2D",
-      "Interactive 3D"
     ]
   },
   {
@@ -47,6 +48,23 @@
       "JavaScript",
       "Video Scrubbing",
       "Editorial Design"
+    ]
+  },
+  {
+    "id": "02",
+    "tag": "F1 / 02",
+    "title": "KIMI — GRIDO1 Racing Systems / Kimi Antonelli",
+    "description": "Official rookie F1 driver showcase featuring interactive 3D WebGL depth-parallax, live telemetry circuit tracing, and reactive motion physics.",
+    "image": "https://raw.githubusercontent.com/siddharthkmaharana/landing_page_gallery/main/landing-page-02/preview.png",
+    "fallbackImage": "/images/designs/kimi-preview.png",
+    "liveUrl": "https://siddharthkmaharana.github.io/landing_page_gallery/landing-page-02/",
+    "githubUrl": "https://github.com/siddharthkmaharana/landing_page_gallery/tree/main/landing-page-02",
+    "tags": [
+      "Three.js",
+      "WebGL",
+      "Lenis",
+      "Canvas 2D",
+      "Interactive 3D"
     ]
   }
 ]
