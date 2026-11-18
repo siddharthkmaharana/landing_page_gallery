@@ -66,5 +66,23 @@
       "Canvas 2D",
       "Interactive 3D"
     ]
+  },
+  {
+    "id": "05",
+    "tag": "SPEC / 05",
+    "title": "ORTHOGON — Technical Blueprint & Structural UI System",
+    "description": "Sophisticated structural design system inspired by technical blueprints with interlocking mosaic panels, razor-thin hairlines, prestige forest green, and zero drop shadows.",
+    "image": "https://raw.githubusercontent.com/siddharthkmaharana/landing_page_gallery/main/landing-page-05/preview.png",
+    "fallbackImage": "/images/designs/orthogon-preview.png",
+    "liveUrl": "https://siddharthkmaharana.github.io/landing_page_gallery/landing-page-05/",
+    "githubUrl": "https://github.com/siddharthkmaharana/landing_page_gallery/tree/main/landing-page-05",
+    "tags": [
+      "Technical Minimalist",
+      "Bento Grid",
+      "Network Topology",
+      "Blueprint UI",
+      "HTML5",
+      "CSS3"
+    ]
   }
 ]

@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORTHOGON — Technical Blueprint &amp; Structural UI System</title>
+  <meta name="description" content="A sophisticated, structural design system inspired by technical blueprints and high-end UI wireframes. Interlocking mosaic panels, razor-thin hairlines, and prestige forest green.">
+
+  <!-- Google Fonts: Space Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Fontshare CDN: General Sans -->
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========================================================================= */
+    /* 01. DESIGN TOKENS & SYSTEM VARIABLES                                      */
+    /* ========================================================================= */
+    :root {
+      --color-paper: #F7F7F5;
+      --color-paper-light: #FFFFFF;
+      --color-forest: #1A3C2B;
+      --color-forest-dark: #11281D;
+      --color-forest-faint: rgba(26, 60, 43, 0.08);
+      --color-forest-border: rgba(26, 60, 43, 0.20);
+      
+      --color-grid: #3A3A38;
+      --color-grid-hairline: rgba(58, 58, 56, 0.20);
+      --color-grid-faint: rgba(58, 58, 56, 0.10);
+      --color-grid-solid: rgba(58, 58, 56, 0.40);
+      
+      --color-coral: #FF8C69;
+      --color-mint: #9EFFBF;
+      --color-gold: #F4D35E;
+
+      --font-header: 'Space Grotesk', -apple-system, sans-serif;
+      --font-body: 'General Sans', 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+      --radius-none: 0px;
+      --radius-sm: 2px;
+      --radius: var(--radius-sm);
+
+      --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-linear: linear;
+    }
+
+    /* CSS Reset: strictly flat, 2D, NO BOX SHADOWS */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--color-paper);
+      color: var(--color-grid);
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      background-color: var(--color-paper);
+      color: var(--color-grid);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Selection */
+    ::selection {
+      background-color: var(--color-forest);
+      color: var(--color-paper);
+    }
+
+    /* ========================================================================= */
+    /* 02. MOSAIC BACKGROUND PATTERN (INTERLOCKING RECTANGULAR PANELS)           */
+    /* ========================================================================= */
+    .mosaic-background {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.85;
+      background-color: var(--color-paper);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480' viewBox='0 0 480 480'%3E%3Cdefs%3E%3Cstyle%3Erect%7Bfill:%23F7F7F5;stroke:%233A3A38;stroke-width:0.5;stroke-opacity:0.3;vector-effect:non-scaling-stroke;%7D%3C/style%3E%3C/defs%3E%3Crect x='0' y='0' width='240' height='160'/%3E%3Crect x='240' y='0' width='240' height='80'/%3E%3Crect x='240' y='80' width='120' height='240'/%3E%3Crect x='360' y='80' width='120' height='160'/%3E%3Crect x='360' y='240' width='120' height='80'/%3E%3Crect x='0' y='160' width='160' height='160'/%3E%3Crect x='160' y='160' width='80' height='160'/%3E%3Crect x='0' y='320' width='240' height='160'/%3E%3Crect x='240' y='320' width='240' height='80'/%3E%3Crect x='240' y='400' width='120' height='80'/%3E%3Crect x='360' y='400' width='120' height='80'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 480px 480px;
+    }
+
+    /* Optional Architectural Hairline Overlay Grid */
+    .blueprint-grid-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+      border-left: 1px solid var(--color-grid-hairline);
+      border-right: 1px solid var(--color-grid-hairline);
+    }
+    .grid-col-guide {
+      width: 1px;
+      height: 100%;
+      background: var(--color-grid-faint);
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Section-Wide 1px Hairline Dividers */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-grid-hairline);
+      position: relative;
+      margin: 0;
+    }
+    .section-divider .divider-tag {
+      position: absolute;
+      top: -9px;
+      left: 32px;
+      background: var(--color-paper);
+      padding: 0 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(58, 58, 56, 0.7);
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-sm);
+    }
+    .section-divider .divider-coord {
+      position: absolute;
+      top: -9px;
+      right: 32px;
+      background: var(--color-paper);
+      padding: 0 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(58, 58, 56, 0.5);
+    }
+
+    /* ========================================================================= */
+    /* 03. TECHNICAL NAVIGATION                                                  */
+    /* ========================================================================= */
+    .nav-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background-color: rgba(247, 247, 245, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--color-grid-hairline);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+    .nav-inner {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    
+    /* Left: 32x32px square logo box in #1A3C2B with white icon */
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .logo-box {
+      width: 32px;
+      height: 32px;
+      background-color: var(--color-forest);
+      border-radius: var(--radius-none);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-box svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #FFFFFF;
+      stroke-width: 1.75;
+      stroke-linecap: square;
+    }
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title {
+      font-family: var(--font-header);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      color: var(--color-forest);
+      line-height: 1.1;
+    }
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(58, 58, 56, 0.6);
+    }
+
+    /* Center: Nav links in JetBrains Mono, 10px, uppercase, numerical indices */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-grid);
+      text-decoration: none;
+      transition: color 0.15s var(--ease-linear);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-link .idx {
+      color: var(--color-forest);
+      font-weight: 600;
+    }
+    .nav-link:hover {
+      color: var(--color-forest);
+    }
+
+    /* Right: Ghost button (1px border) and a solid Forest green button */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s var(--ease-linear);
+      border: 1px solid transparent;
+      outline: none;
+    }
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--color-grid-hairline);
+      color: var(--color-grid);
+    }
+    .btn-ghost:hover {
+      border-color: var(--color-forest);
+      color: var(--color-forest);
+      background-color: rgba(26, 60, 43, 0.04);
+    }
+    .btn-forest {
+      background-color: var(--color-forest);
+      border-color: var(--color-forest);
+      color: #FFFFFF;
+    }
+    .btn-forest:hover {
+      background-color: var(--color-forest-dark);
+      border-color: var(--color-forest-dark);
+      color: #FFFFFF;
+    }
+
+    /* ========================================================================= */
+    /* 04. STATUS BADGE COMPONENT                                                */
+    /* ========================================================================= */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--color-forest-border);
+      border-radius: var(--radius-sm);
+      padding: 4px 12px;
+      background-color: rgba(247, 247, 245, 0.85);
+      width: fit-content;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-forest);
+      border-radius: var(--radius-none);
+      flex-shrink: 0;
+      animation: statusPulse 2.5s infinite ease-in-out;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+    .status-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+    }
+
+    /* ========================================================================= */
+    /* 05. HERO SECTION                                                          */
+    /* ========================================================================= */
+    .hero-section {
+      padding-top: 130px;
+      padding-bottom: 80px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header text: Space Grotesk 8xl, tracking-tight, forest green, line-height 0.9 */
+    .hero-title {
+      font-family: var(--font-header);
+      font-size: clamp(3.75rem, 6.8vw, 6.5rem);
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--color-forest);
+      margin-top: 24px;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+    .hero-title span.accent-coral {
+      color: var(--color-coral);
+    }
+    .hero-title span.accent-grid {
+      color: rgba(58, 58, 56, 0.4);
+    }
+
+    /* Subtext: JetBrains Mono 14px, all-caps, with vertical 1px line on left */
+    .hero-subtext-box {
+      border-left: 1px solid var(--color-grid-solid);
+      padding-left: 20px;
+      margin-bottom: 36px;
+      max-width: 580px;
+    }
+    .hero-subtext {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(58, 58, 56, 0.85);
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-strip {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px dashed var(--color-grid-hairline);
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(58, 58, 56, 0.6);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .hero-meta-strip .meta-item strong {
+      color: var(--color-forest);
+      font-weight: 600;
+    }
+
+    /* Right: Abstract wireframe graphic */
+    .hero-wireframe-panel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 500px;
+      margin: 0 auto;
+      border: 1px solid var(--color-grid-hairline);
+      background-color: rgba(247, 247, 245, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: var(--radius-none);
+    }
+    /* Four corner L-markers (10px x 10px) in #1A3C2B */
+    .corner-marker {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .corner-tl {
+      top: 0;
+      left: 0;
+      border-top: 2px solid var(--color-forest);
+      border-left: 2px solid var(--color-forest);
+    }
+    .corner-tr {
+      top: 0;
+      right: 0;
+      border-top: 2px solid var(--color-forest);
+      border-right: 2px solid var(--color-forest);
+    }
+    .corner-bl {
+      bottom: 0;
+      left: 0;
+      border-bottom: 2px solid var(--color-forest);
+      border-left: 2px solid var(--color-forest);
+    }
+    .corner-br {
+      bottom: 0;
+      right: 0;
+      border-bottom: 2px solid var(--color-forest);
+      border-right: 2px solid var(--color-forest);
+    }
+
+    /* Coordinate Badges on Wireframe */
+    .panel-tag-tl {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--color-forest);
+      z-index: 6;
+      background: var(--color-paper);
+      padding: 2px 6px;
+      border: 1px solid var(--color-forest-border);
+    }
+    .panel-coord-br {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: rgba(58, 58, 56, 0.6);
+      z-index: 6;
+      background: var(--color-paper);
+      padding: 2px 6px;
+      border: 1px solid var(--color-grid-hairline);
+    }
+
+    /* Dashed circular orbit & concentric calipers */
+    .wireframe-orbit-container {
+      position: absolute;
+      inset: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .orbit-circle-outer {
+      position: absolute;
+      width: 88%;
+      height: 88%;
+      border: 1px dashed rgba(58, 58, 56, 0.35);
+      border-radius: 50%;
+      animation: rotateOrbit 60s linear infinite;
+    }
+    .orbit-circle-inner {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border: 1px dashed rgba(26, 60, 43, 0.3);
+      border-radius: 50%;
+      animation: rotateOrbitRev 40s linear infinite;
+    }
+    .crosshair-h {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(58, 58, 56, 0.2);
+    }
+    .crosshair-v {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(58, 58, 56, 0.2);
+    }
+
+    @keyframes rotateOrbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes rotateOrbitRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    /* Luminosity-blended image: 90% opacity, shifts to full color on hover */
+    .wireframe-img-box {
+      width: 76%;
+      height: 76%;
+      position: relative;
+      z-index: 3;
+      border: 1px solid var(--color-grid-hairline);
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+    .wireframe-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: luminosity;
+      opacity: 0.90;
+      transition: opacity 0.25s var(--ease-linear), mix-blend-mode 0.25s var(--ease-linear), transform 0.3s var(--ease-snappy);
+      display: block;
+    }
+    .wireframe-panel:hover .wireframe-img,
+    .wireframe-img-box:hover .wireframe-img {
+      mix-blend-mode: normal;
+      opacity: 1;
+      transform: scale(1.02);
+    }
+
+    /* Caliper marks inside wireframe */
+    .caliper-tick-top {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--color-forest);
+      letter-spacing: 0.1em;
+    }
+
+    /* ========================================================================= */
+    /* 06. BLUEPRINT METRIC STRIP                                                */
+    /* ========================================================================= */
+    .metric-strip-section {
+      padding: 24px 0;
+      background-color: rgba(247, 247, 245, 0.9);
+      border-top: 1px solid var(--color-grid-hairline);
+      border-bottom: 1px solid var(--color-grid-hairline);
+    }
+    .metric-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-left: 2px solid var(--color-forest);
+      padding-left: 14px;
+    }
+    .metric-item.accent-coral { border-left-color: var(--color-coral); }
+    .metric-item.accent-mint { border-left-color: var(--color-mint); }
+    .metric-item.accent-gold { border-left-color: var(--color-gold); }
+
+    .metric-num {
+      font-family: var(--font-header);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--color-forest);
+      letter-spacing: -0.02em;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(58, 58, 56, 0.7);
+    }
+
+    /* ========================================================================= */
+    /* 07. BENTO FEATURE GRID (2x2 with 1px Grid color gap)                      */
+    /* ========================================================================= */
+    .bento-section {
+      padding: 100px 0;
+      position: relative;
+    }
+    .section-header-block {
+      margin-bottom: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .section-kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-header);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--color-forest);
+      text-transform: uppercase;
+    }
+    .section-subtitle {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      max-width: 420px;
+      color: rgba(58, 58, 56, 0.7);
+      line-height: 1.6;
+      text-transform: uppercase;
+    }
+
+    /* Bento 2x2 grid with 1px gap */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background-color: var(--color-grid-hairline);
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-none);
+    }
+
+    .bento-cell {
+      background-color: var(--color-paper);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      min-height: 380px;
+      transition: background-color 0.2s var(--ease-linear);
+    }
+    .bento-cell:hover {
+      background-color: #FAF9F6;
+    }
+
+    /* Monospaced header label with colored left-border accent */
+    .bento-label-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .bento-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-grid);
+      padding-left: 10px;
+      border-left: 3px solid transparent;
+      line-height: 1.2;
+    }
+    .bento-label.accent-coral {
+      border-left-color: var(--color-coral);
+    }
+    .bento-label.accent-mint {
+      border-left-color: var(--color-mint);
+    }
+    .bento-label.accent-gold {
+      border-left-color: var(--color-gold);
+    }
+    .bento-label.accent-forest {
+      border-left-color: var(--color-forest);
+    }
+
+    .bento-cell-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: rgba(58, 58, 56, 0.5);
+      border: 1px solid var(--color-grid-hairline);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .bento-title {
+      font-family: var(--font-header);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--color-forest);
+      margin-bottom: 10px;
+    }
+    .bento-desc {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: rgba(58, 58, 56, 0.8);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* Internal Mockup Boxes (Code snippets, UI errors, Chips) */
+    .bento-mockup-box {
+      background: #FFFFFF;
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      margin-top: auto;
+    }
+    .mockup-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--color-grid-hairline);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .mockup-title {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(58, 58, 56, 0.6);
+    }
+    .chip-group {
+      display: flex;
+      gap: 6px;
+    }
+    .chip {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-none);
+    }
+    .chip-coral { background-color: var(--color-coral); }
+    .chip-mint { background-color: var(--color-mint); }
+    .chip-gold { background-color: var(--color-gold); }
+    .chip-forest { background-color: var(--color-forest); }
+
+    .code-stream {
+      line-height: 1.7;
+      color: rgba(58, 58, 56, 0.85);
+    }
+    .code-stream .kw { color: var(--color-forest); font-weight: 600; }
+    .code-stream .prop { color: #8F5B34; }
+    .code-stream .val { color: #2E5C43; }
+    .code-stream .pass { color: #166534; background: rgba(158, 255, 191, 0.25); padding: 1px 4px; }
+    .code-stream .warn { color: #9A3412; background: rgba(255, 140, 105, 0.25); padding: 1px 4px; }
+    .code-stream .tag-num { color: rgba(58, 58, 56, 0.4); margin-right: 8px; }
+
+    /* ========================================================================= */
+    /* 08. NETWORK TOPOLOGY GRAPH COMPONENT                                      */
+    /* ========================================================================= */
+    .topology-section {
+      padding: 90px 0;
+      position: relative;
+    }
+    .topology-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .topology-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .topology-feature-list {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .topology-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      border: 1px solid var(--color-grid-hairline);
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: var(--radius-sm);
+    }
+    .feature-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-forest);
+      background: var(--color-paper);
+      border: 1px solid var(--color-forest-border);
+      padding: 2px 6px;
+    }
+    .feature-title {
+      font-family: var(--font-header);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-forest);
+      margin-bottom: 2px;
+    }
+    .feature-desc {
+      font-size: 13px;
+      color: rgba(58, 58, 56, 0.75);
+      line-height: 1.5;
+    }
+
+    /* Circular Container with max-width 450px and 1px border */
+    .topology-visual-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .topology-circle-container {
+      width: 100%;
+      max-width: 450px;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(247, 247, 245, 0.7);
+      background-image: radial-gradient(circle at center, rgba(26, 60, 43, 0.04) 0%, transparent 70%);
+    }
+
+    /* Corner Hairline Tick Box outside circle */
+    .topology-corner-bounds {
+      position: absolute;
+      inset: 0;
+      border: 1px dashed var(--color-grid-faint);
+      pointer-events: none;
+    }
+    .topo-header-tag {
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      background: var(--color-paper);
+      padding: 0 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--color-forest);
+      border: 1px solid var(--color-grid-hairline);
+    }
+
+    /* Center: 16px solid forest green node */
+    .central-node {
+      width: 16px;
+      height: 16px;
+      background-color: var(--color-forest);
+      border-radius: var(--radius-none);
+      position: absolute;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      cursor: pointer;
+    }
+    .central-node::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border: 1px solid var(--color-forest-border);
+      border-radius: var(--radius-none);
+      animation: pulseBox 3s infinite ease-out;
+    }
+    @keyframes pulseBox {
+      0% { transform: scale(0.9); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    /* Dashed Orbit at 140px radius (280px diameter) */
+    .orbit-path-dashed {
+      width: 280px;
+      height: 280px;
+      border: 1px dashed rgba(58, 58, 56, 0.35);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* Orbiting Container: linear 20s infinite rotation */
+    .orbit-rotator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 280px;
+      height: 280px;
+      margin-top: -140px;
+      margin-left: -140px;
+      animation: topologyRotate 20s linear infinite;
+    }
+    .topology-circle-container:hover .orbit-rotator {
+      animation-play-state: paused;
+    }
+    @keyframes topologyRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Connecting lines to center: 1px solid lines at 0.2 opacity */
+    .spoke-line {
+      position: absolute;
+      top: 140px;
+      left: 140px;
+      width: 140px;
+      height: 1px;
+      background-color: var(--color-grid);
+      opacity: 0.2;
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+    .spoke-line-1 { transform: rotate(0deg); }
+    .spoke-line-2 { transform: rotate(120deg); }
+    .spoke-line-3 { transform: rotate(240deg); }
+
+    /* Orbiting Nodes: 3 nodes at 140px radius (counter-rotated to stay upright) */
+    .orbiting-node {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: #FFFFFF;
+      border: 1px solid var(--color-forest);
+      border-radius: var(--radius-none);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--color-forest);
+      transition: background-color 0.2s var(--ease-linear), border-color 0.2s var(--ease-linear);
+      z-index: 12;
+    }
+    .orbiting-node:hover {
+      background-color: var(--color-forest);
+      color: #FFFFFF;
+    }
+
+    /* Position at 0deg (right) */
+    .node-alpha {
+      top: 140px;
+      left: 280px;
+      transform: translate(-50%, -50%) rotate(0deg);
+      animation: counterRotate 20s linear infinite;
+    }
+    /* Position at 120deg (bottom-left) */
+    .node-beta {
+      top: calc(140px + 140px * 0.866);
+      left: calc(140px - 140px * 0.5);
+      transform: translate(-50%, -50%) rotate(-120deg);
+      animation: counterRotate 20s linear infinite;
+    }
+    /* Position at 240deg (top-left) */
+    .node-gamma {
+      top: calc(140px - 140px * 0.866);
+      left: calc(140px - 140px * 0.5);
+      transform: translate(-50%, -50%) rotate(-240deg);
+      animation: counterRotate 20s linear infinite;
+    }
+
+    @keyframes counterRotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(-360deg); }
+    }
+    .topology-circle-container:hover .orbiting-node {
+      animation-play-state: paused;
+    }
+
+    /* Tooltip Callout */
+    .topology-data-card {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      border: 1px solid var(--color-grid-hairline);
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-forest);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 15;
+    }
+
+    /* ========================================================================= */
+    /* 09. ARCHITECTURAL SPECIFICATION & SCHEMATIC MATRIX                        */
+    /* ========================================================================= */
+    .spec-matrix-section {
+      padding: 90px 0;
+      position: relative;
+    }
+    .spec-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+    .spec-card {
+      background-color: var(--color-paper);
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-none);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color 0.2s var(--ease-linear);
+      overflow: hidden;
+    }
+    .spec-card:hover {
+      border-color: var(--color-forest);
+    }
+    .spec-card-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-grid-hairline);
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .spec-tag-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .spec-idx {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: var(--color-forest);
+      padding: 2px 6px;
+      border-radius: var(--radius-none);
+    }
+    .spec-id {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--color-grid);
+    }
+    .spec-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      padding: 2px 6px;
+      border: 1px solid currentColor;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .badge-forest { color: var(--color-forest); border-color: var(--color-forest-border); }
+    .badge-coral { color: #D9532F; border-color: rgba(217, 83, 47, 0.3); }
+    .badge-gold { color: #9E7400; border-color: rgba(158, 116, 0, 0.3); }
+
+    /* Schematic Viewport */
+    .schematic-viewport {
+      height: 150px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--color-grid-hairline);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .schematic-corner {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      pointer-events: none;
+    }
+    .schematic-viewport .corner-tl { top: 6px; left: 6px; border-top: 1.5px solid var(--color-forest); border-left: 1.5px solid var(--color-forest); }
+    .schematic-viewport .corner-tr { top: 6px; right: 6px; border-top: 1.5px solid var(--color-forest); border-right: 1.5px solid var(--color-forest); }
+    .schematic-viewport .corner-bl { bottom: 6px; left: 6px; border-bottom: 1.5px solid var(--color-forest); border-left: 1.5px solid var(--color-forest); }
+    .schematic-viewport .corner-br { bottom: 6px; right: 6px; border-bottom: 1.5px solid var(--color-forest); border-right: 1.5px solid var(--color-forest); }
+
+    /* Caliper bars */
+    .caliper-bar-h {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: var(--color-grid-hairline);
+      display: flex;
+      justify-content: center;
+    }
+    .caliper-bar-h::before, .caliper-bar-h::after {
+      content: "";
+      position: absolute;
+      top: -3px;
+      width: 1px;
+      height: 7px;
+      background: var(--color-grid);
+    }
+    .caliper-bar-h::before { left: 0; }
+    .caliper-bar-h::after { right: 0; }
+    .caliper-txt {
+      background: #FFFFFF;
+      padding: 0 6px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: rgba(58, 58, 56, 0.6);
+      transform: translateY(-50%);
+      letter-spacing: 0.08em;
+    }
+
+    .caliper-bar-v {
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      bottom: 20px;
+      width: 1px;
+      background: var(--color-grid-hairline);
+      display: flex;
+      align-items: center;
+    }
+    .caliper-bar-v::before, .caliper-bar-v::after {
+      content: "";
+      position: absolute;
+      left: -3px;
+      width: 7px;
+      height: 1px;
+      background: var(--color-grid);
+    }
+    .caliper-bar-v::before { top: 0; }
+    .caliper-bar-v::after { bottom: 0; }
+
+    /* Schematic geometries */
+    .schematic-geometry {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .geo-rect-outer {
+      width: 130px;
+      height: 72px;
+      border: 0.5px solid rgba(58, 58, 56, 0.35);
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(247, 247, 245, 0.6);
+    }
+    .geo-rect-inner {
+      width: 100%;
+      height: 100%;
+      border: 1px dashed rgba(26, 60, 43, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .geo-crosshair {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, transparent calc(50% - 0.5px), rgba(58, 58, 56, 0.2) calc(50% - 0.5px), rgba(58, 58, 56, 0.2) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+        linear-gradient(to bottom, transparent calc(50% - 0.5px), rgba(58, 58, 56, 0.2) calc(50% - 0.5px), rgba(58, 58, 56, 0.2) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+    }
+    .geo-chip {
+      background: var(--color-forest);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      padding: 2px 5px;
+      z-index: 2;
+      letter-spacing: 0.05em;
+    }
+
+    /* Palette Matrix Swatches */
+    .palette-swatch-matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 230px;
+    }
+    .swatch-cell {
+      height: 58px;
+      border: 1px solid var(--color-grid-hairline);
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 7px;
+      line-height: 1.1;
+    }
+    .swatch-forest { background: var(--color-forest); color: #FFFFFF; }
+    .swatch-paper { background: var(--color-paper); color: var(--color-grid); border-color: rgba(58, 58, 56, 0.35); }
+    .swatch-coral { background: var(--color-coral); color: #FFFFFF; }
+    .swatch-mint { background: var(--color-mint); color: var(--color-forest); }
+    .swatch-gold { background: var(--color-gold); color: #4D3800; }
+
+    /* Typo Stack */
+    .typo-spec-display {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 240px;
+    }
+    .typo-lead-char {
+      font-family: var(--font-header);
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--color-forest);
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+    }
+    .typo-rules-stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .typo-rule-line {
+      border-bottom: 1px dashed var(--color-grid-hairline);
+      padding-bottom: 2px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: rgba(58, 58, 56, 0.6);
+      letter-spacing: 0.08em;
+    }
+
+    /* Spec Card Body */
+    .spec-card-body {
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .spec-card-title {
+      font-family: var(--font-header);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-forest);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .spec-card-desc {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: rgba(58, 58, 56, 0.75);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .spec-meta-list {
+      border-top: 1px solid var(--color-grid-hairline);
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: auto;
+    }
+    .spec-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .s-label {
+      color: rgba(58, 58, 56, 0.55);
+      letter-spacing: 0.08em;
+    }
+    .s-val {
+      color: var(--color-forest);
+      font-weight: 600;
+    }
+
+    /* High-Density Specification Table */
+    .spec-table-container {
+      background: var(--color-paper);
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-none);
+    }
+    .spec-table-header-bar {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-grid-hairline);
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .table-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+    }
+    .table-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: #166534;
+      background: rgba(158, 255, 191, 0.25);
+      padding: 2px 6px;
+      border: 1px solid rgba(22, 101, 52, 0.2);
+      font-weight: 600;
+    }
+    .spec-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-align: left;
+    }
+    .spec-table th {
+      padding: 12px 20px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--color-grid-hairline);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(58, 58, 56, 0.6);
+    }
+    .spec-table td {
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--color-grid-hairline);
+      color: var(--color-grid);
+    }
+    .spec-table tr:last-child td {
+      border-bottom: none;
+    }
+    .spec-table tr:hover td {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .status-chip {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+    .chip-pass {
+      background: rgba(26, 60, 43, 0.08);
+      color: var(--color-forest);
+      border: 1px solid var(--color-forest-border);
+    }
+    .chip-mint {
+      background: rgba(158, 255, 191, 0.2);
+      color: #12542B;
+      border: 1px solid rgba(18, 84, 43, 0.25);
+    }
+    .chip-gold {
+      background: rgba(244, 211, 94, 0.2);
+      color: #7A5C00;
+      border: 1px solid rgba(122, 92, 0, 0.25);
+    }
+
+    /* ========================================================================= */
+    /* 10. TECHNICAL FORM CTA                                                    */
+    /* ========================================================================= */
+    .cta-section {
+      padding: 100px 0 120px 0;
+      position: relative;
+    }
+    .form-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    /* Centered 640px wide form box, background #F7F7F5, border 1px hairline */
+    .technical-form-container {
+      width: 100%;
+      max-width: 640px;
+      background-color: var(--color-paper);
+      border: 1px solid var(--color-grid-hairline);
+      position: relative;
+      padding: 48px 40px;
+      border-radius: var(--radius-none);
+    }
+
+    .form-header-area {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .form-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-coral);
+      margin-bottom: 8px;
+    }
+    .form-title {
+      font-family: var(--font-header);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-forest);
+      line-height: 1.1;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .form-sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: rgba(58, 58, 56, 0.7);
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+
+    /* Form fields: solid white backgrounds with 1px borders & monospaced labels positioned directly above inputs */
+    .blueprint-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+      display: flex;
+      justify-content: space-between;
+    }
+    .form-label .req {
+      color: var(--color-coral);
+      font-size: 10px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--color-grid);
+      outline: none;
+      transition: border-color 0.15s var(--ease-linear), background-color 0.15s var(--ease-linear);
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--color-forest);
+      background-color: #FFFFFF;
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: rgba(58, 58, 56, 0.35);
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    .form-submit-btn {
+      width: 100%;
+      background-color: var(--color-forest);
+      color: #FFFFFF;
+      border: 1px solid var(--color-forest);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background-color 0.15s var(--ease-linear);
+      margin-top: 8px;
+    }
+    .form-submit-btn:hover {
+      background-color: var(--color-forest-dark);
+      border-color: var(--color-forest-dark);
+    }
+
+    /* Simulation Success Message */
+    .form-success-box {
+      display: none;
+      background: #FFFFFF;
+      border: 1px solid var(--color-forest);
+      padding: 24px;
+      text-align: center;
+      margin-top: 16px;
+      border-radius: var(--radius-sm);
+    }
+    .form-success-box.active {
+      display: block;
+    }
+    .success-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-forest);
+      background: var(--color-paper);
+      padding: 6px 12px;
+      display: inline-block;
+      margin: 12px 0;
+      border: 1px dashed var(--color-forest-border);
+    }
+
+    /* ========================================================================= */
+    /* 11. FOOTER & BLUEPRINT TELEMETRY                                          */
+    /* ========================================================================= */
+    .site-footer {
+      background-color: var(--color-paper);
+      border-top: 1px solid var(--color-grid-hairline);
+      padding: 60px 0 32px 0;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--color-grid-hairline);
+      padding-bottom: 6px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(58, 58, 56, 0.7);
+      text-decoration: none;
+      transition: color 0.15s var(--ease-linear);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-link:hover {
+      color: var(--color-forest);
+    }
+    .footer-link::before {
+      content: "↳";
+      color: var(--color-forest-border);
+    }
+
+    .footer-bottom-bar {
+      border-top: 1px solid var(--color-grid-hairline);
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(58, 58, 56, 0.5);
+    }
+    .live-clock {
+      color: var(--color-forest);
+      font-weight: 600;
+    }
+
+    /* Fixed Crosshair Coordinates Ticker (Bottom-Left) */
+    .hud-coords-pill {
+      position: fixed;
+      bottom: 20px;
+      left: 24px;
+      background: var(--color-paper);
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--color-forest);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .hud-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-forest);
+    }
+
+    /* Wireframe Overlay Toggle */
+    .wireframe-toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 24px;
+      background: var(--color-paper);
+      border: 1px solid var(--color-grid-hairline);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+      z-index: 90;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s var(--ease-linear);
+    }
+    .wireframe-toggle-btn:hover {
+      background-color: var(--color-forest);
+      color: #FFFFFF;
+      border-color: var(--color-forest);
+    }
+
+    /* Active Wireframe Debug Mode on Body */
+    body.wireframe-mode-active * {
+      outline: 1px solid rgba(26, 60, 43, 0.18) !important;
+    }
+    body.wireframe-mode-active .wireframe-toggle-btn {
+      background-color: var(--color-forest);
+      color: var(--color-mint);
+    }
+
+    /* ========================================================================= */
+    /* 12. RESPONSIVE QUERIES                                                    */
+    /* ========================================================================= */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .hero-wireframe-panel {
+        max-width: 440px;
+      }
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+      .topology-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .spec-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .metric-strip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hero-title {
+        font-size: 3rem;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .technical-form-container {
+        padding: 32px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full-Page Seamless SVG Mosaic Background -->
+  <div class="mosaic-background" aria-hidden="true"></div>
+
+  <!-- Architectural Hairline Column Guides -->
+  <div class="blueprint-grid-overlay" aria-hidden="true">
+    <div class="grid-col-guide"></div>
+    <div class="grid-col-guide"></div>
+    <div class="grid-col-guide"></div>
+  </div>
+
+  <!-- Realtime HUD Cursor Coordinates -->
+  <div class="hud-coords-pill" id="hud-coords">
+    <div class="hud-dot"></div>
+    <span>POS: <span id="hud-val">X: 000 · Y: 000</span></span>
+  </div>
+
+  <!-- Wireframe Blueprint Mode Toggle -->
+  <button class="wireframe-toggle-btn" id="wireframe-toggle" aria-label="Toggle structural blueprint wireframe mode">
+    <span>◫ WIREFRAME MODE</span>
+  </button>
+
+  <!-- ======================================================================= -->
+  <!-- 01. TECHNICAL NAVIGATION                                                -->
+  <!-- ======================================================================= -->
+  <header class="nav-header">
+    <div class="nav-inner">
+      <!-- Left side: square logo box in #1A3C2B with white icon -->
+      <a href="#" class="brand-group" aria-label="ORTHOGON Blueprint Homepage">
+        <div class="logo-box">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="12" y1="3" x2="12" y2="21"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="brand-meta">
+          <span class="brand-title">ORTHOGON</span>
+          <span class="brand-sub">SPEC_V4.2 // BLUEPRINT</span>
+        </div>
+      </a>
+
+      <!-- Center: Nav links in JetBrains Mono, 10px, uppercase, numerical indices -->
+      <nav class="nav-menu" aria-label="Technical Navigation">
+        <ul class="nav-links">
+          <li><a href="#specification" class="nav-link"><span class="idx">01.</span>SPECIFICATION</a></li>
+          <li><a href="#bento" class="nav-link"><span class="idx">02.</span>BENTO GRID</a></li>
+          <li><a href="#topology" class="nav-link"><span class="idx">03.</span>TOPOLOGY</a></li>
+          <li><a href="#benchmarks" class="nav-link"><span class="idx">04.</span>BENCHMARKS</a></li>
+          <li><a href="#cta" class="nav-link"><span class="idx">05.</span>INITIALIZE</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right side: Ghost button (1px border) and solid Forest green button -->
+      <div class="nav-actions">
+        <a href="#cta" class="btn btn-ghost">DOCUMENTATION</a>
+        <a href="#cta" class="btn btn-forest">INITIALIZE ENGINE &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================= -->
+  <!-- 02. HERO SECTION                                                        -->
+  <!-- ======================================================================= -->
+  <section class="hero-section" id="specification">
+    <div class="container">
+      <div class="hero-grid">
+        
+        <!-- Left: Typography Layout -->
+        <div class="hero-content">
+          <!-- Status Badge -->
+          <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-text">SYS_ACTIVE // ALL SYSTEMS NOMINAL · SPEC V4.2</span>
+          </div>
+
+          <!-- Header: Space Grotesk 8xl, tracking-tight, forest green -->
+          <h1 class="hero-title">
+            STRUCTURAL<br>
+            <span class="accent-coral">PRECISION.</span><br>
+            BLUEPRINT UI.
+          </h1>
+
+          <!-- Subtext in JetBrains Mono, 14px, all-caps, with vertical 1px line on left -->
+          <div class="hero-subtext-box">
+            <p class="hero-subtext">
+              ARCHITECTURAL WIREFRAME COMPOSITION &amp; COMPONENT TOPOLOGY. 
+              ENGINEERED FOR HIGH-INTEGRITY SYSTEMS REQUIRING 1PX STRUCTURAL ALIGNMENT, 
+              ZERO CHROMA DISTORTION, AND DETERMINISTIC RENDERING MATRICES.
+            </p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="hero-cta-group">
+            <a href="#cta" class="btn btn-forest">INITIALIZE SPEC ENGINE &rarr;</a>
+            <a href="#bento" class="btn btn-ghost">INSPECT BLUEPRINT // 01</a>
+          </div>
+
+          <!-- Technical metadata footer strip -->
+          <div class="hero-meta-strip">
+            <div class="meta-item">KERNEL: <strong>ORTHO-LIN-04</strong></div>
+            <div class="meta-item">PALETTE: <strong>FOREST // PAPER</strong></div>
+            <div class="meta-item">GRID-REF: <strong>#3A3A38 / 20%</strong></div>
+            <div class="meta-item">PRECISION: <strong>0.5PX HAIRLINE</strong></div>
+          </div>
+        </div>
+
+        <!-- Right: Abstract Wireframe Graphic -->
+        <div class="hero-wireframe-panel wireframe-panel" id="hero-interactive-panel">
+          <!-- Four corner L-markers (10px x 10px) in #1A3C2B -->
+          <div class="corner-marker corner-tl"></div>
+          <div class="corner-marker corner-tr"></div>
+          <div class="corner-marker corner-bl"></div>
+          <div class="corner-marker corner-br"></div>
+
+          <!-- Technical coordinate callouts -->
+          <div class="panel-tag-tl">GRID_REF // MOD-88</div>
+          <div class="panel-coord-br" id="panel-coord-readout">COORD: X:341.2 Y:184.9</div>
+
+          <!-- Caliper tick marks -->
+          <div class="caliper-tick-top">▲ 240.00 MM AXIS ▲</div>
+
+          <!-- Dashed circular orbit & crosshair axes -->
+          <div class="wireframe-orbit-container">
+            <div class="orbit-circle-outer"></div>
+            <div class="orbit-circle-inner"></div>
+            <div class="crosshair-h"></div>
+            <div class="crosshair-v"></div>
+          </div>
+
+          <!-- Square container with luminosity-blended image -->
+          <div class="wireframe-img-box">
+            <img 
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" 
+              alt="Structural Architectural Blueprint" 
+              class="wireframe-img"
+              loading="eager"
+            >
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider with explicit 1px line & corner labels -->
+  <div class="section-divider">
+    <span class="divider-tag">METRIC MATRICES // 01</span>
+    <span class="divider-coord">LATENCY_TRACE: 0.04MS</span>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- 03. BLUEPRINT METRIC STRIP                                              -->
+  <!-- ======================================================================= -->
+  <section class="metric-strip-section" id="benchmarks">
+    <div class="container">
+      <div class="metric-strip-grid">
+        <div class="metric-item accent-forest">
+          <span class="metric-num">0.5PX</span>
+          <span class="metric-label">RAZOR-THIN HAIRLINE SPEC</span>
+        </div>
+        <div class="metric-item accent-coral">
+          <span class="metric-num">99.98%</span>
+          <span class="metric-label">DETERMINISTIC BLUEPRINT ALIGNMENT</span>
+        </div>
+        <div class="metric-item accent-mint">
+          <span class="metric-num">0.8MS</span>
+          <span class="metric-label">WIRE PROTOCOL DISPATCH LATENCY</span>
+        </div>
+        <div class="metric-item accent-gold">
+          <span class="metric-num">0 SHADOW</span>
+          <span class="metric-label">100% FLAT 2D ORTHOGONAL SPACE</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <span class="divider-tag">BENTO RECTILINEAR CELLS // 02</span>
+    <span class="divider-coord">FRAMEWORK: 2X2 GAP_1PX</span>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- 04. BENTO FEATURE GRID (2x2 with 1px Grid color gap)                      -->
+  <!-- ======================================================================= -->
+  <section class="bento-section" id="bento">
+    <div class="container">
+      <div class="section-header-block">
+        <div>
+          <div class="section-kicker">
+            <span>■</span> ARCHITECTURAL SUB-SYSTEMS
+          </div>
+          <h2 class="section-title">RECTILINEAR BENTO MATRIX</h2>
+        </div>
+        <div class="section-subtitle">
+          FOUR DISCRETE SYSTEM MODULES DIVIDED BY 1PX CONTINUOUS BLUEPRINT GRIDS. 
+          ZERO BOX-SHADOW INTERFERENCE. HIGHEST NEGATIVE SPACE PURITY.
+        </div>
+      </div>
+
+      <!-- 2x2 Bento Grid with 1px gap -->
+      <div class="bento-grid">
+        
+        <!-- Cell 1: Coral (#FF8C69) accent border -->
+        <div class="bento-cell">
+          <div>
+            <div class="bento-label-bar">
+              <span class="bento-label accent-coral">01 // COMPONENT SYNTHESIS</span>
+              <span class="bento-cell-badge">MOD_CORAL</span>
+            </div>
+            <h3 class="bento-title">Deterministic Layout Matrices</h3>
+            <p class="bento-desc">
+              Compile complex UI components into strict 2D coordinate blocks. Eliminate unpredictable cascade shifts with rigid blueprint constraints.
+            </p>
+          </div>
+
+          <!-- Internal Mockup: Code snippet with flat color chips -->
+          <div class="bento-mockup-box">
+            <div class="mockup-top-bar">
+              <span class="mockup-title">TOKEN_STREAM // SYNTHESIS</span>
+              <div class="chip-group">
+                <span class="chip chip-coral"></span>
+                <span class="chip chip-mint"></span>
+                <span class="chip chip-gold"></span>
+              </div>
+            </div>
+            <div class="code-stream">
+              <div><span class="tag-num">01</span><span class="kw">const</span> blueprint = <span class="kw">new</span> <span class="val">OrthogonalGrid</span>({</div>
+              <div><span class="tag-num">02</span>&nbsp;&nbsp;<span class="prop">hairline</span>: <span class="val">"0.5px"</span>, <span class="prop">color</span>: <span class="val">"#3A3A38"</span>,</div>
+              <div><span class="tag-num">03</span>&nbsp;&nbsp;<span class="prop">primary</span>: <span class="val">"#1A3C2B"</span>, <span class="prop">blend</span>: <span class="val">"luminosity"</span></div>
+              <div><span class="tag-num">04</span>}); <span class="pass">[COMPILED_OK]</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cell 2: Mint (#9EFFBF) accent border -->
+        <div class="bento-cell">
+          <div>
+            <div class="bento-label-bar">
+              <span class="bento-label accent-mint">02 // TOPOLOGY VERIFICATION</span>
+              <span class="bento-cell-badge">MOD_MINT</span>
+            </div>
+            <h3 class="bento-title">Sub-Millisecond Wire Protocol</h3>
+            <p class="bento-desc">
+              Inspect orbital node connections across real-time wireframes. Validate structural dependencies without rendering engine overhead.
+            </p>
+          </div>
+
+          <!-- Internal Mockup: Diagnostic schema compiler -->
+          <div class="bento-mockup-box">
+            <div class="mockup-top-bar">
+              <span class="mockup-title">TOPOLOGY_DIAGNOSTICS // V4</span>
+              <div class="chip-group">
+                <span class="chip chip-mint"></span>
+                <span class="chip chip-forest"></span>
+              </div>
+            </div>
+            <div class="code-stream">
+              <div><span class="tag-num">01</span>&gt; VERIFY_HASH(NODE_CENTRAL): <span class="pass">MATCH_0x89FA</span></div>
+              <div><span class="tag-num">02</span>&gt; ORBIT_RADIUS: 140PX / SOLID_LINE_OPACITY: 0.20</div>
+              <div><span class="tag-num">03</span>&gt; STATUS: <span class="pass">3/3 NODES SYNCHRONIZED [0.8MS]</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cell 3: Gold (#F4D35E) accent border -->
+        <div class="bento-cell">
+          <div>
+            <div class="bento-label-bar">
+              <span class="bento-label accent-gold">03 // BLUEPRINT TELEMETRY</span>
+              <span class="bento-cell-badge">MOD_GOLD</span>
+            </div>
+            <h3 class="bento-title">Realtime Orthogonal Metrics</h3>
+            <p class="bento-desc">
+              Continuous inspection of negative space ratios, hairline opacity calibration, and monospaced typographical alignment.
+            </p>
+          </div>
+
+          <!-- Internal Mockup: Telemetry log stream -->
+          <div class="bento-mockup-box">
+            <div class="mockup-top-bar">
+              <span class="mockup-title">TELEMETRY_LOG // RUNTIME</span>
+              <div class="chip-group">
+                <span class="chip chip-gold"></span>
+                <span class="chip chip-coral"></span>
+              </div>
+            </div>
+            <div class="code-stream">
+              <div><span class="tag-num">01</span>[00:14.22] FRAME_TICK: 60FPS · DROPPED: 0</div>
+              <div><span class="tag-num">02</span>[00:14.23] PAPER_BASE: #F7F7F5 · FOREST_KEY: #1A3C2B</div>
+              <div><span class="tag-num">03</span>[00:14.24] MEM_HEAP: 14.2MB / HEAP_STABLE <span class="pass">OPTIMAL</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cell 4: Forest (#1A3C2B) accent border -->
+        <div class="bento-cell">
+          <div>
+            <div class="bento-label-bar">
+              <span class="bento-label accent-forest">04 // RUNTIME DIAGNOSTICS</span>
+              <span class="bento-cell-badge">MOD_FOREST</span>
+            </div>
+            <h3 class="bento-title">Zero-Shadow Wireframe Rigor</h3>
+            <p class="bento-desc">
+              Zero depth illusions. Structural clarity delivered strictly through hairline borders, crisp flat fills, and surgical grid rhythm.
+            </p>
+          </div>
+
+          <!-- Internal Mockup: Error resolution / Exception tracker -->
+          <div class="bento-mockup-box">
+            <div class="mockup-top-bar">
+              <span class="mockup-title">RUNTIME_RIGOR_CHECK</span>
+              <div class="chip-group">
+                <span class="chip chip-forest"></span>
+              </div>
+            </div>
+            <div class="code-stream">
+              <div><span class="tag-num">01</span>[ASSERT] BOX_SHADOW_COUNT: 0 <span class="pass">VALIDATED</span></div>
+              <div><span class="tag-num">02</span>[ASSERT] CORNER_RADIUS: &le; 2PX <span class="pass">VALIDATED</span></div>
+              <div><span class="tag-num">03</span>[ASSERT] LUMINOSITY_MIX_BLEND: 90% <span class="pass">ACTIVE</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <span class="divider-tag">TOPOLOGY ORBIT GRAPH // 03</span>
+    <span class="divider-coord">ROTATION: LINEAR 20S INFINITE</span>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- 05. NETWORK TOPOLOGY GRAPH COMPONENT                                    -->
+  <!-- ======================================================================= -->
+  <section class="topology-section" id="topology">
+    <div class="container">
+      <div class="topology-layout">
+        
+        <!-- Left: Explanatory Copy & Features -->
+        <div class="topology-info">
+          <div class="section-kicker">
+            <span>■</span> ABSTRACT SVG ORBIT SYSTEM
+          </div>
+          <h2 class="section-title">NETWORK TOPOLOGY GRAPH</h2>
+          <p class="hero-subtext" style="margin-top: 16px; margin-bottom: 24px;">
+            A CIRCULAR CONTAINER ANCHORED BY A CENTRAL 16PX SOLID FOREST GREEN NODE. 
+            THREE ORBITING SATELLITE NODES ON 140PX RADIUS DASHED PATHS ROTATING AT 
+            20 SECONDS LINEAR SPEED WITH CONNECTIVE 1PX HAIRLINE SPOKES.
+          </p>
+
+          <div class="topology-feature-list">
+            <div class="topology-feature-item">
+              <span class="feature-num">01</span>
+              <div>
+                <h4 class="feature-title">Synchronous 20s Orbit</h4>
+                <p class="feature-desc">Continuous linear animation keeping nodes positioned in rigid 120-degree triangulation with zero rotational drift.</p>
+              </div>
+            </div>
+            <div class="topology-feature-item">
+              <span class="feature-num">02</span>
+              <div>
+                <h4 class="feature-title">1px Spoke Couplers at 0.20 Opacity</h4>
+                <p class="feature-desc">Razor-thin structural vectors binding satellite telemetry nodes directly to the primary system core.</p>
+              </div>
+            </div>
+            <div class="topology-feature-item">
+              <span class="feature-num">03</span>
+              <div>
+                <h4 class="feature-title">Hover Inspection Pause</h4>
+                <p class="feature-desc">Pointer hover freezes rotation instantaneously to inspect active node latency and routing status.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Topology Visual Graph Container (max-width: 450px, circular, 1px border) -->
+        <div class="topology-visual-wrap">
+          <div class="topology-circle-container" id="topology-graph">
+            <!-- Corner Hairline Bounds -->
+            <div class="topology-corner-bounds">
+              <span class="topo-header-tag">ORBIT // 140PX_R</span>
+            </div>
+
+            <!-- Central 16px solid forest green node -->
+            <div class="central-node" title="Primary System Node (Core 00)"></div>
+
+            <!-- Dashed Path (140px radius = 280px diameter) -->
+            <div class="orbit-path-dashed"></div>
+
+            <!-- Orbiting Rotator: 20s linear infinite -->
+            <div class="orbit-rotator">
+              <!-- Connect nodes to center using 1px solid lines at 0.2 opacity -->
+              <div class="spoke-line spoke-line-1"></div>
+              <div class="spoke-line spoke-line-2"></div>
+              <div class="spoke-line spoke-line-3"></div>
+
+              <!-- Three orbiting nodes on dashed paths (140px radius) -->
+              <div class="orbiting-node node-alpha" title="Node Alpha (Routing Engine)">α</div>
+              <div class="orbiting-node node-beta" title="Node Beta (Schema Compiler)">β</div>
+              <div class="orbiting-node node-gamma" title="Node Gamma (Telemetry Hub)">γ</div>
+            </div>
+
+            <!-- Live Data Badge -->
+            <div class="topology-data-card" id="topology-status-readout">
+              CORE_NODE: ACTIVE · 3 NODES CONNECTED
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <span class="divider-tag">SPECIFICATION SCHEMATICS // 04</span>
+    <span class="divider-coord">DIMENSIONAL_CALIPERS: ISO_128_CAD</span>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- 06. ARCHITECTURAL SPECIFICATION & SCHEMATIC MATRIX                      -->
+  <!-- ======================================================================= -->
+  <section class="spec-matrix-section" id="matrix">
+    <div class="container">
+      <div class="section-header-block">
+        <div>
+          <div class="section-kicker">
+            <span>■</span> STRUCTURAL RIGOR &amp; DIMENSIONAL CALIBRATION
+          </div>
+          <h2 class="section-title">SPECIFICATION MATRIX</h2>
+        </div>
+        <div class="section-subtitle">
+          SURGICAL 2D COMPONENT SCHEMATICS DIVIDED BY 1PX HAIRLINE VECTORS. 
+          INSPECT TOKEN SPECIFICATIONS, CALIPER TOLERANCES, AND SYSTEM CONSTRAINTS.
+        </div>
+      </div>
+
+      <!-- 3 Technical Blueprint Schematic Cards -->
+      <div class="spec-cards-grid">
+        
+        <!-- Schematic Card 1: Hairline & Grid Geometry -->
+        <div class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-tag-group">
+              <span class="spec-idx">01</span>
+              <span class="spec-id">GEO_VECTOR_0.5PX</span>
+            </div>
+            <span class="spec-badge badge-forest">HAIRLINE_STRICT</span>
+          </div>
+
+          <div class="schematic-viewport">
+            <div class="schematic-corner corner-tl"></div>
+            <div class="schematic-corner corner-tr"></div>
+            <div class="schematic-corner corner-bl"></div>
+            <div class="schematic-corner corner-br"></div>
+            
+            <!-- Dimensional Calipers -->
+            <div class="caliper-bar-h"><span class="caliper-txt">240.00 MM</span></div>
+            <div class="caliper-bar-v"><span class="caliper-txt">160.00 MM</span></div>
+
+            <!-- Vector Hairlines Mockup -->
+            <div class="schematic-geometry">
+              <div class="geo-rect-outer">
+                <div class="geo-rect-inner">
+                  <div class="geo-crosshair"></div>
+                  <div class="geo-chip">0.5PX // 20%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="spec-card-body">
+            <h3 class="spec-card-title">Orthogonal Vector Hairlines</h3>
+            <p class="spec-card-desc">
+              Sub-pixel 0.5px hairlines calibrated at 20% opacity. Zero anti-aliasing feathering or blur dispersion across multi-resolution displays.
+            </p>
+            <div class="spec-meta-list">
+              <div class="spec-meta-row">
+                <span class="s-label">STROKE_WEIGHT</span>
+                <span class="s-val">0.5px Sub-Pixel</span>
+              </div>
+              <div class="spec-meta-row">
+                <span class="s-label">GRID_OPACITY</span>
+                <span class="s-val">0.20 (#3A3A38)</span>
+              </div>
+              <div class="spec-meta-row">
+                <span class="s-label">CORNER_RADIUS</span>
+                <span class="s-val">0px / 2px Strict</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schematic Card 2: Luminosity Blending & Color Gamut -->
+        <div class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-tag-group">
+              <span class="spec-idx">02</span>
+              <span class="spec-id">GAMUT_LUMINOSITY_90</span>
+            </div>
+            <span class="spec-badge badge-coral">COLOR_PROFILE</span>
+          </div>
+
+          <div class="schematic-viewport">
+            <div class="schematic-corner corner-tl"></div>
+            <div class="schematic-corner corner-tr"></div>
+            <div class="schematic-corner corner-bl"></div>
+            <div class="schematic-corner corner-br"></div>
+            
+            <div class="caliper-bar-h"><span class="caliper-txt">GAMUT_SRGB</span></div>
+
+            <!-- Color Swatch & Blend Palette Mockup -->
+            <div class="schematic-geometry">
+              <div class="palette-swatch-matrix">
+                <div class="swatch-cell swatch-forest"><span class="swatch-name">#1A3C2B</span><span class="swatch-tag">FOREST</span></div>
+                <div class="swatch-cell swatch-paper"><span class="swatch-name">#F7F7F5</span><span class="swatch-tag">PAPER</span></div>
+                <div class="swatch-cell swatch-coral"><span class="swatch-name">#FF8C69</span><span class="swatch-tag">CORAL</span></div>
+                <div class="swatch-cell swatch-mint"><span class="swatch-name">#9EFFBF</span><span class="swatch-tag">MINT</span></div>
+                <div class="swatch-cell swatch-gold"><span class="swatch-name">#F4D35E</span><span class="swatch-tag">GOLD</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="spec-card-body">
+            <h3 class="spec-card-title">Prestige Gamut &amp; Luminosity</h3>
+            <p class="spec-card-desc">
+              Monochrome paper baseline with prestige forest accents. High-contrast assets render in 90% luminosity mix-blend, unlocking full color on hover.
+            </p>
+            <div class="spec-meta-list">
+              <div class="spec-meta-row">
+                <span class="s-label">BASE_PALETTE</span>
+                <span class="s-val">Paper (#F7F7F5)</span>
+              </div>
+              <div class="spec-meta-row">
+                <span class="s-label">KEY_CHROMA</span>
+                <span class="s-val">Forest (#1A3C2B)</span>
+              </div>
+              <div class="spec-meta-row">
+                <span class="s-label">MIX_BLEND</span>
+                <span class="s-val">Luminosity (90% &rarr; 100%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schematic Card 3: Monospaced Typographical Ratio -->
+        <div class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-tag-group">
+              <span class="spec-idx">03</span>
+              <span class="spec-id">TYPO_METRIC_0.9LH</span>
+            </div>
+            <span class="spec-badge badge-gold">METRIC_RATIO</span>
+          </div>
+
+          <div class="schematic-viewport">
+            <div class="schematic-corner corner-tl"></div>
+            <div class="schematic-corner corner-tr"></div>
+            <div class="schematic-corner corner-bl"></div>
+            <div class="schematic-corner corner-br"></div>
+            
+            <div class="caliper-bar-h"><span class="caliper-txt">BASELINE // 8PT</span></div>
+
+            <!-- Typography Baseline & Tracking Mockup -->
+            <div class="schematic-geometry">
+              <div class="typo-spec-display">
+                <div class="typo-lead-char">Aa</div>
+                <div class="typo-rules-stack">
+                  <div class="typo-rule-line"><span class="t-cap">CAP_HEIGHT: 72PX</span></div>
+                  <div class="typo-rule-line"><span class="t-x">X_HEIGHT: 52PX</span></div>
+                  <div class="typo-rule-line"><span class="t-base">BASELINE: 0PX</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="spec-card-body">
+            <h3 class="spec-card-title">Typographical Triangulation</h3>
+            <p class="spec-card-desc">
+              Space Grotesk tight-tracking display headers paired with General Sans body prose and JetBrains Mono functional technical metadata labels.
+            </p>
+            <div class="spec-meta-list">
+              <div class="spec-meta-row">
+                <span class="s-label">DISPLAY_HEADER</span>
+                <span class="s-val">Space Grotesk (-0.04em)</span>
+              </div>
+              <div class="spec-meta-row">
+                <span class="s-label">TECHNICAL_MONO</span>
+                <span class="s-val">JetBrains Mono (0.1em)</span>
+              </div>
+              <div class="spec-meta-row">
+                <span class="s-label">BODY_SYSTEM</span>
+                <span class="s-val">General Sans (15px / 1.6)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- High-Density Technical Specification Matrix Table -->
+      <div class="spec-table-container">
+        <div class="spec-table-header-bar">
+          <span class="table-tag">FORMAL SPECIFICATION TOLERANCES // ISO-128 COMPLIANCE</span>
+          <span class="table-badge">[ASSERTION: 100% NOMINAL]</span>
+        </div>
+        <div class="spec-table-wrapper">
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th>SUBSYSTEM ATTRIBUTE</th>
+                <th>ORTHOGON STANDARD SPEC</th>
+                <th>CONVENTIONAL UI SYSTEMS</th>
+                <th>ENGINEERING STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>DEPTH ILLUSIONS</strong></td>
+                <td>0px Box-Shadows (100% Flat 2D Rigor)</td>
+                <td>Multi-tiered Gaussian Drop Shadows</td>
+                <td><span class="status-chip chip-pass">STRICT_ZERO</span></td>
+              </tr>
+              <tr>
+                <td><strong>HAIRLINE TOLERANCE</strong></td>
+                <td>0.5px Exact Sub-Pixel / 20% Opacity</td>
+                <td>Inconsistent 1px–2px Borders</td>
+                <td><span class="status-chip chip-pass">SUB_PIXEL_OK</span></td>
+              </tr>
+              <tr>
+                <td><strong>IMAGE TREATMENT</strong></td>
+                <td>Mix-Blend-Luminosity at 90% Opacity</td>
+                <td>Unfiltered Chromatic Overlays</td>
+                <td><span class="status-chip chip-mint">CALIBRATED</span></td>
+              </tr>
+              <tr>
+                <td><strong>GRID CELL MATRIX</strong></td>
+                <td>Interlocking Rectangular Bento (1px Gap)</td>
+                <td>Fluid Arbitrary Flexboxes</td>
+                <td><span class="status-chip chip-pass">ORTHOGONAL</span></td>
+              </tr>
+              <tr>
+                <td><strong>TOPOLOGY DISPATCH</strong></td>
+                <td>Synchronous 20s Linear Orbit Protocol</td>
+                <td>Asynchronous Dynamic Floats</td>
+                <td><span class="status-chip chip-gold">DETERMINISTIC</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <span class="divider-tag">CTA // SPEC_INITIALIZE</span>
+    <span class="divider-coord">BOX: 640PX / CORNER_L_10PX</span>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- 07. TECHNICAL FORM CTA                                                  -->
+  <!-- ======================================================================= -->
+  <section class="cta-section" id="cta">
+    <div class="container">
+      <div class="form-wrapper">
+        
+        <!-- Centered 640px wide form box with four L-shaped corner markers -->
+        <div class="technical-form-container">
+          <!-- Four L-shaped corner markers (10px x 10px) in #1A3C2B -->
+          <div class="corner-marker corner-tl"></div>
+          <div class="corner-marker corner-tr"></div>
+          <div class="corner-marker corner-bl"></div>
+          <div class="corner-marker corner-br"></div>
+
+          <div class="form-header-area">
+            <div class="form-kicker">INITIALIZE SYSTEM COMPILER</div>
+            <h2 class="form-title">REQUEST BLUEPRINT ACCESS</h2>
+            <p class="form-sub">
+              ENTER INFRASTRUCTURE TELEMETRY TO RECEIVE A CERTIFIED SYSTEM SPECIFICATION TOKEN.
+            </p>
+          </div>
+
+          <!-- Form fields use solid white backgrounds with 1px borders and monospaced labels positioned directly above inputs -->
+          <form class="blueprint-form" id="blueprint-form" onsubmit="handleFormSubmit(event)">
+            <div class="form-field-group">
+              <label for="input-handle" class="form-label">
+                <span>01 // DEVELOPER HANDLE</span>
+                <span class="req">[REQUIRED]</span>
+              </label>
+              <input 
+                type="text" 
+                id="input-handle" 
+                class="form-input" 
+                placeholder="E.G. SYS_ARCHITECT_09" 
+                required
+              >
+            </div>
+
+            <div class="form-field-group">
+              <label for="input-email" class="form-label">
+                <span>02 // WORK EMAIL ROUTE</span>
+                <span class="req">[REQUIRED]</span>
+              </label>
+              <input 
+                type="email" 
+                id="input-email" 
+                class="form-input" 
+                placeholder="NAME@ENTERPRISE-DOMAIN.COM" 
+                required
+              >
+            </div>
+
+            <div class="form-field-group">
+              <label for="input-tier" class="form-label">
+                <span>03 // INFRASTRUCTURE TIER</span>
+              </label>
+              <select id="input-tier" class="form-select">
+                <option value="tier-1">TIER-1 // SINGLE RUNTIME CLUSTER (FREE SPEC)</option>
+                <option value="tier-2" selected>TIER-2 // MULTI-NODE DISTRIBUTED WIREFRAME</option>
+                <option value="tier-3">TIER-3 // ENTERPRISE BLUEPRINT ARCHITECTURE</option>
+              </select>
+            </div>
+
+            <div class="form-field-group">
+              <label for="input-notes" class="form-label">
+                <span>04 // ARCHITECTURAL NOTES</span>
+              </label>
+              <textarea 
+                id="input-notes" 
+                class="form-textarea" 
+                placeholder="DESCRIBE PROPOSED COMPONENT VOLUMES, HAIRLINE PREFERENCES, OR SYSTEM CONSTRAINTS..."
+              ></textarea>
+            </div>
+
+            <button type="submit" class="form-submit-btn" id="submit-btn">
+              <span>COMPILE &amp; DISPATCH TOKEN</span>
+              <span>&rarr;</span>
+            </button>
+          </form>
+
+          <!-- Success Confirmation Voucher -->
+          <div class="form-success-box" id="form-success">
+            <div style="font-family: var(--font-header); font-size: 20px; font-weight: 700; color: var(--color-forest); margin-bottom: 6px;">
+              BLUEPRINT SPECIFICATION TOKEN COMPILED
+            </div>
+            <p style="font-family: var(--font-mono); font-size: 11px; color: rgba(58,58,56,0.8);">
+              YOUR ACCESS CRYPTOGRAPHIC CERTIFICATE HAS BEEN ISSUED SUCCESSFULLY.
+            </p>
+            <div class="success-code" id="voucher-code">
+              ORTHO-SPEC-7F89-4B12-9A4E-2026
+            </div>
+            <div style="margin-top: 10px;">
+              <button type="button" class="btn btn-ghost" onclick="resetForm()" style="font-size: 10px; padding: 6px 14px;">
+                ENTER ANOTHER SPECIFICATION
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================= -->
+  <!-- 08. TECHNICAL SPEC FOOTER                                               -->
+  <!-- ======================================================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div>
+          <div class="brand-group" style="margin-bottom: 14px;">
+            <div class="logo-box">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="12" y1="3" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <span class="brand-title">ORTHOGON SYSTEMS</span>
+          </div>
+          <p style="font-family: var(--font-mono); font-size: 11px; color: rgba(58,58,56,0.65); line-height: 1.6; max-width: 320px;">
+            A SOPHISTICATED STRUCTURAL DESIGN SYSTEM INSPIRED BY TECHNICAL BLUEPRINTS AND HIGH-END UI WIREFRAMES. BUILT WITH 100% FLAT 2D RIGOR, MOSAIC GRIDS, AND ZERO SHADOWS.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-col-title">01 / ARCHITECTURE</div>
+          <ul class="footer-links">
+            <li><a href="#specification" class="footer-link">SPECIFICATION V4.2</a></li>
+            <li><a href="#bento" class="footer-link">BENTO MATRIX GRID</a></li>
+            <li><a href="#topology" class="footer-link">NETWORK TOPOLOGY</a></li>
+            <li><a href="#benchmarks" class="footer-link">HAIRLINE STANDARDS</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">02 / COLOR PALETTE</div>
+          <ul class="footer-links">
+            <li><span class="footer-link"><span style="color:var(--color-forest)">■</span> FOREST (#1A3C2B)</span></li>
+            <li><span class="footer-link"><span style="color:#C7C7C5">■</span> PAPER (#F7F7F5)</span></li>
+            <li><span class="footer-link"><span style="color:var(--color-coral)">■</span> CORAL (#FF8C69)</span></li>
+            <li><span class="footer-link"><span style="color:var(--color-mint)">■</span> MINT (#9EFFBF)</span></li>
+            <li><span class="footer-link"><span style="color:var(--color-gold)">■</span> GOLD (#F4D35E)</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">03 / COMPLIANCE</div>
+          <ul class="footer-links">
+            <li><span class="footer-link">BOX SHADOWS: 0PX</span></li>
+            <li><span class="footer-link">RADIUS: &le; 2PX</span></li>
+            <li><span class="footer-link">MIX-BLEND: LUMINOSITY</span></li>
+            <li><span class="footer-link">HAIRLINES: 0.5PX / 20%</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>&copy; 2026 ORTHOGON SYSTEMS CORP. ALL TECHNICAL BLUEPRINT RIGHTS RESERVED.</div>
+        <div class="live-clock" id="live-clock">UTC: 00:00:00.000</div>
+        <div>PRECISION WIREFRAME STANDARD // LEVEL 04</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================= -->
+  <!-- 09. INTERACTIVE JAVASCRIPT CONTROLLERS                                  -->
+  <!-- ======================================================================= -->
+  <script>
+    // 1. Live UTC Clock with Milliseconds
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getUTCHours()).padStart(2, '0');
+      const m = String(now.getUTCMinutes()).padStart(2, '0');
+      const s = String(now.getUTCSeconds()).padStart(2, '0');
+      const ms = String(now.getUTCMilliseconds()).padStart(3, '0');
+      const clockEl = document.getElementById('live-clock');
+      if (clockEl) {
+        clockEl.textContent = `UTC: ${h}:${m}:${s}.${ms}`;
+      }
+      requestAnimationFrame(updateClock);
+    }
+    requestAnimationFrame(updateClock);
+
+    // 2. Realtime HUD Mouse Tracking Coordinates
+    const hudVal = document.getElementById('hud-val');
+    const heroPanel = document.getElementById('hero-interactive-panel');
+    const panelCoordReadout = document.getElementById('panel-coord-readout');
+
+    window.addEventListener('mousemove', (e) => {
+      const x = String(e.clientX).padStart(4, '0');
+      const y = String(e.clientY).padStart(4, '0');
+      if (hudVal) {
+        hudVal.textContent = `X: ${x} · Y: ${y}`;
+      }
+
+      // If hovering over hero panel, compute local offset
+      if (heroPanel && panelCoordReadout) {
+        const rect = heroPanel.getBoundingClientRect();
+        if (
+          e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top && e.clientY <= rect.bottom
+        ) {
+          const localX = (e.clientX - rect.left).toFixed(1);
+          const localY = (e.clientY - rect.top).toFixed(1);
+          panelCoordReadout.textContent = `COORD: X:${localX} Y:${localY}`;
+          panelCoordReadout.style.borderColor = 'var(--color-forest)';
+          panelCoordReadout.style.color = 'var(--color-forest)';
+        } else {
+          panelCoordReadout.style.borderColor = 'var(--color-grid-hairline)';
+          panelCoordReadout.style.color = 'rgba(58, 58, 56, 0.6)';
+        }
+      }
+    });
+
+    // 3. Topology Hover Details
+    const topoStatus = document.getElementById('topology-status-readout');
+    const nodes = document.querySelectorAll('.orbiting-node');
+    const nodeDetails = {
+      'α': 'NODE_ALPHA // ROUTING LATENCY: 0.8MS · PACKETS: 48.2K/S · NOMINAL',
+      'β': 'NODE_BETA // SCHEMA COMPILER: 0.4MS · ZERO SHADOW ASSERT: OK',
+      'γ': 'NODE_GAMMA // TELEMETRY HUB: 0.6MS · 1PX GRID SYNC: 100%'
+    };
+
+    nodes.forEach(node => {
+      node.addEventListener('mouseenter', () => {
+        const key = node.textContent.trim();
+        if (topoStatus && nodeDetails[key]) {
+          topoStatus.textContent = nodeDetails[key];
+          topoStatus.style.borderColor = 'var(--color-forest)';
+        }
+      });
+      node.addEventListener('mouseleave', () => {
+        if (topoStatus) {
+          topoStatus.textContent = 'CORE_NODE: ACTIVE · 3 NODES CONNECTED';
+          topoStatus.style.borderColor = 'var(--color-grid-hairline)';
+        }
+      });
+    });
+
+    // 4. Wireframe Blueprint Mode Toggle
+    const wireframeBtn = document.getElementById('wireframe-toggle');
+    wireframeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('wireframe-mode-active');
+      const isActive = document.body.classList.contains('wireframe-mode-active');
+      wireframeBtn.innerHTML = isActive ? '<span>✓ WIREFRAME ACTIVE</span>' : '<span>◫ WIREFRAME MODE</span>';
+    });
+
+    // 5. Technical Form Handler
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      const formEl = document.getElementById('blueprint-form');
+      const successBox = document.getElementById('form-success');
+      const voucherCode = document.getElementById('voucher-code');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>COMPILING SPECIFICATION...</span> <span>⏳</span>';
+
+      setTimeout(() => {
+        // Generate pseudo-cryptographic hash
+        const hash = 'ORTHO-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' +
+                     Math.random().toString(36).substring(2, 6).toUpperCase() + '-' +
+                     Math.random().toString(36).substring(2, 6).toUpperCase() + '-2026';
+        if (voucherCode) voucherCode.textContent = hash;
+        
+        formEl.style.display = 'none';
+        successBox.classList.add('active');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>COMPILE &amp; DISPATCH TOKEN</span> <span>&rarr;</span>';
+      }, 700);
+    }
+
+    function resetForm() {
+      const formEl = document.getElementById('blueprint-form');
+      const successBox = document.getElementById('form-success');
+      if (formEl) {
+        formEl.reset();
+        formEl.style.display = 'flex';
+      }
+      if (successBox) {
+        successBox.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>
