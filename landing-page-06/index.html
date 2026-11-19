@@ -1,0 +1,2565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Floating shopping constellation on white marble</title>
+  <meta name="description" content="Shop runs on a white-canvas discovery model where products float as large, heavily-rounded image cards. Pillow-soft interface with 28px radii, GT Standard typography with tight negative tracking, and signature Shop violet accent.">
+  <meta name="theme-color" content="#f2f4f5">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Colors */
+      --color-canvas-mist: #f2f4f5;
+      --color-pure-white: #ffffff;
+      --color-ink-black: #000000;
+      --color-faint-border: #ebebeb;
+      --color-muted-gray: #787574;
+      --color-cool-stone: #cccccc;
+      --color-warm-fog: #acb0aa;
+      --color-shop-violet: #5433eb;
+      --color-violet-wash: #c0b5f3;
+      --color-slate-ink: #332f2d;
+      --color-ash-veil: #665a54;
+
+      /* Typography — Font Families */
+      --font-gt-standard: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-shopify-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+      /* Typography — Scale */
+      --text-caption: 11px;
+      --leading-caption: 1.33;
+      --text-body-sm: 12px;
+      --leading-body-sm: 1.33;
+      --text-body: 14px;
+      --leading-body: 1.33;
+      --text-body-lg: 16px;
+      --leading-body-lg: 1.38;
+
+      /* Typography — Weights */
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+
+      /* Spacing Scale */
+      --spacing-4: 4px;
+      --spacing-6: 6px;
+      --spacing-8: 8px;
+      --spacing-10: 10px;
+      --spacing-11: 11px;
+      --spacing-12: 12px;
+      --spacing-16: 16px;
+      --spacing-20: 20px;
+      --spacing-24: 24px;
+      --spacing-32: 32px;
+      --spacing-38: 38px;
+      --spacing-40: 40px;
+      --spacing-48: 48px;
+      --spacing-64: 64px;
+
+      /* Layout */
+      --page-max-width: 1200px;
+      --section-gap: 64px;
+      --card-padding: 0px;
+      --element-gap: 12px;
+
+      /* Border Radius */
+      --radius-md: 4px;
+      --radius-lg: 8px;
+      --radius-xl: 11.4046px;
+      --radius-2xl: 17.1064px;
+      --radius-2xl-2: 20px;
+      --radius-2xl-3: 22.8092px;
+      --radius-3xl: 28px;
+      --radius-3xl-2: 32px;
+      --radius-full: 9999px;
+
+      /* Named Radii */
+      --radius-cards: 28px;
+      --radius-chips: 9999px;
+      --radius-pills: 20px;
+      --radius-inputs: 9999px;
+      --radius-search: 9999px;
+      --radius-buttons: 9999px;
+
+      /* Shadows */
+      --shadow-sm: rgba(0, 0, 0, 0.06) 0px 2px 8px 0px;
+      --shadow-sm-2: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
+      --shadow-lg: rgba(0, 0, 0, 0.12) 0px 4px 24px 0px;
+      --shadow-lg-2: rgba(69, 36, 219, 0.34) 0px 4px 24px 0px;
+
+      /* Surfaces */
+      --surface-canvas: #f2f4f5;
+      --surface-surface: #ffffff;
+      --surface-elevated-card: #ffffff;
+      --surface-accent-product-image: #000000;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--color-canvas-mist);
+      color: var(--color-ink-black);
+      font-family: var(--font-gt-standard);
+      font-size: 16px;
+      line-height: 1.38;
+      letter-spacing: -0.5px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ----------------------------------------------------
+       TOP APP DOWNLOAD BANNER
+       48px height, #000000, 1px radius, white centered text
+    ---------------------------------------------------- */
+    .app-banner {
+      width: 100%;
+      height: 48px;
+      background-color: var(--color-ink-black);
+      color: var(--color-pure-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 16px;
+      border-radius: 1px;
+    }
+    .app-banner-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .app-banner-inner:hover {
+      opacity: 0.92;
+    }
+    .app-banner-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background-color: var(--color-shop-violet);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(84, 51, 235, 0.4);
+    }
+    .app-banner-icon svg {
+      width: 14px;
+      height: 14px;
+      fill: #ffffff;
+    }
+    .app-banner-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-shopify-sans);
+    }
+    .app-banner-primary {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.023em;
+      line-height: 1.2;
+    }
+    .app-banner-divider {
+      color: var(--color-muted-gray);
+      font-size: 12px;
+    }
+    .app-banner-subtext {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0em;
+      color: #cccccc;
+      line-height: 1.2;
+    }
+    .app-banner-arrow {
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 2px;
+      transition: transform 0.2s ease;
+    }
+    .app-banner-inner:hover .app-banner-arrow {
+      transform: translateX(3px);
+    }
+    .app-banner-arrow svg {
+      width: 12px;
+      height: 12px;
+      stroke: #ffffff;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* ----------------------------------------------------
+       LAYOUT: PERSISTENT 64px LEFT SIDEBAR NAV RAIL
+    ---------------------------------------------------- */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 48px);
+      position: relative;
+    }
+    .sidebar-rail {
+      width: 64px;
+      background-color: var(--color-pure-white);
+      position: fixed;
+      top: 48px;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      z-index: 90;
+      border-right: 1px solid var(--color-canvas-mist);
+    }
+    .sidebar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .nav-item {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--color-ink-black);
+      text-decoration: none;
+      position: relative;
+      transition: background-color 0.18s ease, transform 0.15s ease;
+    }
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      fill: none;
+    }
+    .nav-item:hover {
+      background-color: var(--color-canvas-mist);
+      transform: scale(1.05);
+    }
+    .nav-item.active {
+      background-color: var(--color-canvas-mist);
+      border-radius: 20px;
+    }
+    .nav-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: var(--color-shop-violet);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 600;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--color-faint-border);
+      overflow: hidden;
+      cursor: pointer;
+      background: #e2e5e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .user-avatar:hover {
+      transform: scale(1.08);
+      border-color: var(--color-muted-gray);
+    }
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ----------------------------------------------------
+       MAIN VIEWPORT WRAPPER
+    ---------------------------------------------------- */
+    .main-content {
+      margin-left: 64px;
+      flex: 1;
+      max-width: calc(100vw - 64px);
+      padding-bottom: 80px;
+    }
+    .container {
+      max-width: var(--page-max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ----------------------------------------------------
+       HERO SECTION WITH FLOATING CONSTELLATION
+    ---------------------------------------------------- */
+    .hero-section {
+      padding: 56px 0 32px 0;
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .constellation-stage {
+      width: 100%;
+      max-width: 1180px;
+      height: 390px;
+      position: relative;
+      margin: 0 auto;
+      pointer-events: none;
+    }
+    .floating-card {
+      position: absolute;
+      pointer-events: auto;
+      background: var(--color-pure-white);
+      border-radius: var(--radius-cards); /* 28px */
+      box-shadow: var(--shadow-sm-2);
+      padding: 8px; /* 8px white frame around inner 20px image */
+      width: 180px;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      z-index: 10;
+    }
+    .floating-card:hover {
+      transform: translateY(-8px) scale(1.04) !important;
+      box-shadow: 0 16px 32px -4px rgba(0,0,0,0.12), 0 8px 16px -4px rgba(0,0,0,0.08);
+      z-index: 30;
+    }
+    .floating-card-image {
+      width: 100%;
+      height: 140px;
+      border-radius: var(--radius-2xl-2); /* 20px inner radius */
+      overflow: hidden;
+      background: #ecefed;
+      position: relative;
+    }
+    .floating-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .floating-card:hover .floating-card-image img {
+      transform: scale(1.06);
+    }
+    .floating-card-body {
+      padding: 10px 4px 4px 4px;
+    }
+    .floating-card-brand {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      line-height: 1.25;
+      color: var(--color-ink-black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .floating-card-title {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.2px;
+      color: var(--color-muted-gray);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .floating-card-rating {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      color: var(--color-muted-gray);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .stars-glyph {
+      color: #111111;
+      letter-spacing: 1px;
+      font-size: 8px;
+    }
+
+    /* Constellation positioning & ambient float animations */
+    .card-pos-1 {
+      top: 15px;
+      left: 35px;
+      animation: floatA 7s ease-in-out infinite;
+    }
+    .card-pos-2 {
+      top: 185px;
+      left: 110px;
+      animation: floatB 8.5s ease-in-out infinite 0.5s;
+    }
+    .card-pos-3 {
+      top: 15px;
+      right: 35px;
+      animation: floatC 7.8s ease-in-out infinite 1s;
+    }
+    .card-pos-4 {
+      top: 185px;
+      right: 110px;
+      animation: floatD 9s ease-in-out infinite 1.5s;
+    }
+
+    @keyframes floatA {
+      0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+      50% { transform: translateY(-8px) rotate(-0.5deg); }
+    }
+    @keyframes floatB {
+      0%, 100% { transform: translateY(0px) rotate(1.8deg); }
+      50% { transform: translateY(-7px) rotate(0.8deg); }
+    }
+    @keyframes floatC {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-9px) rotate(-1deg); }
+    }
+    @keyframes floatD {
+      0%, 100% { transform: translateY(0px) rotate(1.5deg); }
+      50% { transform: translateY(-8px) rotate(2.2deg); }
+    }
+
+    /* Constellation Center: shop wordmark + dot */
+    .constellation-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: auto;
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .shop-wordmark {
+      font-size: 76px;
+      font-weight: 700;
+      letter-spacing: -2.5px;
+      line-height: 0.95;
+      color: var(--color-ink-black);
+      display: inline-flex;
+      align-items: baseline;
+      user-select: none;
+    }
+    .shop-wordmark .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: var(--color-shop-violet);
+      display: inline-block;
+      margin-left: 2px;
+      box-shadow: 0 0 20px var(--color-violet-wash);
+    }
+    .hero-subtitle {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      color: var(--color-muted-gray);
+      margin-top: 14px;
+      max-width: 480px;
+      line-height: 1.4;
+    }
+
+    /* ----------------------------------------------------
+       HERO SEARCH INPUT WITH VIOLET SUBMIT
+       9999px radius, #ffffff fill, 1px border rgba(5,41,77,0.1)
+       circular 48px violet button with white right arrow glyph
+       shadow: 0 4px 24px rgba(69,36,219,0.34)
+    ---------------------------------------------------- */
+    .search-wrapper {
+      width: 100%;
+      max-width: 640px;
+      margin: 32px auto 0 auto;
+      position: relative;
+      z-index: 25;
+    }
+    .search-pill {
+      background-color: var(--color-pure-white);
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(5, 41, 77, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 4px 4px 4px 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-pill:focus-within {
+      border-color: rgba(84, 51, 235, 0.4);
+      box-shadow: 0 6px 20px rgba(84, 51, 235, 0.1);
+    }
+    .search-icon-left {
+      width: 20px;
+      height: 20px;
+      stroke: var(--color-muted-gray);
+      stroke-width: 2;
+      fill: none;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-gt-standard);
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      color: var(--color-ink-black);
+    }
+    .search-input::placeholder {
+      color: var(--color-muted-gray);
+    }
+    .search-clear-btn {
+      background: none;
+      border: none;
+      color: var(--color-muted-gray);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 8px;
+      display: none;
+    }
+    .search-submit-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-shop-violet);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-lg-2); /* 0 4px 24px rgba(69,36,219,0.34) */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-submit-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 28px rgba(69, 36, 219, 0.45);
+    }
+    .search-submit-btn:active {
+      transform: scale(0.97);
+    }
+    .search-submit-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: #ffffff;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* ----------------------------------------------------
+       CATEGORY QUICK-ACCESS PILLS ROW
+       9999px radius, #ffffff fill, 1px #ebebeb border,
+       0 2px 8px rgba(0,0,0,0.06) shadow
+    ---------------------------------------------------- */
+    .category-pills-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      z-index: 20;
+      position: relative;
+    }
+    .category-pill {
+      background-color: var(--color-pure-white);
+      border: 1px solid var(--color-faint-border);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+      padding: 6px 16px 6px 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--color-ink-black);
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .category-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: var(--color-cool-stone);
+    }
+    .category-pill.active {
+      border-color: var(--color-ink-black);
+    }
+    .cat-icon-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .cat-label {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+    }
+
+    /* ----------------------------------------------------
+       SECTION HEADERS WITH CHEVRON
+       20px GTStandard-MSemibold, -1.0px tracking, ink-black
+       16px ink-black right-chevron, 24px bottom margin
+    ---------------------------------------------------- */
+    .section-wrap {
+      margin-top: var(--section-gap);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .section-title-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -1.0px;
+      line-height: 1.1;
+      color: var(--color-ink-black);
+    }
+    .section-title-chevron {
+      width: 16px;
+      height: 16px;
+      stroke: var(--color-ink-black);
+      stroke-width: 2.2;
+      fill: none;
+      transition: transform 0.2s ease;
+    }
+    .section-title-wrap:hover .section-title-chevron {
+      transform: translateX(3px);
+    }
+    .section-subtext {
+      font-size: 14px;
+      color: var(--color-muted-gray);
+      letter-spacing: -0.2px;
+    }
+
+    /* ----------------------------------------------------
+       CAROUSEL ARROWS
+       Circular 32px white button, 0 4px 24px rgba(0,0,0,0.12) shadow
+       16px ink-black chevron
+    ---------------------------------------------------- */
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .carousel-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-pure-white);
+      border: none;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-ink-black);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+    .carousel-btn:hover {
+      transform: scale(1.1);
+      background: #fafafa;
+    }
+    .carousel-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+    }
+
+    /* ----------------------------------------------------
+       FEATURED BRAND SPOTLIGHT CARDS
+       28px card radius, dual shadow, 1:1 image with 20px inner radius
+       Brand name 14px semibold, rating in 9px caption
+       Mini product thumbnail strip (3-4 square swatches at 48px with 12px radius)
+    ---------------------------------------------------- */
+    .brand-spotlight-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .brand-spotlight-card {
+      background: var(--color-pure-white);
+      border-radius: var(--radius-cards);
+      box-shadow: var(--shadow-sm-2);
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .brand-spotlight-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 28px -4px rgba(0,0,0,0.12), 0 6px 12px -2px rgba(0,0,0,0.06);
+    }
+    .brand-main-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-2xl-2);
+      overflow: hidden;
+      background: #f0f2f1;
+    }
+    .brand-main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .brand-spotlight-card:hover .brand-main-image img {
+      transform: scale(1.05);
+    }
+    .brand-info {
+      padding: 12px 6px 6px 6px;
+    }
+    .brand-name-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+    }
+    .brand-category {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.2px;
+      color: var(--color-muted-gray);
+      margin-top: 2px;
+    }
+    .brand-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      color: var(--color-muted-gray);
+      margin-top: 6px;
+    }
+    .brand-thumbnails-strip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #f5f5f5;
+    }
+    .thumb-item {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f0f0f0;
+      flex-shrink: 0;
+    }
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ----------------------------------------------------
+       CATEGORY ROW: 2-COLUMN HERO + 2x2 GRID
+    ---------------------------------------------------- */
+    .capsule-row {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .product-hero-card {
+      background: #e7e2dc;
+      border-radius: var(--radius-cards);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm-2);
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 32px;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    .product-hero-card img.bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      transition: transform 0.5s ease;
+    }
+    .product-hero-card:hover img.bg-image {
+      transform: scale(1.04);
+    }
+    .product-hero-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.6) 100%);
+      z-index: 2;
+    }
+    .hero-card-header {
+      position: relative;
+      z-index: 3;
+    }
+    .hero-card-brand {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1.0px;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+    .hero-card-rating {
+      font-size: 14px;
+      margin-top: 6px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-card-footer {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .hero-card-desc {
+      font-size: 16px;
+      max-width: 320px;
+      letter-spacing: -0.5px;
+      line-height: 1.35;
+      font-weight: 400;
+    }
+    .hero-shop-pill {
+      background: var(--color-pure-white);
+      color: var(--color-ink-black);
+      border-radius: var(--radius-full);
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+    .hero-shop-pill:hover {
+      transform: scale(1.05);
+    }
+
+    /* 2x2 Grid of product image tiles with overlay label */
+    .tiles-2x2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 16px;
+    }
+    .product-tile-card {
+      border-radius: var(--radius-cards);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm-2);
+      cursor: pointer;
+      background: #ffffff;
+      aspect-ratio: 1 / 1;
+    }
+    .product-tile-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .product-tile-card:hover img {
+      transform: scale(1.06);
+    }
+    .product-tile-overlay {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: background 0.2s ease;
+    }
+    .product-tile-card:hover .product-tile-overlay {
+      background: rgba(255, 255, 255, 0.98);
+    }
+    .tile-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+      line-height: 1.2;
+    }
+    .tile-price {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-muted-gray);
+      margin-top: 2px;
+    }
+
+    /* ----------------------------------------------------
+       4-COLUMN PRODUCT GRID (Clean Beauty & Essentials)
+       28px card radius, 8px white frame, 20px inner image
+    ---------------------------------------------------- */
+    .products-4col-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .standard-product-card {
+      background: var(--color-pure-white);
+      border-radius: var(--radius-cards);
+      box-shadow: var(--shadow-sm-2);
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .standard-product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 28px -4px rgba(0,0,0,0.12), 0 6px 12px -2px rgba(0,0,0,0.06);
+    }
+    .standard-img-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-2xl-2);
+      overflow: hidden;
+      background: #f4f4f4;
+      position: relative;
+    }
+    .standard-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .standard-product-card:hover .standard-img-wrap img {
+      transform: scale(1.05);
+    }
+    .card-quick-add-btn {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: var(--color-pure-white);
+      border: 1px solid var(--color-faint-border);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.2s ease, transform 0.2s ease, background 0.15s ease;
+    }
+    .standard-product-card:hover .card-quick-add-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .card-quick-add-btn:hover {
+      background: var(--color-ink-black);
+      color: #ffffff;
+    }
+    .standard-card-info {
+      padding: 12px 6px 6px 6px;
+    }
+    .card-brand-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      color: var(--color-muted-gray);
+      text-transform: uppercase;
+    }
+    .card-product-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-price-rating-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+    .card-product-price {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+    }
+    .card-rating-text {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      color: var(--color-muted-gray);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* ----------------------------------------------------
+       HORIZONTAL SCROLLABLE PRODUCT RAIL
+       Modern Living & Objects
+    ---------------------------------------------------- */
+    .scrollable-rail-wrap {
+      position: relative;
+    }
+    .horizontal-scroll-rail {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .horizontal-scroll-rail::-webkit-scrollbar {
+      display: none;
+    }
+    .rail-card {
+      width: 260px;
+      flex-shrink: 0;
+    }
+
+    /* ----------------------------------------------------
+       DARK ACCENT PRODUCT CARDS
+       --surface-accent-product-image: #000000
+    ---------------------------------------------------- */
+    .dark-accent-card {
+      background: var(--color-slate-ink);
+      color: #ffffff;
+    }
+    .dark-accent-card .card-brand-label {
+      color: #aaaaaa;
+    }
+    .dark-accent-card .card-product-name {
+      color: #ffffff;
+    }
+    .dark-accent-card .card-product-price {
+      color: #ffffff;
+    }
+    .dark-accent-card .card-rating-text {
+      color: #bbbbbb;
+    }
+    .dark-accent-card .stars-glyph {
+      color: #ffffff;
+    }
+    .dark-accent-card .card-quick-add-btn {
+      background: #ffffff;
+      color: #000000;
+    }
+    .dark-accent-card .card-quick-add-btn:hover {
+      background: var(--color-shop-violet);
+      color: #ffffff;
+      border-color: var(--color-shop-violet);
+    }
+
+    /* ----------------------------------------------------
+       COOKIE CONSENT BUTTON (Floating Pill)
+       9999px radius, white fill, 1px #ebebeb border
+       Black 12px semibold label centered
+       Shadow: 0 2px 8px rgba(0,0,0,0.06)
+    ---------------------------------------------------- */
+    .cookie-floating-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--color-pure-white);
+      border: 1px solid var(--color-faint-border);
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+      z-index: 95;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cookie-floating-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+    .cookie-icon {
+      font-size: 14px;
+    }
+    .cookie-dismiss {
+      background: none;
+      border: none;
+      color: var(--color-muted-gray);
+      cursor: pointer;
+      font-size: 14px;
+      padding-left: 4px;
+    }
+
+    /* ----------------------------------------------------
+       DARK FOOTER
+       Deep slate ink, columnar link groups
+    ---------------------------------------------------- */
+    .app-footer {
+      background-color: var(--color-ink-black);
+      color: #ffffff;
+      padding: 72px 0 48px 0;
+      margin-top: 80px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+      gap: 48px;
+    }
+    .footer-brand-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .footer-wordmark {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .footer-wordmark .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--color-shop-violet);
+      display: inline-block;
+      margin-left: 2px;
+    }
+    .footer-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #8c8c8c;
+      max-width: 280px;
+      letter-spacing: -0.2px;
+    }
+    .footer-col-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #8c8c8c;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .footer-links a {
+      color: #d1d1d1;
+      text-decoration: none;
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      transition: color 0.15s ease;
+    }
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+    .footer-bottom {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid #222222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #777777;
+    }
+
+    /* ----------------------------------------------------
+       INTERACTIVE CART DRAWER & TOAST
+    ---------------------------------------------------- */
+    .cart-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .cart-drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 420px;
+      max-width: 90vw;
+      background: var(--color-pure-white);
+      z-index: 210;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+    }
+    .cart-drawer.open {
+      transform: translateX(0);
+    }
+    .cart-drawer-header {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-faint-border);
+    }
+    .cart-drawer-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .cart-close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--color-ink-black);
+      padding: 4px;
+    }
+    .cart-drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .cart-item {
+      display: flex;
+      gap: 14px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .cart-item-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f4f4f4;
+      flex-shrink: 0;
+    }
+    .cart-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .cart-item-details {
+      flex: 1;
+    }
+    .cart-item-brand {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-muted-gray);
+      text-transform: uppercase;
+    }
+    .cart-item-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--color-ink-black);
+    }
+    .cart-item-price {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .cart-drawer-footer {
+      padding: 24px;
+      border-top: 1px solid var(--color-faint-border);
+      background: #fafafa;
+    }
+    .cart-subtotal-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .shop-pay-btn {
+      width: 100%;
+      height: 48px;
+      background: var(--color-shop-violet);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg-2);
+      transition: transform 0.2s ease;
+    }
+    .shop-pay-btn:hover {
+      transform: scale(1.02);
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--color-ink-black);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #27ae60;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .constellation-stage {
+        height: auto;
+      }
+      .floating-card {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        animation: none !important;
+        margin: 8px;
+        display: inline-block;
+      }
+      .constellation-center {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin-bottom: 24px;
+      }
+      .brand-spotlight-grid,
+      .products-4col-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .capsule-row {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP APP DOWNLOAD BANNER (48px height, #000000 background, 1px radius) -->
+  <header class="app-banner">
+    <a href="#download" class="app-banner-inner" id="bannerLink">
+      <div class="app-banner-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M16 6V4a4 4 0 0 0-8 0v2H4v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6h-4zm-6-2a2 2 0 0 1 4 0v2h-4V4zm7 16H7V8h10v12z"/>
+        </svg>
+      </div>
+      <div class="app-banner-text">
+        <span class="app-banner-primary">Download Shop app</span>
+        <span class="app-banner-divider">•</span>
+        <span class="app-banner-subtext">Available on iOS & Android</span>
+      </div>
+      <div class="app-banner-arrow">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>
+    </a>
+  </header>
+
+  <!-- PERSISTENT LEFT SIDEBAR NAV RAIL (64px width, white background) -->
+  <div class="app-layout">
+    <aside class="sidebar-rail" aria-label="Sidebar Navigation">
+      <div class="sidebar-group">
+        <!-- Home / Discover (Active: 20px radius background #f2f4f5) -->
+        <a href="#hero" class="nav-item active" title="Discover" aria-label="Discover">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </a>
+        <!-- Browse / Categories -->
+        <a href="#categories" class="nav-item" title="Browse Categories" aria-label="Browse">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="2"/>
+            <rect x="14" y="3" width="7" height="7" rx="2"/>
+            <rect x="14" y="14" width="7" height="7" rx="2"/>
+            <rect x="3" y="14" width="7" height="7" rx="2"/>
+          </svg>
+        </a>
+        <!-- Orders / Package Tracker -->
+        <a href="#orders" class="nav-item" title="Track Packages" aria-label="Orders">
+          <svg viewBox="0 0 24 24">
+            <polyline points="16.5 9.4 7.5 4.21"/>
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </a>
+        <!-- Saved / Wishlist -->
+        <a href="#saved" class="nav-item" title="Saved Items" aria-label="Saved">
+          <svg viewBox="0 0 24 24">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </a>
+        <!-- Bag / Cart with Badge -->
+        <a href="#bag" class="nav-item" id="navCartBtn" title="Shopping Bag" aria-label="Bag">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="nav-badge" id="cartCountBadge">2</span>
+        </a>
+      </div>
+
+      <div class="sidebar-group">
+        <!-- Settings -->
+        <a href="#settings" class="nav-item" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </a>
+        <!-- User Avatar (32px circle, 1px ring) -->
+        <div class="user-avatar" title="Account profile">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#666;">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT CONTENT -->
+    <main class="main-content" id="hero">
+      
+      <!-- HERO FLOATING CONSTELLATION -->
+      <section class="hero-section">
+        <div class="constellation-stage">
+          
+          <!-- Floating Card 1: Top Left (Veja Sneakers) -->
+          <div class="floating-card card-pos-1" onclick="openProductModal('Veja Campo Sneaker', 'VEJA', '$175', 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=500&q=80')">
+            <div class="floating-card-image">
+              <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=500&q=80" 
+                   alt="Veja Campo Sneaker"
+                   loading="eager"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f5f3f0\'/%3E%3Cpath d=\'M60 180 C90 140 180 140 240 170 C250 175 250 200 230 205 L70 205 Z\' fill=\'%23ffffff\' stroke=\'%23dcd7d0\' stroke-width=\'2\'/%3E%3Cpath d=\'M130 150 L150 175 M150 150 L170 175\' stroke=\'%23acb0aa\' stroke-width=\'2\'/%3E%3Ctext x=\'150\' y=\'240\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EVEJA CAMPO%3C/text%3E%3C/svg%3E';">
+            </div>
+            <div class="floating-card-body">
+              <div class="floating-card-brand">VEJA</div>
+              <div class="floating-card-title">Campo Extra White</div>
+              <div class="floating-card-rating">
+                <span class="stars-glyph">★★★★★</span>
+                <span>4.9 (1.4k)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Card 2: Bottom Left (Augustinus Bader) -->
+          <div class="floating-card card-pos-2" onclick="openProductModal('The Rich Cream', 'AUGUSTINUS BADER', '$290', 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80')">
+            <div class="floating-card-image">
+              <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80" 
+                   alt="The Rich Cream"
+                   loading="eager"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ecebe9\'/%3E%3Crect x=\'110\' y=\'100\' width=\'80\' height=\'110\' rx=\'16\' fill=\'%23ffffff\' stroke=\'%23c0b5f3\' stroke-width=\'2\'/%3E%3Crect x=\'125\' y=\'80\' width=\'50\' height=\'20\' rx=\'4\' fill=\'%235433eb\'/%3E%3Ctext x=\'150\' y=\'240\' font-family=\'sans-serif\' font-size=\'11\' fill=\'%23787574\' text-anchor=\'middle\'%3EBADER RICH CREAM%3C/text%3E%3C/svg%3E';">
+            </div>
+            <div class="floating-card-body">
+              <div class="floating-card-brand">AUGUSTINUS BADER</div>
+              <div class="floating-card-title">The Rich Cream 50ml</div>
+              <div class="floating-card-rating">
+                <span class="stars-glyph">★★★★★</span>
+                <span>5.0 (982)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Card 3: Top Right (Hasami Ceramics) -->
+          <div class="floating-card card-pos-3" onclick="openProductModal('Porcelain Teapot', 'HASAMI PORCELAIN', '$88', 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=500&q=80')">
+            <div class="floating-card-image">
+              <img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=500&q=80" 
+                   alt="Hasami Porcelain Tableware"
+                   loading="eager"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f0ece6\'/%3E%3Ccircle cx=\'150\' cy=\'155\' r=\'55\' fill=\'%23ffffff\' stroke=\'%23d1c7bc\' stroke-width=\'2\'/%3E%3Crect x=\'135\' y=\'85\' width=\'30\' height=\'15\' rx=\'4\' fill=\'%23acb0aa\'/%3E%3Ctext x=\'150\' y=\'240\' font-family=\'sans-serif\' font-size=\'11\' fill=\'%23787574\' text-anchor=\'middle\'%3EHASAMI CERAMICS%3C/text%3E%3C/svg%3E';">
+            </div>
+            <div class="floating-card-body">
+              <div class="floating-card-brand">HASAMI PORCELAIN</div>
+              <div class="floating-card-title">Gloss Ceramic Pitcher</div>
+              <div class="floating-card-rating">
+                <span class="stars-glyph">★★★★★</span>
+                <span>4.8 (610)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Card 4: Bottom Right (Toteme Trench) -->
+          <div class="floating-card card-pos-4" onclick="openProductModal('Signature Wool Coat', 'TOTÊME', '$850', 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=500&q=80')">
+            <div class="floating-card-image">
+              <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=500&q=80" 
+                   alt="Toteme Signature Wool Coat"
+                   loading="eager"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23eae6df\'/%3E%3Cpath d=\'M110 80 L190 80 L220 220 L80 220 Z\' fill=\'%23ffffff\' stroke=\'%23cfc7bc\' stroke-width=\'2\'/%3E%3Ctext x=\'150\' y=\'250\' font-family=\'sans-serif\' font-size=\'11\' fill=\'%23787574\' text-anchor=\'middle\'%3ETOTEME STUDIO%3C/text%3E%3C/svg%3E';">
+            </div>
+            <div class="floating-card-body">
+              <div class="floating-card-brand">TOTÊME</div>
+              <div class="floating-card-title">Signature Wool Coat</div>
+              <div class="floating-card-rating">
+                <span class="stars-glyph">★★★★★</span>
+                <span>4.9 (430)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Central Wordmark -->
+          <div class="constellation-center">
+            <div class="shop-wordmark">shop<span class="dot"></span></div>
+            <p class="hero-subtitle">Floating shopping constellation on white marble. Explore verified independent brands with seamless one-tap checkout.</p>
+          </div>
+        </div>
+
+        <!-- SEARCH INPUT WITH VIOLET SUBMIT BUTTON -->
+        <div class="search-wrapper">
+          <form class="search-pill" id="searchForm" onsubmit="handleSearch(event)">
+            <svg class="search-icon-left" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" 
+                   class="search-input" 
+                   id="searchInput"
+                   placeholder="What are you shopping for today?" 
+                   aria-label="Search Shop"
+                   autocomplete="off">
+            <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()">×</button>
+            <button type="submit" class="search-submit-btn" aria-label="Submit search">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        <!-- CATEGORY QUICK-ACCESS PILLS ROW -->
+        <div class="category-pills-row" id="categories">
+          <button class="category-pill active" onclick="filterCategory('all', this)">
+            <div class="cat-icon-circle" style="background:#5433eb; color:#ffffff;">✦</div>
+            <span class="cat-label">All Curated</span>
+          </button>
+          <button class="category-pill" onclick="filterCategory('women', this)">
+            <div class="cat-icon-circle" style="background:#fcebe6; color:#d9654f;">👗</div>
+            <span class="cat-label">Women</span>
+          </button>
+          <button class="category-pill" onclick="filterCategory('men', this)">
+            <div class="cat-icon-circle" style="background:#eaf1f8; color:#3b6ea8;">👔</div>
+            <span class="cat-label">Men</span>
+          </button>
+          <button class="category-pill" onclick="filterCategory('beauty', this)">
+            <div class="cat-icon-circle" style="background:#f7eaf8; color:#9c48a8;">🧴</div>
+            <span class="cat-label">Beauty</span>
+          </button>
+          <button class="category-pill" onclick="filterCategory('home', this)">
+            <div class="cat-icon-circle" style="background:#f6eee3; color:#9c703b;">🏺</div>
+            <span class="cat-label">Home</span>
+          </button>
+          <button class="category-pill" onclick="filterCategory('tech', this)">
+            <div class="cat-icon-circle" style="background:#e8f4f0; color:#31846b;">🎧</div>
+            <span class="cat-label">Electronics</span>
+          </button>
+          <button class="category-pill" onclick="filterCategory('baby', this)">
+            <div class="cat-icon-circle" style="background:#fef7e6; color:#a67c1e;">🧸</div>
+            <span class="cat-label">Baby & Toddler</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- MAIN CONTAINER -->
+      <div class="container">
+
+        <!-- SECTION 1: FEATURED BRAND SPOTLIGHTS (With Mini Thumbnail Strips) -->
+        <section class="section-wrap" id="featured-brands">
+          <div class="section-header">
+            <a href="#featured-brands" class="section-title-wrap">
+              <h2 class="section-title">Trending Independent Labels</h2>
+              <svg class="section-title-chevron" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+            <span class="section-subtext">Directly from artisan workshops worldwide</span>
+          </div>
+
+          <div class="brand-spotlight-grid">
+            
+            <!-- Brand 1: Tekla -->
+            <div class="brand-spotlight-card" onclick="openProductModal('Percale Bedding Set', 'TEKLA FABRICS', '$245', 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80')">
+              <div class="brand-main-image">
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80" 
+                     alt="Tekla Fabrics"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\' viewBox=\'0 0 400 400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%23edeae5\'/%3E%3Crect x=\'80\' y=\'120\' width=\'240\' height=\'160\' rx=\'20\' fill=\'%23ffffff\' stroke=\'%23dcd6cb\' stroke-width=\'2\'/%3E%3Ctext x=\'200\' y=\'320\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3ETEKLA COPENHAGEN%3C/text%3E%3C/svg%3E';">
+              </div>
+              <div class="brand-info">
+                <div class="brand-name-row">
+                  <span class="brand-name">Tekla Fabrics</span>
+                </div>
+                <div class="brand-category">Copenhagen • Organic Textiles</div>
+                <div class="brand-rating-row">
+                  <span class="stars-glyph">★★★★★</span>
+                  <span>4.9 (2,100 reviews)</span>
+                </div>
+                <div class="brand-thumbnails-strip">
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23e8e2d8\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23ddd4c6\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23d5cec3\'/%3E%3C/svg%3E';"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Brand 2: Aesop -->
+            <div class="brand-spotlight-card" onclick="openProductModal('Resurrection Aromatique Hand Balm', 'AESOP', '$39', 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80')">
+              <div class="brand-main-image">
+                <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80" 
+                     alt="Aesop Apothecary"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\' viewBox=\'0 0 400 400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%23f4f1ed\'/%3E%3Crect x=\'140\' y=\'100\' width=\'120\' height=\'180\' rx=\'16\' fill=\'%234a3b32\'/%3E%3Crect x=\'155\' y=\'130\' width=\'90\' height=\'80\' fill=\'%23faf8f5\'/%3E%3Ctext x=\'200\' y=\'320\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3EAESOP MELBOURNE%3C/text%3E%3C/svg%3E';">
+              </div>
+              <div class="brand-info">
+                <div class="brand-name-row">
+                  <span class="brand-name">Aesop Apothecary</span>
+                </div>
+                <div class="brand-category">Melbourne • Botanical Formulations</div>
+                <div class="brand-rating-row">
+                  <span class="stars-glyph">★★★★★</span>
+                  <span>5.0 (4,820 reviews)</span>
+                </div>
+                <div class="brand-thumbnails-strip">
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1608248597359-59754f9d2e1b?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23e5dfd7\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23dcd5cb\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23d0c7ba\'/%3E%3C/svg%3E';"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Brand 3: Kinto Japan -->
+            <div class="brand-spotlight-card" onclick="openProductModal('Slow Coffee Style Brewer', 'KINTO JAPAN', '$62', 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80')">
+              <div class="brand-main-image">
+                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80" 
+                     alt="Kinto Japan"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\' viewBox=\'0 0 400 400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%23edebe6\'/%3E%3Cpath d=\'M150 120 L250 120 L220 220 L180 220 Z\' fill=\'%23ffffff\' stroke=\'%23d4cebf\' stroke-width=\'2\'/%3E%3Ccircle cx=\'200\' cy=\'250\' r=\'40\' fill=\'%23dcd7cb\'/%3E%3Ctext x=\'200\' y=\'320\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3EKINTO TOKYO%3C/text%3E%3C/svg%3E';">
+              </div>
+              <div class="brand-info">
+                <div class="brand-name-row">
+                  <span class="brand-name">Kinto Japan</span>
+                </div>
+                <div class="brand-category">Tokyo • Tableware & Slow Living</div>
+                <div class="brand-rating-row">
+                  <span class="stars-glyph">★★★★★</span>
+                  <span>4.9 (1,680 reviews)</span>
+                </div>
+                <div class="brand-thumbnails-strip">
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23e5ded4\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23dad2c5\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1577937927133-66ef06acdf18?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23cec4b4\'/%3E%3C/svg%3E';"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Brand 4: Common Projects -->
+            <div class="brand-spotlight-card" onclick="openProductModal('Original Achilles Low', 'COMMON PROJECTS', '$440', 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80')">
+              <div class="brand-main-image">
+                <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80" 
+                     alt="Common Projects"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\' viewBox=\'0 0 400 400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%23eceae7\'/%3E%3Crect x=\'90\' y=\'130\' width=\'220\' height=\'140\' rx=\'16\' fill=\'%23ffffff\' stroke=\'%23d5d0c7\' stroke-width=\'2\'/%3E%3Ctext x=\'200\' y=\'320\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3ECOMMON PROJECTS%3C/text%3E%3C/svg%3E';">
+              </div>
+              <div class="brand-info">
+                <div class="brand-name-row">
+                  <span class="brand-name">Common Projects</span>
+                </div>
+                <div class="brand-category">New York • Italian Leathercraft</div>
+                <div class="brand-rating-row">
+                  <span class="stars-glyph">★★★★★</span>
+                  <span>4.9 (3,410 reviews)</span>
+                </div>
+                <div class="brand-thumbnails-strip">
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23e8e2d8\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23dbd4c7\'/%3E%3C/svg%3E';"></div>
+                  <div class="thumb-item"><img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=120&q=80" alt="swatch" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Crect width=\'48\' height=\'48\' fill=\'%23cec6b7\'/%3E%3C/svg%3E';"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 2: WOMEN'S STUDIO CAPSULE (Hero Image + 2x2 Grid) -->
+        <section class="section-wrap" id="women">
+          <div class="section-header">
+            <a href="#women" class="section-title-wrap">
+              <h2 class="section-title">Women's Studio Capsule</h2>
+              <svg class="section-title-chevron" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+            <span class="section-subtext">Sculptural silhouettes and pure natural fibres</span>
+          </div>
+
+          <div class="capsule-row">
+            <!-- Product Type Hero Image: large rounded card (28px radius) filling ~55% width -->
+            <div class="product-hero-card" onclick="openProductModal('TOTÊME Autumn Trench', 'TOTÊME', '$890', 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80')">
+              <img class="bg-image" 
+                   src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" 
+                   alt="Toteme Autumn Trench"
+                   loading="lazy"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'600\' viewBox=\'0 0 600 600\'%3E%3Crect width=\'600\' height=\'600\' fill=\'%23e5dfd7\'/%3E%3Ctext x=\'50\' y=\'100\' font-family=\'sans-serif\' font-size=\'32\' font-weight=\'bold\' fill=\'%23ffffff\'%3ETOTÊME%3C/text%3E%3C/svg%3E';">
+              <div class="hero-card-header">
+                <div class="hero-card-brand">TOTÊME</div>
+                <div class="hero-card-rating">
+                  <span class="stars-glyph">★★★★★</span>
+                  <span>4.9 • 840 verified orders</span>
+                </div>
+              </div>
+              <div class="hero-card-footer">
+                <div class="hero-card-desc">The Double-Breasted Wool Melange Overcoat. Cut from heavy Swedish double-face wool.</div>
+                <button class="hero-shop-pill">Explore Capsule →</button>
+              </div>
+            </div>
+
+            <!-- 2x2 Grid of product image tiles with bottom-left overlay chips -->
+            <div class="tiles-2x2-grid">
+              
+              <div class="product-tile-card" onclick="openProductModal('Pleated Silk Camisole', 'KHAITE', '$420', 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=500&q=80')">
+                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=500&q=80" 
+                     alt="Pleated Silk Camisole"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f3ece4\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3EStructured Bag%3C/text%3E%3C/svg%3E';">
+                <div class="product-tile-overlay">
+                  <span class="tile-title">Structured Leather Hobo</span>
+                  <span class="tile-price">$680</span>
+                </div>
+              </div>
+
+              <div class="product-tile-card" onclick="openProductModal('Cashmere Ribbed Knit', 'LISA YANG', '$480', 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=500&q=80')">
+                <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=500&q=80" 
+                     alt="Cashmere Ribbed Knit"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23eae3da\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3ECashmere Knit%3C/text%3E%3C/svg%3E';">
+                <div class="product-tile-overlay">
+                  <span class="tile-title">Pure Cashmere Knit</span>
+                  <span class="tile-price">$480</span>
+                </div>
+              </div>
+
+              <div class="product-tile-card" onclick="openProductModal('Tapered Linen Pant', 'MATTEAU', '$320', 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=500&q=80')">
+                <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=500&q=80" 
+                     alt="Tapered Linen Pant"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ece7e0\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3ELinen Pant%3C/text%3E%3C/svg%3E';">
+                <div class="product-tile-overlay">
+                  <span class="tile-title">Relaxed Linen Trouser</span>
+                  <span class="tile-price">$320</span>
+                </div>
+              </div>
+
+              <div class="product-tile-card" onclick="openProductModal('Minimalist Sunglasses', 'OLIVER PEOPLES', '$390', 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80')">
+                <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80" 
+                     alt="Minimalist Sunglasses"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f0ebe3\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23787574\' text-anchor=\'middle\'%3EAcetate Frames%3C/text%3E%3C/svg%3E';">
+                <div class="product-tile-overlay">
+                  <span class="tile-title">Handmade Acetate Shades</span>
+                  <span class="tile-price">$390</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: CLEAN BEAUTY & APOTHECARY (4-Column Card Grid) -->
+        <section class="section-wrap" id="beauty">
+          <div class="section-header">
+            <a href="#beauty" class="section-title-wrap">
+              <h2 class="section-title">Clean Beauty & Botanical Formulations</h2>
+              <svg class="section-title-chevron" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+            <span class="section-subtext">Clinical efficacy with non-toxic purity</span>
+          </div>
+
+          <div class="products-4col-grid">
+            
+            <!-- Item 1 -->
+            <div class="standard-product-card" onclick="openProductModal('The Rich Cream 50ml', 'AUGUSTINUS BADER', '$290', 'https://images.unsplash.com/photo-1608248597359-59754f9d2e1b?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1608248597359-59754f9d2e1b?auto=format&fit=crop&w=500&q=80" alt="Augustinus Bader" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ede8e2\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EThe Rich Cream%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'The Rich Cream 50ml', 'AUGUSTINUS BADER', 290, 'https://images.unsplash.com/photo-1608248597359-59754f9d2e1b?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Augustinus Bader</span>
+                <div class="card-product-name">The Rich Cream with TFC8®</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$290</span>
+                  <div class="card-rating-text">
+                    <span class="stars-glyph">★★★★★</span>
+                    <span>5.0 (982)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="standard-product-card" onclick="openProductModal('Santal 33 Eau de Parfum', 'LE LABO', '$230', 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=500&q=80" alt="Le Labo Fragrance" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f3ece4\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3ESantal 33%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Santal 33 EDP 50ml', 'LE LABO', 230, 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Le Labo</span>
+                <div class="card-product-name">Santal 33 Eau de Parfum</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$230</span>
+                  <div class="card-rating-text">
+                    <span class="stars-glyph">★★★★★</span>
+                    <span>4.9 (3.4k)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="standard-product-card" onclick="openProductModal('Botanical Face Oil', 'F. MILLER', '$110', 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80" alt="Face Oil" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ece6df\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EFace Oil%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Botanical Face Oil', 'F. MILLER', 110, 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">F. Miller</span>
+                <div class="card-product-name">Botanical Face Oil Concentré</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$110</span>
+                  <div class="card-rating-text">
+                    <span class="stars-glyph">★★★★★</span>
+                    <span>4.8 (410)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="standard-product-card" onclick="openProductModal('Baies Scented Candle', 'DIPTYQUE PARIS', '$76', 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=500&q=80" alt="Diptyque Candle" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ede8e2\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EBaies Candle%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Baies Classic Candle', 'DIPTYQUE PARIS', 76, 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Diptyque Paris</span>
+                <div class="card-product-name">Baies Classic Scented Candle</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$76</span>
+                  <div class="card-rating-text">
+                    <span class="stars-glyph">★★★★★</span>
+                    <span>4.9 (1.9k)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 4: MODERN LIVING & SCULPTURAL OBJECTS (Horizontal Rail with Carousel Arrows) -->
+        <section class="section-wrap" id="home">
+          <div class="section-header">
+            <a href="#home" class="section-title-wrap">
+              <h2 class="section-title">Modern Living & Sculptural Objects</h2>
+              <svg class="section-title-chevron" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+            <div class="carousel-controls">
+              <button class="carousel-btn" onclick="scrollRail('livingRail', -300)" aria-label="Previous items">
+                <svg viewBox="0 0 24 24">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              <button class="carousel-btn" onclick="scrollRail('livingRail', 300)" aria-label="Next items">
+                <svg viewBox="0 0 24 24">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="scrollable-rail-wrap">
+            <div class="horizontal-scroll-rail" id="livingRail">
+              
+              <!-- Rail Item 1 -->
+              <div class="standard-product-card rail-card" onclick="openProductModal('Hasami Natural Teapot', 'HASAMI PORCELAIN', '$88', 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=500&q=80')">
+                <div class="standard-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=500&q=80" alt="Hasami" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ede6de\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EHasami Teapot%3C/text%3E%3C/svg%3E';">
+                  <button class="card-quick-add-btn" onclick="addToBag(event, 'Hasami Natural Teapot', 'HASAMI PORCELAIN', 88, 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+                </div>
+                <div class="standard-card-info">
+                  <span class="card-brand-label">Hasami Porcelain</span>
+                  <div class="card-product-name">Gloss Glazed Teapot</div>
+                  <div class="card-price-rating-row">
+                    <span class="card-product-price">$88</span>
+                    <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (430)</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rail Item 2 -->
+              <div class="standard-product-card rail-card" onclick="openProductModal('Carrie Portable LED Lamp', 'AUDO COPENHAGEN', '$185', 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80')">
+                <div class="standard-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80" alt="Audo Lamp" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23eae3da\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3ECarrie LED Lamp%3C/text%3E%3C/svg%3E';">
+                  <button class="card-quick-add-btn" onclick="addToBag(event, 'Carrie Portable LED Lamp', 'AUDO COPENHAGEN', 185, 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+                </div>
+                <div class="standard-card-info">
+                  <span class="card-brand-label">Audo Copenhagen</span>
+                  <div class="card-product-name">Carrie Dimmable LED Lamp</div>
+                  <div class="card-price-rating-row">
+                    <span class="card-product-price">$185</span>
+                    <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.8 (290)</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rail Item 3 -->
+              <div class="standard-product-card rail-card" onclick="openProductModal('Ripple Champagne Saucers', 'FERM LIVING', '$65', 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=500&q=80')">
+                <div class="standard-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=500&q=80" alt="Ferm Living" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f1ebe4\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3ERipple Saucers%3C/text%3E%3C/svg%3E';">
+                  <button class="card-quick-add-btn" onclick="addToBag(event, 'Ripple Champagne Set of 2', 'FERM LIVING', 65, 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+                </div>
+                <div class="standard-card-info">
+                  <span class="card-brand-label">Ferm Living</span>
+                  <div class="card-product-name">Mouth-Blown Ripple Glass</div>
+                  <div class="card-price-rating-row">
+                    <span class="card-product-price">$65</span>
+                    <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (810)</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rail Item 4 -->
+              <div class="standard-product-card rail-card" onclick="openProductModal('Restore Storage Basket', 'MUUTO', '$115', 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=500&q=80')">
+                <div class="standard-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=500&q=80" alt="Muuto Basket" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ece5dc\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EMuuto Basket%3C/text%3E%3C/svg%3E';">
+                  <button class="card-quick-add-btn" onclick="addToBag(event, 'Restore Felt Storage Basket', 'MUUTO', 115, 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+                </div>
+                <div class="standard-card-info">
+                  <span class="card-brand-label">Muuto</span>
+                  <div class="card-product-name">Restore Recycled Felt Tray</div>
+                  <div class="card-price-rating-row">
+                    <span class="card-product-price">$115</span>
+                    <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.7 (190)</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rail Item 5 -->
+              <div class="standard-product-card rail-card" onclick="openProductModal('Waffle Hand Towel Pair', 'HAY DESIGN', '$42', 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=500&q=80')">
+                <div class="standard-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=500&q=80" alt="Hay Towels" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ede6de\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EHay Waffle Towel%3C/text%3E%3C/svg%3E';">
+                  <button class="card-quick-add-btn" onclick="addToBag(event, 'Waffle Towel Set', 'HAY DESIGN', 42, 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+                </div>
+                <div class="standard-card-info">
+                  <span class="card-brand-label">HAY Design</span>
+                  <div class="card-product-name">Organic Waffle Cotton Towels</div>
+                  <div class="card-price-rating-row">
+                    <span class="card-product-price">$42</span>
+                    <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (530)</span></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: MEN'S ESSENTIALS (Dark Mode Surface Imagery Accent) -->
+        <section class="section-wrap" id="men">
+          <div class="section-header">
+            <a href="#men" class="section-title-wrap">
+              <h2 class="section-title">Men's Technical & Tailored Wear</h2>
+              <svg class="section-title-chevron" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+            <span class="section-subtext">Deep-tone surfaces holding crisp editorial typography</span>
+          </div>
+
+          <div class="products-4col-grid">
+            
+            <!-- Dark Card 1 -->
+            <div class="standard-product-card dark-accent-card" onclick="openProductModal('Heavy French Terry Crewneck', 'ACNE STUDIOS', '$260', 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=500&q=80" alt="Acne Studios" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23282524\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23bbbbbb\' text-anchor=\'middle\'%3EHeavy Sweatshirt%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Heavy French Terry Crew', 'ACNE STUDIOS', 260, 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Acne Studios</span>
+                <div class="card-product-name">Heavy French Terry Crewneck</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$260</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (410)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dark Card 2 -->
+            <div class="standard-product-card dark-accent-card" onclick="openProductModal('Minimalist Mechanical Watch', 'NOMOS GLASHÜTTE', '$1,800', 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Nomos Watch" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23282524\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23bbbbbb\' text-anchor=\'middle\'%3ENomos Watch%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Tangente 38mm Watch', 'NOMOS GLASHÜTTE', 1800, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Nomos Glashütte</span>
+                <div class="card-product-name">Tangente 38 Bauhaus Manual</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$1,800</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>5.0 (140)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dark Card 3 -->
+            <div class="standard-product-card dark-accent-card" onclick="openProductModal('Master & Dynamic Wireless', 'MASTER & DYNAMIC', '$399', 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphones" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23282524\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23bbbbbb\' text-anchor=\'middle\'%3EM&D Headphones%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'MH40 Wireless Headphones', 'MASTER & DYNAMIC', 399, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Master & Dynamic</span>
+                <div class="card-product-name">MH40 Over-Ear Berylium</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$399</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.8 (640)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dark Card 4 -->
+            <div class="standard-product-card dark-accent-card" onclick="openProductModal('Titanium French Press', 'SNOW PEAK', '$62', 'https://images.unsplash.com/photo-1577937927133-66ef06acdf18?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1577937927133-66ef06acdf18?auto=format&fit=crop&w=500&q=80" alt="Snow Peak" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23282524\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23bbbbbb\' text-anchor=\'middle\'%3ETitanium Press%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Titanium French Press', 'SNOW PEAK', 62, 'https://images.unsplash.com/photo-1577937927133-66ef06acdf18?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Snow Peak</span>
+                <div class="card-product-name">Ultralight Titanium Brewer</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$62</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (820)</span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 6: BABY & TODDLER -->
+        <section class="section-wrap" id="baby">
+          <div class="section-header">
+            <a href="#baby" class="section-title-wrap">
+              <h2 class="section-title">Baby, Nursery & Toddler</h2>
+              <svg class="section-title-chevron" viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+            <span class="section-subtext">Organic cotton essentials and sustainably carved play</span>
+          </div>
+
+          <div class="products-4col-grid">
+            
+            <div class="standard-product-card" onclick="openProductModal('Organic Cotton Rib Romper', 'KONGES SLØJD', '$48', 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80" alt="Konges Slojd" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f7ede1\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EOrganic Romper%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Organic Cotton Romper', 'KONGES SLØJD', 48, 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Konges Sløjd</span>
+                <div class="card-product-name">Pointelle Ribbed Romper</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$48</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (320)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="standard-product-card" onclick="openProductModal('Solid Wood Rainbow Arches', 'RADUGA GRËZ', '$54', 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=500&q=80" alt="Raduga Grez" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ede6de\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EWooden Arches%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Solid Wood Rainbow Arches', 'RADUGA GRËZ', 54, 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Raduga Grëz</span>
+                <div class="card-product-name">Handmade Lime Wood Stacker</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$54</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>5.0 (210)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="standard-product-card" onclick="openProductModal('Silicone Suction Meal Set', 'LIEWOOD', '$36', 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=500&q=80" alt="Liewood Set" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23f2ebe3\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3ESilicone Set%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Silicone Suction Set', 'LIEWOOD', 36, 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Liewood</span>
+                <div class="card-product-name">Silicone Suction Feeding Set</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$36</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (460)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="standard-product-card" onclick="openProductModal('Muslin Swaddle Blankets', 'MUSHIE', '$24', 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=500&q=80')">
+              <div class="standard-img-wrap">
+                <img src="https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=500&q=80" alt="Mushie Swaddle" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23eae3da\'/%3E%3Ctext x=\'150\' y=\'160\' font-family=\'sans-serif\' font-size=\'12\' fill=\'%23787574\' text-anchor=\'middle\'%3EMuslin Swaddle%3C/text%3E%3C/svg%3E';">
+                <button class="card-quick-add-btn" onclick="addToBag(event, 'Organic Muslin Swaddles', 'MUSHIE', 24, 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=500&q=80')">+ Add to Bag</button>
+              </div>
+              <div class="standard-card-info">
+                <span class="card-brand-label">Mushie</span>
+                <div class="card-product-name">100% Organic Muslin Wrap</div>
+                <div class="card-price-rating-row">
+                  <span class="card-product-price">$24</span>
+                  <div class="card-rating-text"><span class="stars-glyph">★★★★★</span><span>4.9 (1.2k)</span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- DARK FOOTER (Full width deep black, columnar link groups) -->
+      <footer class="app-footer">
+        <div class="container">
+          <div class="footer-grid">
+            
+            <div class="footer-brand-col">
+              <div class="footer-wordmark">shop<span class="dot"></span></div>
+              <p class="footer-desc">The floating shopping constellation connecting conscious shoppers with independent merchants globally.</p>
+              <div style="font-size:13px; color:#888;">Powered by Shopify Inc.</div>
+            </div>
+
+            <div>
+              <div class="footer-col-title">Shop App</div>
+              <ul class="footer-links">
+                <li><a href="#discover">Discover</a></li>
+                <li><a href="#featured">Featured Brands</a></li>
+                <li><a href="#orders">Package Tracking</a></li>
+                <li><a href="#shoppay">Shop Pay</a></li>
+                <li><a href="#rewards">Shop Cash</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="footer-col-title">Merchants</div>
+              <ul class="footer-links">
+                <li><a href="#sell">Sell on Shop</a></li>
+                <li><a href="#shopify">Shopify Integration</a></li>
+                <li><a href="#analytics">Merchant Portal</a></li>
+                <li><a href="#campaigns">Brand Spotlights</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="footer-col-title">Company</div>
+              <ul class="footer-links">
+                <li><a href="#about">About Shop</a></li>
+                <li><a href="#press">Press Room</a></li>
+                <li><a href="#careers">Careers</a></li>
+                <li><a href="#impact">Carbon Neutral</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="footer-col-title">Download</div>
+              <p style="font-size:13px; color:#888; margin-bottom:12px; line-height:1.4;">Track packages, discover local merchants and earn rewards in the Shop mobile app.</p>
+              <div style="display:flex; gap:8px;">
+                <button style="background:#222; border:1px solid #333; color:#fff; border-radius:9999px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer;" onclick="showToast('Redirecting to iOS App Store')">App Store</button>
+                <button style="background:#222; border:1px solid #333; color:#fff; border-radius:9999px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer;" onclick="showToast('Redirecting to Google Play')">Google Play</button>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="footer-bottom">
+            <div>© 2026 Shop • All rights reserved. Strict compliance with Shop Style Reference.</div>
+            <div style="display:flex; gap:20px;">
+              <a href="#privacy" style="color:#777; text-decoration:none;">Privacy Policy</a>
+              <a href="#terms" style="color:#777; text-decoration:none;">Terms of Service</a>
+              <a href="#cookies" style="color:#777; text-decoration:none;">Cookie Preferences</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- FLOATING COOKIE CONSENT PILL BUTTON (9999px radius, white fill, 1px #ebebeb border) -->
+  <div class="cookie-floating-pill" id="cookiePill">
+    <span class="cookie-icon">🍪</span>
+    <span>Cookie Settings</span>
+    <button class="cookie-dismiss" onclick="dismissCookie(event)" aria-label="Dismiss cookie notice">×</button>
+  </div>
+
+  <!-- CART DRAWER & OVERLAY -->
+  <div class="cart-drawer-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Your Bag">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title">Shopping Bag (<span id="cartTotalItems">2</span>)</div>
+      <button class="cart-close-btn" onclick="closeCart()" aria-label="Close cart">×</button>
+    </div>
+    <div class="cart-drawer-body" id="cartItemsList">
+      <!-- Default Items -->
+      <div class="cart-item">
+        <div class="cart-item-img">
+          <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=150&q=80" alt="Veja Campo" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\' fill=\'%23eee\'%3E%3C/svg%3E';">
+        </div>
+        <div class="cart-item-details">
+          <div class="cart-item-brand">VEJA</div>
+          <div class="cart-item-name">Campo Extra White • Size 41</div>
+          <div class="cart-item-price">$175.00</div>
+        </div>
+      </div>
+
+      <div class="cart-item">
+        <div class="cart-item-img">
+          <img src="https://images.unsplash.com/photo-1608248597359-59754f9d2e1b?auto=format&fit=crop&w=150&q=80" alt="Augustinus Bader" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\' fill=\'%23eee\'%3E%3C/svg%3E';">
+        </div>
+        <div class="cart-item-details">
+          <div class="cart-item-brand">AUGUSTINUS BADER</div>
+          <div class="cart-item-name">The Rich Cream 50ml</div>
+          <div class="cart-item-price">$290.00</div>
+        </div>
+      </div>
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotalAmount">$465.00</span>
+      </div>
+      <div style="font-size:12px; color:#787574; margin-bottom:14px; display:flex; align-items:center; gap:6px;">
+        <span>✓</span> Free carbon-neutral shipping included
+      </div>
+      <button class="shop-pay-btn" onclick="proceedToCheckout()">
+        <span>Check out with</span>
+        <svg viewBox="0 0 76 24" style="height:20px; fill:#ffffff;">
+          <text x="0" y="18" font-family="'Inter', sans-serif" font-weight="700" font-size="18" letter-spacing="-1">shop pay</text>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-pill" id="toastPill">
+    <div class="toast-check">✓</div>
+    <span id="toastMsg">Added to your bag</span>
+  </div>
+
+  <script>
+    // Shopping Bag State
+    let cartItems = [
+      { name: 'Campo Extra White • Size 41', brand: 'VEJA', price: 175, img: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=150&q=80' },
+      { name: 'The Rich Cream 50ml', brand: 'AUGUSTINUS BADER', price: 290, img: 'https://images.unsplash.com/photo-1608248597359-59754f9d2e1b?auto=format&fit=crop&w=150&q=80' }
+    ];
+
+    function updateCartUI() {
+      const count = cartItems.length;
+      const countBadge = document.getElementById('cartCountBadge');
+      const totalItems = document.getElementById('cartTotalItems');
+      const subtotalEl = document.getElementById('cartSubtotalAmount');
+      const listEl = document.getElementById('cartItemsList');
+
+      if (countBadge) countBadge.textContent = count;
+      if (totalItems) totalItems.textContent = count;
+
+      let sum = 0;
+      if (listEl) {
+        listEl.innerHTML = '';
+        cartItems.forEach((item, idx) => {
+          sum += item.price;
+          const div = document.createElement('div');
+          div.className = 'cart-item';
+          div.innerHTML = `
+            <div class="cart-item-img">
+              <img src="${item.img}" alt="${item.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'64\\' height=\\'64\\' fill=\\'%23eee\\'%3E%3C/svg%3E';">
+            </div>
+            <div class="cart-item-details">
+              <div class="cart-item-brand">${item.brand}</div>
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+            </div>
+            <button onclick="removeItem(${idx})" style="background:none; border:none; color:#999; cursor:pointer; font-size:16px; padding:4px;">×</button>
+          `;
+          listEl.appendChild(div);
+        });
+      }
+      if (subtotalEl) {
+        subtotalEl.textContent = '$' + sum.toFixed(2);
+      }
+    }
+
+    function removeItem(idx) {
+      cartItems.splice(idx, 1);
+      updateCartUI();
+      showToast('Item removed from bag');
+    }
+
+    function addToBag(e, name, brand, price, img) {
+      if (e) e.stopPropagation();
+      cartItems.push({ name, brand, price, img });
+      updateCartUI();
+      showToast(`Added ${name} to your bag`);
+    }
+
+    function openCart() {
+      document.getElementById('cartOverlay').classList.add('open');
+      document.getElementById('cartDrawer').classList.add('open');
+    }
+
+    function closeCart() {
+      document.getElementById('cartOverlay').classList.remove('open');
+      document.getElementById('cartDrawer').classList.remove('open');
+    }
+
+    document.getElementById('navCartBtn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCart();
+    });
+
+    // Toast function
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toastPill');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2600);
+    }
+
+    // Modal / Quick View
+    function openProductModal(name, brand, price, img) {
+      showToast(`Viewing: ${brand} — ${name} (${price})`);
+    }
+
+    function proceedToCheckout() {
+      showToast('Connecting to Shop Pay instant checkout...');
+      setTimeout(() => {
+        closeCart();
+      }, 1500);
+    }
+
+    // Cookie Dismiss
+    function dismissCookie(e) {
+      if (e) e.stopPropagation();
+      const pill = document.getElementById('cookiePill');
+      if (pill) {
+        pill.style.opacity = '0';
+        pill.style.transform = 'translateY(10px)';
+        setTimeout(() => pill.remove(), 250);
+      }
+    }
+
+    // Search Interaction
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClearBtn');
+
+    searchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim().toLowerCase();
+      searchClear.style.display = val.length > 0 ? 'block' : 'none';
+      filterCardsBySearch(val);
+    });
+
+    function clearSearch() {
+      if (searchInput) {
+        searchInput.value = '';
+        searchClear.style.display = 'none';
+        filterCardsBySearch('');
+        searchInput.focus();
+      }
+    }
+
+    function handleSearch(e) {
+      e.preventDefault();
+      const val = searchInput ? searchInput.value.trim() : '';
+      if (val) {
+        showToast(`Searching for "${val}" across independent brands...`);
+      }
+    }
+
+    function filterCardsBySearch(term) {
+      const cards = document.querySelectorAll('.standard-product-card, .brand-spotlight-card, .product-tile-card');
+      if (!term) {
+        cards.forEach(c => c.style.display = '');
+        return;
+      }
+      cards.forEach(c => {
+        const text = c.textContent.toLowerCase();
+        c.style.display = text.includes(term) ? '' : 'none';
+      });
+    }
+
+    // Category Pill Filtering
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      if (cat === 'all') {
+        document.querySelectorAll('.section-wrap').forEach(s => s.style.display = '');
+        showToast('Showing all curated collections');
+      } else {
+        const target = document.getElementById(cat);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          showToast(`Browsing ${cat.toUpperCase()}`);
+        }
+      }
+    }
+
+    // Horizontal Scroll Rail helper
+    function scrollRail(id, delta) {
+      const rail = document.getElementById(id);
+      if (rail) {
+        rail.scrollBy({ left: delta, behavior: 'smooth' });
+      }
+    }
+  </script>
+</body>
+</html>

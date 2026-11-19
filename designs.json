@@ -84,5 +84,24 @@
       "HTML5",
       "CSS3"
     ]
+  },
+  {
+    "id": "06",
+    "tag": "COMMERCE / 06",
+    "title": "Shop — Floating Shopping Constellation",
+    "description": "Pillow-soft e-commerce discovery canvas featuring floating product constellations on white marble, negative-tracking GT Standard typography, 28px framed cards, and signature Shop violet accent.",
+    "image": "https://raw.githubusercontent.com/siddharthkmaharana/landing_page_gallery/main/landing-page-06/preview.png",
+    "fallbackImage": "/images/designs/shop-preview.png",
+    "liveUrl": "https://siddharthkmaharana.github.io/landing_page_gallery/landing-page-06/",
+    "githubUrl": "https://github.com/siddharthkmaharana/landing_page_gallery/tree/main/landing-page-06",
+    "tags": [
+      "E-Commerce",
+      "GT Standard",
+      "Shopify",
+      "Design Systems",
+      "Pill UI",
+      "HTML5",
+      "CSS3"
+    ]
   }
 ]
