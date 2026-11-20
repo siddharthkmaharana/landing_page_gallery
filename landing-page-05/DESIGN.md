@@ -27,13 +27,13 @@ ORTHOGON is a sophisticated, structural design system inspired by technical blue
 
 ## Tokens — Typography
 
-### Space Grotesk — Primary display typeface powering bold, tight-tracking headers. Scaled from 24px up to 96px (8xl) with aggressive negative letter spacing (-0.04em to -0.05em) and compressed line heights (0.9 to 1.1). Space Grotesk brings architectural presence and sharp geometric rhythm to section titles and hero statements. · `--font-header`
+### Space Grotesk — Primary display typeface powering bold, tight-tracking headers. Scaled from 20px up to 96px (8xl) with aggressive negative letter spacing (-0.04em to -0.05em) and compressed line heights (0.9 to 1.15). Space Grotesk brings architectural presence and sharp geometric rhythm to section titles and hero statements. · `--font-header`
 - **Substitute:** Space Grotesk, Syne, Archivo, system-ui, sans-serif
 - **Weights:** 500, 600, 700
 - **Sizes:** 20px, 24px, 32px, 48px, 64px, 80px, 96px
 - **Line height:** 0.9–1.15
-- **Letter spacing:** -0.04em at 64px–96px, -0.03em at 32px–48px
-- **Role:** Display headings, hero title, section numerals, and uppercase display labels.
+- **Letter spacing:** -0.045em at 64px–96px, -0.03em at 32px–48px
+- **Role:** Display headings, hero title ("ORTHOGONAL PRECISION"), section numerals, and uppercase display labels.
 
 ### General Sans — Workhorse body typeface delivering clean editorial legibility across paragraphs, documentation blocks, and form labels. Renders at standard weights with neutral tracking, balancing the technical rigidity of Space Grotesk and JetBrains Mono. · `--font-body`
 - **Substitute:** General Sans, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
@@ -41,7 +41,7 @@ ORTHOGON is a sophisticated, structural design system inspired by technical blue
 - **Sizes:** 13px, 14px, 15px, 16px
 - **Line height:** 1.5–1.65
 - **Letter spacing:** -0.01em to 0.0em
-- **Role:** Long-form body text, paragraph descriptions, editorial evaluations, and form help text.
+- **Role:** Long-form body text, paragraph descriptions, editorial specifications, and form help text.
 
 ### JetBrains Mono — Technical and functional monospace typeface for all labels, tags, numerical indices, metadata chips, code mockups, and telemetry logs. Formatted in uppercase with expanded tracking (0.1em) for crisp tabular alignment. · `--font-mono`
 - **Substitute:** JetBrains Mono, SF Mono, Consolas, "Fira Code", monospace
@@ -49,7 +49,7 @@ ORTHOGON is a sophisticated, structural design system inspired by technical blue
 - **Sizes:** 10px, 11px, 12px, 13px, 14px
 - **Line height:** 1.4–1.6
 - **Letter spacing:** 0.05em to 0.12em (tracking-wide / uppercase)
-- **Role:** Status badges, section index labels ("01. SPECIFICATION"), code snippets, table values, input labels, and corner coordinates.
+- **Role:** Status badges, section index labels ("01. SPECIFICATION", "02. BENTO GRID", "03. TOPOLOGY", "04. BENCHMARKS", "05. INITIALIZE"), code snippets, table values, input labels, and corner coordinates.
 
 ### Type Scale
 
@@ -93,7 +93,7 @@ ORTHOGON is a sophisticated, structural design system inspired by technical blue
 
 | Element | Value | Notes |
 |---------|-------|-------|
-| components | 0px | Strict default for cards, panels, inputs, and avatars |
+| components | 0px | Strict default for cards, panels, inputs, bento cells, and schematic containers |
 | sm | 2px | Permitted subtle rounding on action buttons and status pills |
 | pills | 0px or 2px | Pill styling strictly avoids round 9999px caps; uses sharp rectangular geometry |
 
@@ -101,7 +101,7 @@ ORTHOGON is a sophisticated, structural design system inspired by technical blue
 
 | Name | Value | Token | Notes |
 |------|-------|-------|-------|
-| none | `none` | `--shadow-none` | **Strictly NO box shadows** throughout the entire system |
+| none | `none` | `--shadow-none` | **Strictly NO box shadows** throughout the entire system (`box-shadow: none !important`) |
 | all-elevations | `0 0 0 0 rgba(0,0,0,0)` | `--shadow-flat` | Layering is achieved solely via 1px border-lines and Paper surface shifts |
 
 ### Layout
@@ -111,30 +111,43 @@ ORTHOGON is a sophisticated, structural design system inspired by technical blue
 - **Bento cell gap:** 1px (using Grid hairline color `--color-grid-hairline`)
 - **Hairline border width:** 1px (0.5px for background SVG mosaic)
 
-## Components
+## Components (Current Modified Architecture)
 
-### Mosaic Background
+### 1. Mosaic Background
 **Role:** Full-page technical blueprint canvas
 Seamless repeating SVG mosaic pattern (480px x 480px) of interlocking rectangular panels (large squares 240x160px, vertical columns 120x240px, horizontal bars 240x80px). Panels are outlined by 0.5px hairlines in `#3A3A38` at 0.3 opacity and filled with Paper (`#F7F7F5`). The pattern sits fixed at `inset: 0` with `pointer-events: none` and `z-index: 0`.
 
-### Technical Navigation
+### 2. Technical Navigation
 **Role:** Fixed top header with precision technical index
 Fixed top navigation bar at 56px height with 1px border-bottom in `#3A3A38` at 20% opacity.
 - **Left:** 32x32px square logo box in solid Forest Green (`#1A3C2B`) containing a crisp white orthogonal geometry glyph.
-- **Center:** Monospaced nav links in JetBrains Mono, 10px, uppercase, tracking-wide, prefixed with two-digit numerical indices (e.g., `01. SPECIFICATION`, `02. BENTO GRID`, `03. TOPOLOGY`, `04. BENCHMARKS`, `05. INITIALIZE`).
+- **Center:** Monospaced nav links in JetBrains Mono, 10px, uppercase, tracking-wide, prefixed with two-digit numerical indices:
+  - `01. SPECIFICATION`
+  - `02. BENTO GRID`
+  - `03. TOPOLOGY`
+  - `04. BENCHMARKS`
+  - `05. INITIALIZE`
 - **Right:** Ghost button (1px hairline in `#3A3A38/20`, 0px/2px radius) paired with a solid Forest Green (`#1A3C2B`) CTA button with white monospaced text.
 
-### Hero Section
+### 3. Hero Section (`#specification`)
 **Role:** High-impact technical manifesto statement
 - **Left Column:**
   - Status Badge: Inline-flex container with 1px hairline border (`#1A3C2B/20`), 8x8px solid `#1A3C2B` pulsing square dot, and JetBrains Mono 10px uppercase tracking-widest text (`SYS_VER // 2.4.0 — ARCHITECTURAL`).
-  - Large Typography Statement: Space Grotesk `8xl` (64px–80px), tracking-tight (`-0.045em`), solid Forest Green (`#1A3C2B`), line-height 0.92.
+  - Large Typography Statement: Space Grotesk `8xl` (64px–80px), tracking-tight (`-0.045em`), solid Forest Green (`#1A3C2B`), line-height 0.92: "ORTHOGONAL PRECISION".
   - Technical Subtext: JetBrains Mono 13px all-caps copy bordered on the left by a vertical 1px Forest Green line with 16px left padding.
   - Action Group: Primary solid Forest button (`INITIALIZE SPEC // 01`) and Ghost button (`VIEW REPOSITORY →`).
 - **Right Column:**
   - Abstract Wireframe Container: Square container with four L-shaped 10x10px corner markers, dashed circular coordinate orbit, rotating reticle ticks, and a `mix-blend-luminosity` architectural photograph at 90% opacity shifting to full color on hover.
 
-### Bento Feature Grid
+### 4. Metric Telemetry Strip (`#benchmarks`)
+**Role:** High-density structural benchmark readout
+Full-width container divided by 1px hairlines presenting four high-precision system invariants:
+- `0.5PX` // HAIRLINE VECTOR (Sub-pixel vector accuracy across all viewports)
+- `0.0PX` // ZERO DROP SHADOWS (Pure flat 2D architectural rigor without depth deception)
+- `100%` // BENTO STRUCTURAL RIGOR (Rectilinear coordinate grid with 1px hairline borders)
+- `20SEC` // TOPOLOGY ORBIT CYCLE (Deterministic linear state sync cycle across distributed nodes)
+
+### 5. Bento Feature Grid (`#bento`)
 **Role:** 2x2 modular technical component showcase
 A 2x2 grid layout separated by a 1px Grid color gap (`--color-grid-hairline`). Each cell features:
 - Paper background (`#F7F7F5`), 32px padding, 0px border-radius.
@@ -144,28 +157,48 @@ A 2x2 grid layout separated by a 1px Grid color gap (`--color-grid-hairline`). E
   - **Cell 03 (Blueprint Telemetry):** Gold (`#F4D35E`) left-border accent, accompanied by real-time runtime log monitors.
   - **Cell 04 (Runtime Diagnostics):** Forest (`#1A3C2B`) left-border accent, accompanied by zero-shadow compliance validation rules.
 
-### Network Topology Graph
+### 6. Network Topology Graph (`#topology`)
 **Role:** Abstract SVG visualization of an interconnected design system
-A circular or square container (max-width 450px) with 1px border.
+A circular container (max-width 450px) with 1px border.
 - **Center:** 16px solid Forest Green (`#1A3C2B`) core node with pulse ring.
-- **Satellites:** Three orbiting satellite nodes on dashed circular paths (140px radius), connected to center via 1px solid lines at 0.2 opacity.
+- **Satellites:** Three orbiting satellite nodes (`α`, `β`, `γ`) on dashed circular paths (140px radius), connected to center via 1px solid lines at 0.2 opacity.
 - **Motion:** Linear 20s infinite continuous rotation with hover-pause and real-time node metadata tooltips.
+- **Telemetry Console:** Right-side node inspector reporting real-time node latency, packet parity, and active schema compilation.
 
-### Technical Form CTA
+### 7. Specification Matrix (`#matrix`) — *Current Modified Section*
+**Role:** Architectural calibration schematics and formal ISO-128 compliance matrix (replacing legacy testimonials)
+Divided into two high-precision structural modules:
+
+#### A. Three Technical Blueprint Schematic Cards
+1. **01 // GEO_VECTOR_0.5PX (Orthogonal Vector Hairlines):**
+   - Viewport equipped with corner L-markers and dimensional calipers: horizontal caliper (`240.00 MM`) and vertical caliper (`160.00 MM`).
+   - Center geometry mockup with concentric 0.5px hairline boxes, focal crosshairs, and chip label `0.5PX // 20%`.
+   - Technical metadata: Stroke weight `0.5px Sub-Pixel`, grid opacity `0.20 (#3A3A38)`, corner radius `0px / 2px Strict`.
+2. **02 // GAMUT_LUMINOSITY_90 (Prestige Gamut & Luminosity):**
+   - Caliper bar labeled `GAMUT_SRGB`.
+   - Palette swatch matrix displaying 5 flat swatches: Forest (`#1A3C2B`), Paper (`#F7F7F5`), Coral (`#FF8C69`), Mint (`#9EFFBF`), and Gold (`#F4D35E`).
+   - Technical metadata: Base palette `Paper (#F7F7F5)`, Key chroma `Forest (#1A3C2B)`, Mix-blend `Luminosity (90% → 100%)`.
+3. **03 // TYPO_METRIC_0.9LH (Typographical Triangulation):**
+   - Caliper bar labeled `BASELINE // 8PT`.
+   - Dynamic typographical specimen display with lead glyph `Aa` and stacked metric calipers: `CAP_HEIGHT: 72PX`, `X_HEIGHT: 52PX`, `BASELINE: 0PX`.
+   - Technical metadata: Display header `Space Grotesk (-0.04em)`, Technical mono `JetBrains Mono (0.1em)`, Body system `General Sans (15px / 1.6)`.
+
+#### B. Formal Specification Tolerances Table (ISO-128 Compliance)
+High-density technical comparison table with status chips:
+- **Depth Illusions:** `0px Box-Shadows (100% Flat 2D Rigor)` vs. Conventional Gaussian Drop Shadows → `[STRICT_ZERO]`
+- **Hairline Tolerance:** `0.5px Exact Sub-Pixel / 20% Opacity` vs. Inconsistent 1px–2px Borders → `[SUB_PIXEL_OK]`
+- **Image Treatment:** `Mix-Blend-Luminosity at 90% Opacity` vs. Unfiltered Chromatic Overlays → `[CALIBRATED]`
+- **Grid Cell Matrix:** `Interlocking Rectangular Bento (1px Gap)` vs. Fluid Arbitrary Flexboxes → `[ORTHOGONAL]`
+- **Topology Dispatch:** `Synchronous 20s Linear Orbit Protocol` vs. Asynchronous Dynamic Floats → `[DETERMINISTIC]`
+
+### 8. Technical Form CTA (`#cta`)
 **Role:** High-precision input console
 Centered 640px wide form box on Paper background with 1px hairline border:
-- Four L-shaped corner markers (10px x 10px in `#1A3C2B`) positioned at top-left, top-right, bottom-left, and bottom-right.
+- Four L-shaped corner markers (10px x 10px in `#1A3C2B`) positioned at container vertices.
 - Form fields with solid white backgrounds (`#FFFFFF`), 1px borders, and monospaced labels positioned directly above inputs.
-- Micro-interactions: Focused fields show 1px solid `#1A3C2B` outline; submit generates cryptographic voucher ID with copy button.
+- Micro-interactions: Focused fields show 1px solid `#1A3C2B` outline; submit triggers cryptographic voucher ID generation with instant copy action.
 
-### Monospaced Testimonial Cards
-**Role:** Flat architectural evaluations from lead system architects
-1px bordered square cards with Paper fill and 0px radius:
-- **Top:** Minimalist quotation marks and 5-star geometric rating icons (10px each).
-- **Body:** Monospaced critique copy in JetBrains Mono at 12px with 1.6 line-height.
-- **Bottom:** 1px top divider separating the quote from the user avatar (square, 0px radius, `mix-blend-mode: luminosity`) and author title metadata in JetBrains Mono.
-
-### Interactive Blueprint HUD & Wireframe Toggle
+### 9. Interactive Blueprint HUD & Wireframe Toggle
 **Role:** Real-time structural diagnostic controls
 - **Bottom-Left HUD:** Monospaced coordinate tracker display reporting active cursor position `[X: 0000 | Y: 0000]`.
 - **Wireframe Mode Toggle:** Fixed button that outlines all containers, margins, and bento cells with red/green 1px alignment boundaries.
@@ -176,13 +209,13 @@ Centered 640px wide form box on Paper background with 1px hairline border:
 - Use 1px hairlines (`rgba(58, 58, 56, 0.20)`) for all dividers, card outlines, and bento cell separations.
 - Maintain strictly 0px or 2px (`sm`) border radii across all elements — sharp architectural lines define the identity.
 - Apply `mix-blend-mode: luminosity` at 90% opacity to all photography, transitioning to full color on hover.
-- Keep typography strictly separated: Space Grotesk for bold display headers, General Sans for body text, JetBrains Mono for metadata and technical labels.
+- Keep typography strictly segregated: Space Grotesk for bold display headers, General Sans for body text, JetBrains Mono for metadata and technical labels.
 - Set all numerical indices in JetBrains Mono with two-digit format (`01.`, `02.`, `03.`).
 - Add L-shaped corner markers (10px x 10px) to key technical containers and form boxes.
 - Preserve generous negative space with 80px–96px vertical section gaps.
 
 ### Don't
-- **Do not use box shadows anywhere** — depth is expressed solely through 1px borders, surface fills, and hairline mosaic panels.
+- **Do not use box shadows anywhere** — depth is expressed solely through 1px borders, surface fills, and hairline mosaic panels (`box-shadow: none !important`).
 - Do not use gradients or blurred glassmorphism effects — the aesthetic is strictly flat and 2D.
 - Do not use rounded pill shapes (9999px) — all buttons, tags, and inputs must use rectangular 0px or 2px geometry.
 - Do not mix fonts within a single label run — keep header, body, and monospaced metadata strictly segregated.
@@ -194,7 +227,7 @@ Centered 640px wide form box on Paper background with 1px hairline border:
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
 | 0 | Mosaic Canvas | `#F7F7F5` | Page background with 0.5px hairline interlocking mosaic SVG pattern |
-| 1 | Paper Panel | `#F7F7F5` | Bento cells, testimonial cards, technical form containers, and navigation bar |
+| 1 | Paper Panel | `#F7F7F5` | Bento cells, schematic cards, technical form containers, and navigation bar |
 | 2 | White Input / Active | `#FFFFFF` | Form fields, active bento hover state, and code simulation boxes |
 | 3 | Forest Accent | `#1A3C2B` | Primary action buttons, square logo mark, status dot, and corner L-markers |
 
@@ -212,9 +245,16 @@ All photography adheres to the **Technical Blueprint** visual treatment:
 - Hover Transition: Smoothly shifts to full color and `opacity: 1.0` with `transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1)`.
 - Subject Matter: Architectural concrete, geometric façades, aerospace structural frames, and minimalist precision engineering.
 
-## Layout
+## Layout Hierarchy
 
-Max-width 1280px centered on the Paper mosaic background. Fixed technical navigation at the top. The hero section features a dual-column layout (typography manifesto on the left, abstract wireframe and orbital reticle on the right). Content progresses through a 2x2 Bento Feature Grid, an interactive Network Topology Graph, a Blueprint Component Matrix, Monospaced Testimonial Cards, and a centered Technical Form CTA with L-shaped corner markers. Dividers are explicit section-wide 1px horizontal rules.
+1. **Navigation:** 56px fixed header with 32x32px logo box, 5 monospaced numbered index links, and Forest CTA.
+2. **Hero Section (`#specification`):** Dual-column layout (typography manifesto on the left with status badge, abstract wireframe with reticle and orbit on the right).
+3. **Metric Telemetry Strip (`#benchmarks`):** High-density 4-item technical readout (`0.5PX`, `0.0PX`, `100%`, `20SEC`).
+4. **Bento Feature Grid (`#bento`):** 2x2 grid separated by 1px hairline gaps with left-border accents (Coral, Mint, Gold, Forest).
+5. **Network Topology Graph (`#topology`):** Circular SVG topology model with central core and 3 orbiting nodes on 20s linear cycle.
+6. **Specification Matrix (`#matrix`):** 3 Blueprint Schematic Cards (Geometry Calipers, Color Gamut, Typo Baseline) + ISO-128 Specification Tolerances Table.
+7. **Technical Form CTA (`#cta`):** Centered 640px form box with 4 L-shaped corner brackets.
+8. **Interactive Diagnostics:** Fixed bottom-left HUD coordinate tracker and Wireframe Blueprint toggle.
 
 ## Agent Prompt Guide
 
@@ -225,12 +265,13 @@ Quick Color Reference:
 - Accents: Coral (`#FF8C69`), Mint (`#9EFFBF`), Gold (`#F4D35E`)
 - Text: `#3A3A38` (Grid Gray)
 
-Example Component Prompts:
+Example Component Prompts (Current Modified Architecture):
 
 1. **Status Badge:** Create an inline-flex container with 1px border (`#1A3C2B/20`). Inside, place a 8px x 8px square dot of solid `#1A3C2B` followed by JetBrains Mono text at 10px, uppercase, tracking-widest. Padding: 4px 12px.
 2. **Network Topology Graph:** A circular container (max-width: 450px) with 1px border. Central 16px solid forest green node. Three orbiting nodes on dashed paths (140px radius). Connect nodes to center using 1px solid lines at 0.2 opacity. Animate orbiting nodes with a linear 20s infinite rotation.
-3. **Monospaced Testimonial Card:** 1px bordered square card. Top: Quote icon and star ratings (5 icons, 10px each). Body: Monospaced text at 12px, line-height 1.6. Bottom: 1px top border with user avatar (square, no radius, mix-blend-luminosity) and name/title in JetBrains Mono.
-4. **Technical Form CTA:** Centered 640px wide form box. Background: `#F7F7F5`, Border: 1px hairline. Add four L-shaped 'corner markers' (10px x 10px) in `#1A3C2B` at each corner of the container. Form fields use solid white backgrounds with 1px borders and monospaced labels positioned directly above inputs.
+3. **Blueprint Schematic Card:** 1px bordered square card with Paper fill. Top: tag group (`01 // GEO_VECTOR_0.5PX`) and status chip (`HAIRLINE_STRICT`). Center: viewport with 4 corner L-markers and dimensional calipers (240.00 MM x 160.00 MM). Bottom: title, description, and key-value metadata list in JetBrains Mono.
+4. **Specification Tolerances Table:** Full-width technical table enclosed in 1px hairlines. Monospaced headers with uppercase subsystem attributes, formal tolerance assertions, and colored status chips (`STRICT_ZERO`, `SUB_PIXEL_OK`, `CALIBRATED`).
+5. **Technical Form CTA:** Centered 640px wide form box. Background: `#F7F7F5`, Border: 1px hairline. Add four L-shaped 'corner markers' (10px x 10px) in `#1A3C2B` at each corner of the container. Form fields use solid white backgrounds with 1px borders and monospaced labels positioned directly above inputs.
 
 ## Quick Start
 
@@ -502,7 +543,7 @@ Design tokens -
     "paper-light": {
       "$value": "#FFFFFF",
       "$type": "color",
-      "$description": "Paper Pure White — High-contrast active surface, form fields, and code mockups"
+      "$description": "Paper Pure White — High-contrast active surface, form fields, and schematic containers"
     },
     "forest": {
       "$value": "#1A3C2B",
@@ -588,7 +629,7 @@ Design tokens -
         "letterSpacing": "0.08em"
       },
       "$type": "typography",
-      "$description": "Technical component tags and coordinate telemetry indicators"
+      "$description": "Technical component tags, caliper dimensions, and coordinate indicators"
     },
     "mono-base": {
       "$value": {
@@ -599,7 +640,7 @@ Design tokens -
         "letterSpacing": "0.05em"
       },
       "$type": "typography",
-      "$description": "Monospaced testimonial body copy, code snippets, and table values"
+      "$description": "Monospaced schematic descriptions, code snippets, and table values"
     },
     "body-sm": {
       "$value": {
@@ -643,7 +684,7 @@ Design tokens -
         "letterSpacing": "-0.02em"
       },
       "$type": "typography",
-      "$description": "Bento cell titles and card subheadings"
+      "$description": "Bento cell titles and schematic card headers"
     },
     "heading-md": {
       "$value": {
@@ -761,7 +802,7 @@ Design tokens -
     "none": {
       "$value": "0px",
       "$type": "dimension",
-      "$description": "Strict 0px radius for all components, cards, bento cells, inputs, and avatars"
+      "$description": "Strict 0px radius for all components, cards, bento cells, inputs, and schematics"
     },
     "sm": {
       "$value": "2px",
@@ -785,7 +826,7 @@ Design tokens -
     "panel": {
       "$value": "#F7F7F5",
       "$type": "color",
-      "$description": "Surface level 1: Bento cells, testimonial cards, technical form CTA, and navigation"
+      "$description": "Surface level 1: Bento cells, schematic cards, technical form CTA, and navigation"
     },
     "active": {
       "$value": "#FFFFFF",
@@ -804,7 +845,15 @@ Design tokens -
       "style": "Technical Minimalist",
       "blueprintType": "Architectural Schematics & Structural UI",
       "version": "2.4.0",
-      "extractedAt": "2026-11-20T19:40:00.000Z"
+      "sections": [
+        "specification",
+        "benchmarks",
+        "bento",
+        "topology",
+        "matrix",
+        "cta"
+      ],
+      "extractedAt": "2026-11-20T20:15:00.000Z"
     }
   }
 }
